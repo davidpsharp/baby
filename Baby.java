@@ -18,7 +18,7 @@ import java.applet.*;
 
 // main class to initialise program and owns display frame
 
-public class Baby extends JApplet implements ActionListener
+public class Baby extends JFrame implements ActionListener
 {
 	
 	// get current dir
@@ -69,7 +69,9 @@ public class Baby extends JApplet implements ActionListener
 	public JButton stopLamp;
 	ImageIcon onIcon;
 	ImageIcon offIcon;
-        public static AudioClip gong;
+
+	// convert to java.sound.sampled.Clip as AudioClip lost to JApplet
+        //public static AudioClip gong;
       
 
 	public Baby()
@@ -255,10 +257,11 @@ public class Baby extends JApplet implements ActionListener
             try
             {
                 File aud = new File("horn.wav");
-                Baby.gong = this.getAudioClip(aud.toURI().toURL()); 
+                //Baby.gong = this.getAudioClip(aud.toURI().toURL()); 
                 
                
             }
+            /*
             catch (java.net.MalformedURLException e)
             {
               System.out.println(e.getMessage());
@@ -267,6 +270,7 @@ public class Baby extends JApplet implements ActionListener
             {
               System.out.println(e.getMessage());  
             }
+            */
             catch (NullPointerException e)
             {
               System.out.println(e.getMessage());
@@ -288,6 +292,7 @@ public class Baby extends JApplet implements ActionListener
                 baby.init();
                 
 
+        /*
 		Frame mainFrame = new Frame();
 		mainFrame.setSize(700, 950);
 		mainFrame.setTitle("Baby");
@@ -296,7 +301,15 @@ public class Baby extends JApplet implements ActionListener
 		
 		mainFrame.setVisible(true);
 		mainFrame.setResizable(false);
+		*/
+
+		baby.setSize(700, 950);
+		baby.setTitle("Baby");
+		baby.addWindowListener(new WindowAdapter(){public void windowClosing(WindowEvent e){System.exit(0);}});
 		
+		baby.setVisible(true);
+		baby.setResizable(false);
+
 
 	}
 	
@@ -661,9 +674,9 @@ public class Baby extends JApplet implements ActionListener
                         
                         try
                         {
-                            Baby.gong = getAudioClip(getCodeBase(), "TestSnd.wav"); 
+                            //Baby.gong = getAudioClip(getCodeBase(), "TestSnd.wav"); 
 
-                            Baby.gong.play();
+                            //Baby.gong.play();
                         }
                         catch (Exception e)
                         {
