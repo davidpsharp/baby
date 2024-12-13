@@ -78,14 +78,12 @@ public class Baby extends JFrame implements ActionListener
 	{
 		
 		// quit program when close icon clicked
-		/*
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e)
 			{
 				System.exit(0);
 			}
 		});
-		*/
 		
 		try {
 		  currentDir = System.getProperty("user.home");
