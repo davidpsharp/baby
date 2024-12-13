@@ -25,7 +25,7 @@ class Disassembler extends JFrame
 		
 		// create frame
 		setTitle("Disassembler");
-		setSize(300, 500);
+		setSize(300, 630);
 		
 		Container contentPane = getContentPane();
 		
