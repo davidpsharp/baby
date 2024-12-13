@@ -25,7 +25,7 @@ class Disassembler extends JFrame
 		
 		// create frame
 		setTitle("Disassembler");
-		setSize(300, 630);
+		setSize(400, 630);
 		
 		Container contentPane = getContentPane();
 		
@@ -33,6 +33,7 @@ class Disassembler extends JFrame
 		
 		JButton loadFromStore = new JButton("Load from store");
 		JButton saveToStore = new JButton("Save to store");
+		JCheckBox updateOnStep = new JCheckBox("Update");
 		
 		textArea = new JTextArea();
 		textArea.setEditable(true);
@@ -40,6 +41,7 @@ class Disassembler extends JFrame
 		
 		loadFromStore.addActionListener( new UpdateTextArea() );
 		saveToStore.addActionListener( new UpdateStore() );
+		updateOnStep.addActionListener( new ChangeUpdateOnStep() );
 		
 		// Add scroll pane to the text area
 		JScrollPane scrollPane = new JScrollPane(textArea);
@@ -48,13 +50,14 @@ class Disassembler extends JFrame
 		JPanel controlsPanel = new JPanel();
 		controlsPanel.add(loadFromStore);
 		controlsPanel.add(saveToStore);
+		controlsPanel.add(updateOnStep);
 		
 		backPanel.add(controlsPanel, BorderLayout.NORTH);
 		backPanel.add(scrollPane, BorderLayout.CENTER);
 	
 		contentPane.add(backPanel);	
 	}
-	
+
 	// disassemble every line of the store and add to the displayed text area
 	public void updateTextArea()
 	{
@@ -77,7 +80,8 @@ class Disassembler extends JFrame
 		
 		textArea.setText(output);
 	}
-		
+	
+
 	class UpdateTextArea implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -113,9 +117,15 @@ class Disassembler extends JFrame
 			
 			crtPanel.render();
 			crtPanel.repaint();
-		
 		}
-		
+	}
+
+	class ChangeUpdateOnStep implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+
+		}
 	}
 	
 }
