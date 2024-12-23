@@ -1,3 +1,5 @@
+import com.ccs.baby.components.InterlockingPushButton;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
