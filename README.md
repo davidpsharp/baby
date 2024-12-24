@@ -2,6 +2,8 @@
 
 A Java-based simulator for the Manchester Baby computer.
 
+See https://davidsharp.com/baby for more details, user documentation etc.
+
 ## Quick Start
 
 ### Prerequisites
