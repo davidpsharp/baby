@@ -5,18 +5,15 @@ package com.ccs.baby.ui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
-import java.io.*;
-import java.util.*;
 
 import com.ccs.baby.core.Store;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Baby;
-import com.ccs.baby.ui.CrtPanel;
 
 import com.ccs.baby.components.InterlockingPushButton;
 import com.ccs.baby.components.PushButton;
 import com.ccs.baby.components.KeySwitch;
+import com.ccs.baby.components.ToggleSwitch;
 
 public class SwitchPanel extends JPanel implements ActionListener
 {
