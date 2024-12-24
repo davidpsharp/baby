@@ -52,13 +52,19 @@ public class ImageUtils {
             }
 
             Image image = Toolkit.getDefaultToolkit().createImage(buf);
-            ensureImageIsLoaded(image); // Ensure image is fully loaded
-            return image;
+            try {
+                ensureImageIsLoaded(image);
+                return image;
+            } catch (IllegalArgumentException e) {
+                System.err.println("Failed to fully load image: " + e.getMessage());
+                return null;
+            }
         } catch (IOException e) {
             System.err.println("Error loading image: " + imagePath + " - " + e.getMessage());
             return null;
         }
     }
+
 
     /**
      * Ensures that the provided image is fully loaded.
@@ -66,7 +72,12 @@ public class ImageUtils {
      * @param image The Image to check.
      * @throws IllegalArgumentException if the image cannot be fully loaded.
      */
-    private static void ensureImageIsLoaded(Image image) {
+    static void ensureImageIsLoaded(Image image) {
+
+        if (image == null) {
+            throw new IllegalArgumentException("Image cannot be null.");
+        }
+
         MediaTracker tracker = new MediaTracker(new Component() {
         });
         tracker.addImage(image, 0);
@@ -79,6 +90,8 @@ public class ImageUtils {
         if (tracker.isErrorAny()) {
             throw new IllegalArgumentException("Failed to fully load image.");
         }
+
+
     }
 
     /**
