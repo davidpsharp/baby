@@ -145,7 +145,7 @@ public class Baby extends JFrame implements ActionListener
 		modernControls.add(infoPanel);
 		modernControls.add(toolPanel);
 		
-		mainPanel = new TexturedJPanel("/images/main.png");
+		mainPanel = new TexturedJPanel();
 		//mainPanel.setBackground(backgroundColor);
 		mainPanel.setLayout( new BorderLayout() );
                 globalPanel = new JPanel();
@@ -674,8 +674,8 @@ public class Baby extends JFrame implements ActionListener
 	{
 		if(control.getStopFlag() )
 		{
-			Baby.mainPanel.changeTexture("/images/mainon.png");
-                        Baby.mainPanel.repaint();
+			Baby.mainPanel.setTexture(true);
+
                         
                         try
                         {
@@ -692,8 +692,7 @@ public class Baby extends JFrame implements ActionListener
 		}
 		else
 		{
-			Baby.mainPanel.changeTexture("/images/main.png");
-		    Baby.mainPanel.repaint();
+			Baby.mainPanel.setTexture(false);
 		}
 	}
 	
@@ -934,8 +933,7 @@ public class Baby extends JFrame implements ActionListener
 		  	   store.loadLocalSnapshot(fileName);
 		  	else 
 		           store.loadLocalModernAssembly(fileName);	
-		    Baby.mainPanel.changeTexture("/images/main.png");
-		    Baby.mainPanel.repaint();
+		    Baby.mainPanel.setTexture(false);
 		    crtPanel.render();
 		    crtPanel.repaint();
 		  }

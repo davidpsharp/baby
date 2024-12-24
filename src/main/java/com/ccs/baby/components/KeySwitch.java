@@ -20,8 +20,8 @@ public class KeySwitch extends JButton {
      * @param upIconFilePath   the file path of the icon to be displayed when the button is not pressed
      */
     public KeySwitch(String buttonText, String downIconFilePath, String upIconFilePath) {
-        ImageIcon upIcon = ImageUtils.loadImage(upIconFilePath, DEFAULT_SCALE);
-        ImageIcon downIcon = ImageUtils.loadImage(downIconFilePath, DEFAULT_SCALE);
+        ImageIcon upIcon = ImageUtils.loadImageIcon(upIconFilePath, DEFAULT_SCALE);
+        ImageIcon downIcon = ImageUtils.loadImageIcon(downIconFilePath, DEFAULT_SCALE);
 
         setIcon(upIcon);
         setPressedIcon(downIcon);

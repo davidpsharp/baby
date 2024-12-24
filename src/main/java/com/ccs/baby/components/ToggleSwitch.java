@@ -13,9 +13,9 @@ public class ToggleSwitch extends JCheckBox {
     private static final int DEFAULT_SCALE = 12400;
 
     // Cached default icons
-    private static final ImageIcon DEFAULT_UP_ICON = ImageUtils.loadImage("/images/toggle_switch_up.png", DEFAULT_SCALE);
-    private static final ImageIcon DEFAULT_DOWN_ICON = ImageUtils.loadImage("/images/toggle_switch_down.png", DEFAULT_SCALE);
-    private static final ImageIcon DEFAULT_HOLE_ICON = ImageUtils.loadImage("/images/hole.gif", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_UP_ICON = ImageUtils.loadImageIcon("/images/toggle_switch_up.png", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_DOWN_ICON = ImageUtils.loadImageIcon("/images/toggle_switch_down.png", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_HOLE_ICON = ImageUtils.loadImageIcon("/images/hole.gif", DEFAULT_SCALE);
 
     /**
      * Constructs an ToggleSwitch with the specified button text with vertical and horizontal position for the text.

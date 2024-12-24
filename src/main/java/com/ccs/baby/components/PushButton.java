@@ -14,8 +14,8 @@ public class PushButton extends JButton {
     private static final int DEFAULT_SCALE = 2400;
 
     // Cached default icons
-    private static final ImageIcon DEFAULT_IN_ICON = ImageUtils.loadImage("/images/pushin.gif", DEFAULT_SCALE);
-    private static final ImageIcon DEFAULT_OUT_ICON = ImageUtils.loadImage("/images/pushout.gif", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_IN_ICON = ImageUtils.loadImageIcon("/images/pushin.gif", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_OUT_ICON = ImageUtils.loadImageIcon("/images/pushout.gif", DEFAULT_SCALE);
 
     /**
      * Constructs an PushButton with the specified button text and vertical position for the text.

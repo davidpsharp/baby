@@ -1,75 +1,78 @@
 package com.ccs.baby.ui;
 
-import java.awt.*;
-import javax.swing.*;
-import java.awt.image.*;
-import javax.imageio.*; 
-import java.io.*; 
+import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.TexturePaint;
+import java.awt.image.BufferedImage;
+import java.awt.Image;
 
-public class TexturedJPanel extends JPanel 
-{
-  java.io.File filetexture;
-  BufferedImage  mImage;
-  
-  public TexturedJPanel(String fileName) {
-      mImage = convert(loadImage(fileName).getImage()); //convert to BI
-  }
-  
+import com.ccs.baby.utils.ImageUtils;
 
+/**
+ * A custom JPanel that displays the Main Panel texture.
+ */
+public class TexturedJPanel extends JPanel {
 
-  public void paintComponent(Graphics g) {
-	super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        if (g2==null) {
-            System.out.println("error");
-            return; 
+    BufferedImage currentImage;
+
+    // Cached images
+    private static final Image DEFAULT_PANEL = ImageUtils.loadImage("/images/main.png", 800000);
+    private static final Image PANEL_LAMP_ON = ImageUtils.loadImage("/images/mainon.png", 800000);
+
+    /**
+     * Constructs a new TexturedJPanel with the default panel texture.
+     */
+    public TexturedJPanel() {
+        if (DEFAULT_PANEL == null) {
+            throw new IllegalArgumentException("Default panel image could not be loaded");
         }
-	  	java.awt.geom.Rectangle2D tr = new   java.awt.geom.Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight());
-	  	TexturePaint tp = new TexturePaint(mImage, tr);
-    	        g2.setPaint(tp);
-                java.awt.geom.Rectangle2D  r =  (java.awt.geom.Rectangle2D)this.getBounds();  
-    	        g2.fill(r);
-
- 
-  }
-  
-  public void changeTexture(String fileName) {
-    mImage = convert(loadImage(fileName).getImage()); //convert to BI
-  }
-  
-  private ImageIcon loadImage(String image) {
-      int MAX_IMAGE_SIZE = 800000;  //Change this to the size of
-                                 //your biggest image, in bytes.
-      int count = 0;
-      BufferedInputStream imgStream = new BufferedInputStream(
-                                    this.getClass().getResourceAsStream(image));
-      if (imgStream != null) {
-        byte buf[] = new byte[MAX_IMAGE_SIZE];
-        try {
-            count = imgStream.read(buf);
-            imgStream.close();
-        } catch (java.io.IOException ioe) {
-            System.err.println("Couldn't read stream from file: " + image);
-            return null;
-        }
-        if (count <= 0) {
-            System.err.println("Empty file: " + image);
-            return null;
-        }
-        return new ImageIcon(Toolkit.getDefaultToolkit().createImage(buf));
-      } 
-      else {
-        System.err.println("Couldn't find file: " + image);
-        return null;
-      }
+        currentImage = ImageUtils.toBufferedImage(DEFAULT_PANEL);
     }
-    
-  public BufferedImage convert(Image im) {
-    BufferedImage bi = new BufferedImage(im.getWidth(null),im.getHeight(null),BufferedImage.TYPE_INT_ARGB);
-    Graphics bg = bi.getGraphics();
-    bg.drawImage(im, 0, 0, null);
-    bg.dispose();
-    return bi;
-  }
- 
+
+    /**
+     * Sets the texture based on the given state.
+     *
+     * @param isLampOn If true, sets the texture to the "lamp on" panel.
+     *                 If false, sets the texture to the default panel.
+     */
+    public void setTexture(boolean isLampOn) {
+        Image targetImage = isLampOn ? PANEL_LAMP_ON : DEFAULT_PANEL;
+
+        if (targetImage == null) {
+            System.err.println("Target image could not be loaded");
+            return;
+        }
+
+        currentImage = ImageUtils.toBufferedImage(targetImage);
+
+        repaint(); // Repaint to reflect the change immediately
+    }
+
+
+    /**
+     * Paints the component with the current texture.
+     *
+     * @param graphics The Graphics object to paint with.
+     */
+    @Override
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
+        // Ensure we have a valid Graphics2D object
+        if (!(graphics instanceof Graphics2D)) {
+            System.err.println("Graphics object is not an instance of Graphics2D.");
+            return;
+        }
+
+        Graphics2D graphics2D = (Graphics2D) graphics;
+
+        // Define the area for the texture paint
+        java.awt.geom.Rectangle2D textureArea = new java.awt.geom.Rectangle2D.Double(0, 0, getWidth(), getHeight());
+        TexturePaint texturePaint = new TexturePaint(currentImage, textureArea);
+
+        // Set the texture paint and fill the component's bounds
+        graphics2D.setPaint(texturePaint);
+        graphics2D.fill(new java.awt.geom.Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+    }
 }
