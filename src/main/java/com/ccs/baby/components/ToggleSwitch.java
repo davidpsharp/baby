@@ -1,23 +1,34 @@
 package com.ccs.baby.components;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
+import javax.swing.JCheckBox;
+import javax.swing.ImageIcon;
+
+import com.ccs.baby.utils.ImageUtils;
 
 /**
  * A custom JCheckBox that simulates a toggle switch with custom icons.
  */
 public class ToggleSwitch extends JCheckBox {
 
-    public ToggleSwitch(String textValue, int horizontalPos, int verticalPos) {
+    private static final int DEFAULT_SCALE = 12400;
 
-        ImageIcon downIcon = loadImage("/images/toggle_switch_down.png");
-        ImageIcon upIcon = loadImage("/images/toggle_switch_up.png");
-        ImageIcon holeIcon = loadImage("/images/hole.gif");
+    // Cached default icons
+    private static final ImageIcon DEFAULT_UP_ICON = ImageUtils.loadImage("/images/toggle_switch_up.png", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_DOWN_ICON = ImageUtils.loadImage("/images/toggle_switch_down.png", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_HOLE_ICON = ImageUtils.loadImage("/images/hole.gif", DEFAULT_SCALE);
 
-        setIcon(upIcon);
-        setSelectedIcon(downIcon);
-        setDisabledIcon(holeIcon);
+    /**
+     * Constructs an ToggleSwitch with the specified button text with vertical and horizontal position for the text.
+     *
+     * @param buttonText             the text to be displayed on the button
+     * @param verticalTextPosition   the vertical position of the text relative to the button icon
+     * @param horizontalTextPosition the horizontal position of the text relative to the button icon
+     */
+    public ToggleSwitch(String buttonText, int horizontalTextPosition, int verticalTextPosition) {
+
+        setIcon(DEFAULT_UP_ICON);
+        setSelectedIcon(DEFAULT_DOWN_ICON);
+        setDisabledIcon(DEFAULT_HOLE_ICON);
 
         setFocusPainted(false);
         setBorderPainted(false);
@@ -25,38 +36,11 @@ public class ToggleSwitch extends JCheckBox {
 
         setSelected(false);
 
-        setHorizontalTextPosition(horizontalPos);
-        setVerticalTextPosition(verticalPos);
+        setHorizontalTextPosition(horizontalTextPosition);
+        setVerticalTextPosition(verticalTextPosition);
 
-        setText(textValue);
+        setText(buttonText);
     }
-
-    protected ImageIcon loadImage(String image) {
-        int MAX_IMAGE_SIZE = 12400;  //Change this to the size of
-        //your biggest image, in bytes.
-        int count = 0;
-        BufferedInputStream imgStream = new BufferedInputStream(
-                this.getClass().getResourceAsStream(image));
-        if (imgStream != null) {
-            byte buf[] = new byte[MAX_IMAGE_SIZE];
-            try {
-                count = imgStream.read(buf);
-                imgStream.close();
-            } catch (java.io.IOException ioe) {
-                System.err.println("Couldn't read stream from file: " + image);
-                return null;
-            }
-            if (count <= 0) {
-                System.err.println("Empty file: " + image);
-                return null;
-            }
-            return new ImageIcon(Toolkit.getDefaultToolkit().createImage(buf));
-        } else {
-            System.err.println("Couldn't find file: " + image);
-            return null;
-        }
-    }
-
 }
 
 
