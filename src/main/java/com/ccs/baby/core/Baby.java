@@ -490,7 +490,7 @@ public class Baby extends JFrame implements ActionListener
 			{			
 				// create new thread for animation
 				animator = new Animator(crtPanel, control, switchPanel);
-				animator.start();
+				animator.startAnimating();
 			}
 		}
 		else
@@ -515,7 +515,7 @@ public class Baby extends JFrame implements ActionListener
 		{	
 			if(running)
 			{
-				animator.setKeepAnimating(false);
+				animator.stopAnimating();
 				running = false;
 			}
 		}

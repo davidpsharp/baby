@@ -1,121 +1,108 @@
 package com.ccs.baby.core;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.JFrame;
-import java.awt.Frame;
-import java.awt.event.*;
-
-import java.text.DecimalFormat;
-
-import com.vladium.utils.timing.ITimer;
-import com.vladium.utils.timing.TimerFactory;
+import java.util.concurrent.TimeUnit;
 
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
-import com.ccs.baby.core.Control;
 
-class Animator extends Thread
-{
+/**
+ * The Animator class is responsible for managing and executing an animation loop
+ * for a simulation of the Baby computer. It is designed to run as a daemon thread,
+ * meaning it will terminate automatically when the main application exits. It also
+ * adjusts its thread priority for smoother execution.
+ */
+class Animator extends Thread {
 
-	private CrtPanel crtPanel;
-	private Control control;
-	private SwitchPanel switchPanel;
-	private final double speed = 1.44;
-	
-	// shows whether we should keep animating and indeed whether we currently are or not
-	private boolean keepAnimating = false;
-	
-	public Animator(CrtPanel aCrtPanel, Control aControl, SwitchPanel aSwitchPanel)
-	{
-		crtPanel = aCrtPanel;
-		control = aControl;
-		switchPanel = aSwitchPanel;
-		setDaemon(true); // if the main thread quits, so will this one
-	}
-	
+    private volatile boolean keepAnimating = false; // Flag to indicate whether we currently are animating or not.
 
-	public synchronized void setKeepAnimating(boolean value)
-	{
-		keepAnimating = value;
-	}
-	
-	public synchronized boolean getKeepAnimating()
-	{
-		return keepAnimating;
-	}
-	
-	
-	public void run() 
-	{		
-		// increment thread priority
-		setPriority(getPriority() + 1);
-		
-		setKeepAnimating(true);
-			
-        //time = System.currentTimeMillis();
-		final ITimer timer = TimerFactory.newTimer ();
-		// Timer warmup
-		for (int i = 0; i < 1000; ++ i)
-        {
-            timer.start ();
-            timer.stop ();
-            timer.getDuration ();
-            timer.reset ();
-        }
-        
+    private final CrtPanel crtPanel;
+    private final Control control;
+    private final SwitchPanel switchPanel;
 
-        double elapse = 0;
-		// while allowed to keep animating
-		while(getKeepAnimating())
-		{
-		 
-		  timer.reset();
-  	   	  timer.start();
-			// if STP lamp lit then stop animating
-			if(control.getStopFlag() )
-			{
-				setKeepAnimating(false);
-			}
-			// if STP lamp is not lit
-			else
-			{
-				// execute X instructions before updating the display (while stop flag is unset)
-				for(int x = 0; x<control.getInstructionsPerRefresh() && !control.getStopFlag(); x++)
-				{	
-					// if auto on switchpanel then use store for instructions
-					if(switchPanel.getManAuto() )
-					{
-						control.executeAutomatic();
-					}
-					// else if man then use the line and functions switches from the switch panel
-					else
-					{
-						control.executeManual();
-					}
-				}
-				
-				crtPanel.render();
-				crtPanel.efficientRepaint();
-				
-				control.incCycleCount();
-			}				
-		  timer.stop();
-		  elapse = timer.getDuration();
-		  timer.reset();
-		  while (elapse < 10) {
-		  	timer.start();
-		  	for(int n = 0; n < 1000; n++); // delay introduced here
-		  	timer.stop();
-		  	elapse += timer.getDuration();
-		  	timer.reset();
-		  }
-		  //System.out.println(elapse);
-		// end loop	
-		 // set variable to show that animation has stopped
-	   }
-	   Baby.running = false;
+    /**
+     * Constructs an Animator with the specified CrtPanel, Control, and SwitchPanel.
+     *
+     * @param crtPanel    the CrtPanel instance used for rendering the display
+     * @param control     the Control instance used for executing instructions
+     * @param switchPanel the SwitchPanel instance used for manual and automatic control
+     */
+    public Animator(CrtPanel crtPanel, Control control, SwitchPanel switchPanel) {
+        this.crtPanel = crtPanel;
+        this.control = control;
+        this.switchPanel = switchPanel;
+
+        setDaemon(true); // If the main thread quits, so will this one
     }
-		
-}
 
+    /**
+     * Starts the animation.
+     */
+    public void startAnimating() {
+        keepAnimating = true;
+        if (!isAlive()) {
+            start();
+        }
+    }
+
+    /**
+     * Stops the animation.
+     */
+    public void stopAnimating() {
+        keepAnimating = false;
+        interrupt(); // Ensure the thread wakes up if sleeping
+    }
+
+    @Override
+    public void run() {
+
+        final long DEFAULT_FRAME_TIME = 10_000_000L; // 10 ms in nanoseconds
+        setPriority(Thread.NORM_PRIORITY + 1); // Increment thread priority if needed
+
+        // Animation loop, while allowed to keep animating
+        while (keepAnimating) {
+            long startTime = System.nanoTime();
+
+            // Stop animation if STP lamp lit
+            if (control.getStopFlag()) {
+                stopAnimating();
+                break;
+            }
+
+            executeInstructions();
+
+            // Render and repaint
+            crtPanel.render();
+            crtPanel.efficientRepaint();
+            control.incCycleCount();
+
+            // Calculate elapsed time
+            long elapsedTime = System.nanoTime() - startTime;
+
+            // Maintain consistent frame rate
+            if (elapsedTime < DEFAULT_FRAME_TIME) {
+                try {
+                    TimeUnit.NANOSECONDS.sleep(DEFAULT_FRAME_TIME - elapsedTime);
+                } catch (InterruptedException e) {
+                    // Log or handle interruption appropriately
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+
+        Baby.running = false; // Indicate that the animation has stopped
+    }
+
+    /**
+     * Executes instructions before updating the display.
+     */
+    private void executeInstructions() {
+        for (int x = 0; x < control.getInstructionsPerRefresh() && !control.getStopFlag(); x++) {
+            if (switchPanel.getManAuto()) {
+                control.executeAutomatic(); // Use store for instructions
+            } else {
+                control.executeManual(); // Use line and functions switches from the SwitchPanel
+            }
+        }
+    }
+}

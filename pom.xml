@@ -56,13 +56,4 @@
         </resources>
     </build>
 
-
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.vladium.utils.timing/hrtlib -->
-        <dependency>
-            <groupId>com.vladium.utils.timing</groupId>
-            <artifactId>hrtlib</artifactId>
-            <version>1.0</version>
-        </dependency>
-    </dependencies>
 </project>
