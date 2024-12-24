@@ -4,31 +4,40 @@ import javax.swing.JRadioButton;
 import javax.swing.ImageIcon;
 import javax.swing.AbstractButton;
 import java.awt.Insets;
+
 import com.ccs.baby.utils.ImageUtils;
 
+/**
+ * A custom JRadioButton that simulates an interlocking push button with custom icons.
+ */
 public class InterlockingPushButton extends JRadioButton {
 
-    public InterlockingPushButton(String textValue, int verticalPosition) {
+    private static final Insets DEFAULT_MARGIN = new Insets(3, 3, 3, 3);
+    private static final int DEFAULT_SCALE = 2400;
 
-        ImageIcon inIcon = ImageUtils.loadImage("/images/ibuttonin.gif", 2400);
-        ImageIcon outIcon = ImageUtils.loadImage("/images/ibuttonout.gif", 2400);
+    // Cached default icons
+    private static final ImageIcon DEFAULT_IN_ICON = ImageUtils.loadImage("/images/ibuttonin.gif", DEFAULT_SCALE);
+    private static final ImageIcon DEFAULT_OUT_ICON = ImageUtils.loadImage("/images/ibuttonout.gif", DEFAULT_SCALE);
 
-        setIcon(outIcon);
-        setSelectedIcon(inIcon);
+    /**
+     * Constructs an InterlockingPushButton with the specified button text and vertical position for the text.
+     *
+     * @param buttonText           the text to be displayed on the button
+     * @param verticalTextPosition the vertical position of the text relative to the button icon
+     */
+    public InterlockingPushButton(String buttonText, int verticalTextPosition) {
+        setIcon(DEFAULT_OUT_ICON);
+        setSelectedIcon(DEFAULT_IN_ICON);
 
         setFocusPainted(false);
         setBorderPainted(false);
         setContentAreaFilled(false);
 
-        Insets marginSpace = new Insets(3, 3, 3, 3);
-        setMargin(marginSpace);
+        setMargin(DEFAULT_MARGIN);
 
         setHorizontalTextPosition(AbstractButton.CENTER);
-        setVerticalTextPosition(verticalPosition);
+        setVerticalTextPosition(verticalTextPosition);
 
-        setText(textValue);
+        setText(buttonText);
     }
-
-
-
 }
