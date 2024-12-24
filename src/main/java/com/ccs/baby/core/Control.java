@@ -1,6 +1,10 @@
+package com.ccs.baby.core;
+
 import javax.swing.*;
 
-class Control
+import com.ccs.baby.ui.SwitchPanel;
+
+public class Control
 {
 
 	// store

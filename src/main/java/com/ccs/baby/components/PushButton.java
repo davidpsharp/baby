@@ -5,7 +5,7 @@ import java.awt.*;
 
 import com.ccs.baby.utils.ImageUtils;
 
-class PushButton extends JButton {
+public class PushButton extends JButton {
 
     private ImageIcon inIcon;
     private ImageIcon outIcon;

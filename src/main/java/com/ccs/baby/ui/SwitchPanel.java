@@ -1,4 +1,6 @@
-import com.ccs.baby.components.InterlockingPushButton;
+package com.ccs.baby.ui;
+
+
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,8 +9,16 @@ import javax.swing.event.*;
 import java.io.*;
 import java.util.*;
 
+import com.ccs.baby.core.Store;
+import com.ccs.baby.core.Control;
+import com.ccs.baby.core.Baby;
+import com.ccs.baby.ui.CrtPanel;
 
-class SwitchPanel extends JPanel implements ActionListener
+import com.ccs.baby.components.InterlockingPushButton;
+import com.ccs.baby.components.PushButton;
+import com.ccs.baby.components.KeySwitch;
+
+public class SwitchPanel extends JPanel implements ActionListener
 {
 	
 	// background hardware
@@ -22,11 +32,11 @@ class SwitchPanel extends JPanel implements ActionListener
 	public ToggleSwitch[] lineSwitch;
 	public ToggleSwitch[] functionSwitch;
 	ToggleSwitch manAuto;
-	ToggleSwitch prePulse;
-	
-	InterlockingPushButton crSelect;
-	InterlockingPushButton accSelect;
-	InterlockingPushButton storeSelect;
+	public ToggleSwitch prePulse;
+
+	public InterlockingPushButton crSelect;
+	public InterlockingPushButton accSelect;
+	public InterlockingPushButton storeSelect;
 	ButtonGroup monitorSelectGroup;
 	
 	KeySwitch klcSwitch;
@@ -34,7 +44,7 @@ class SwitchPanel extends JPanel implements ActionListener
 	KeySwitch kacSwitch;
 	KeySwitch kccSwitch;
 	
-	KeySwitch kspSwitch;
+	public KeySwitch kspSwitch;
 	ToggleSwitch eraseWrite;
 	
 	public static Color backgroundColor = new Color(206, 205, 201);
@@ -257,21 +267,21 @@ class SwitchPanel extends JPanel implements ActionListener
 		storageClearingKeys.setLayout( new GridBagLayout());
 		
 		
-		kspSwitch = new KeySwitch("", "greydown.png", "greyup.png");		// KC == KSP
+		kspSwitch = new KeySwitch("", "/images/greydown.png", "/images/greyup.png");		// KC == KSP
 		kspSwitch.addActionListener(new KspPushed() );
-		klcSwitch = new KeySwitch("", "whitedown.png", "whiteup.png");
+		klcSwitch = new KeySwitch("", "/images/whitedown.png", "/images/whiteup.png");
 		klcSwitch.addMouseListener(new KlcPressed() );
-		kscSwitch = new KeySwitch("", "whitedown.png", "whiteup.png");
+		kscSwitch = new KeySwitch("", "/images/whitedown.png", "/images/whiteup.png");
 		kscSwitch.addMouseListener(new KscPushed() );
-		kacSwitch = new KeySwitch("", "whitedown.png", "whiteup.png");
+		kacSwitch = new KeySwitch("", "/images/whitedown.png", "/images/whiteup.png");
 		kacSwitch.addMouseListener(new KacPushed() );
-		kccSwitch = new KeySwitch("", "greydown.png", "greyup.png");
+		kccSwitch = new KeySwitch("", "/images/greydown.png", "/images/greyup.png");
 		kccSwitch.addMouseListener(new KccPushed() );
 		
 		
-		KeySwitch kbcSwitch = new KeySwitch("", "greydown.png", "greyup.png");		// unconnected buttons
-		KeySwitch kecSwitch = new KeySwitch("", "greydown.png", "greyup.png");
-		KeySwitch kmcSwitch = new KeySwitch("", "greydown.png", "greyup.png");
+		KeySwitch kbcSwitch = new KeySwitch("", "/images/greydown.png", "/images/greyup.png");		// unconnected buttons
+		KeySwitch kecSwitch = new KeySwitch("", "/images/greydown.png", "/images/greyup.png");
+		KeySwitch kmcSwitch = new KeySwitch("", "/images/greydown.png", "/images/greyup.png");
 		
 		GridBagConstraints sc = new GridBagConstraints();
 		sc.anchor = sc.WEST;

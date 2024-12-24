@@ -1,3 +1,5 @@
+package com.ccs.baby.core;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.JFrame;
@@ -8,6 +10,10 @@ import java.text.DecimalFormat;
 
 import com.vladium.utils.timing.ITimer;
 import com.vladium.utils.timing.TimerFactory;
+
+import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.core.Control;
 
 class Animator extends Thread
 {

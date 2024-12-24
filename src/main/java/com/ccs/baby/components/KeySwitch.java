@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import com.ccs.baby.utils.ImageUtils;
 
-class KeySwitch extends JButton
+public class KeySwitch extends JButton
 {
 
 	public KeySwitch(String textValue, String downIconFileName, String upIconFileName)

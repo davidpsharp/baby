@@ -1,4 +1,4 @@
-
+package com.ccs.baby.disassembler;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,8 +7,11 @@ import javax.swing.event.*;
 import java.io.*;
 import java.util.*;
 
+import com.ccs.baby.core.Store;
+import com.ccs.baby.core.Control;
+import com.ccs.baby.ui.CrtPanel;
 
-class Disassembler extends JFrame
+public class Disassembler extends JFrame
 {
 	
 	Store store;

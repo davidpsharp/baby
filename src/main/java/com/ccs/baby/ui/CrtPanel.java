@@ -1,3 +1,5 @@
+package com.ccs.baby.ui;
+
 import javax.swing.*;
 import java.awt.image.*;
 import java.awt.*;
@@ -7,10 +9,11 @@ import javax.swing.event.*;
 import javax.imageio.*;  
 import javax.swing.JFrame;
 
+import com.ccs.baby.core.Store;
+import com.ccs.baby.core.Baby;
+import com.ccs.baby.core.Control;
 
-
-
-class CrtPanel extends JPanel
+public class CrtPanel extends JPanel
 {
 
 	// values for different tubes to be displayed on monitor
@@ -41,10 +44,10 @@ class CrtPanel extends JPanel
 	private boolean renderAccurately = true;
 	
 	// icon file names
-	static String bitOneFileName = "bit1.gif";
-	static String bitZeroFileName = "bit0.gif";
-	static String bitOneBrightFileName = "bit1bright.gif";
-	static String bitZeroBrightFileName = "bit0bright.gif";
+	static String bitOneFileName = "/images/bit1.gif";
+	static String bitZeroFileName = "/images/bit0.gif";
+	static String bitOneBrightFileName = "/images/bit1bright.gif";
+	static String bitZeroBrightFileName = "/images/bit0bright.gif";
 	
 	private Store store;
 	private Control control;

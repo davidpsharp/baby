@@ -1,8 +1,10 @@
+package com.ccs.baby.core;
+
 import java.io.*;
 import java.util.*;
 
 
-class Store
+public class Store
 {
 	
 	// actual data in the store

@@ -1,3 +1,5 @@
+package com.ccs.baby.core;
+
 // Manchester Baby Simulator
 // by David Sharp
 // January 2001
@@ -16,14 +18,19 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.JFrame;
 import java.applet.*;
 
-// main class to initialise program and owns display frame
+import com.ccs.baby.core.Animator;
+
+import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.TexturedJPanel;
+import com.ccs.baby.disassembler.Disassembler;
 
 public class Baby extends JFrame implements ActionListener
 {
 	
 	// get current dir
-	File fileChooserDirectory;
-	static String currentDir;
+	private File fileChooserDirectory;
+	private static String currentDir;
 	
 	// there are two implementations of the animation, one using the Timer class and one
 	// using threads, if this is set to true then the threaded version is used which
@@ -138,7 +145,7 @@ public class Baby extends JFrame implements ActionListener
 		modernControls.add(infoPanel);
 		modernControls.add(toolPanel);
 		
-		mainPanel = new TexturedJPanel("main.png");
+		mainPanel = new TexturedJPanel("/images/main.png");
 		//mainPanel.setBackground(backgroundColor);
 		mainPanel.setLayout( new BorderLayout() );
                 globalPanel = new JPanel();
@@ -207,7 +214,7 @@ public class Baby extends JFrame implements ActionListener
 		// load a program by default "hcf.asm"
 		try
 		{
-			store.loadLocalModernAssembly("diffeqt.asm");
+			store.loadLocalModernAssembly("demos/diffeqt.asm");
 		}
 		catch(Exception e)
 		{
@@ -355,11 +362,11 @@ public class Baby extends JFrame implements ActionListener
                 JMenuItem refManual = new JMenuItem("Reference Manual");
 		
 		// examples menu
-		JMenuItem diffeqt = new JMenuItem("diffeqt.asm");
-		JMenuItem baby9 = new JMenuItem("Baby9.snp");
-		JMenuItem primegen = new JMenuItem("primegen.asm");
-		JMenuItem virpet = new JMenuItem("virpet.asm");
-		JMenuItem noodleTimer = new JMenuItem("noodletimer.snp");
+		JMenuItem diffeqt = new JMenuItem("demos/diffeqt.asm");
+		JMenuItem baby9 = new JMenuItem("demos/Baby9.snp");
+		JMenuItem primegen = new JMenuItem("demos/primegen.asm");
+		JMenuItem virpet = new JMenuItem("demos/virpet.asm");
+		JMenuItem noodleTimer = new JMenuItem("demos/noodletimer.snp");
 		
 		// view menu
 		JMenuItem viewStore = new JMenuItem("Store");
@@ -376,11 +383,11 @@ public class Baby extends JFrame implements ActionListener
 		saveSnapshot.addActionListener(new SaveSnapshot());
 		saveAssembly.addActionListener(new SaveAssembly());
 		
-		diffeqt.addActionListener(new LoadExample("diffeqt.asm"));
-		baby9.addActionListener(new LoadExample("Baby9.snp"));
-		primegen.addActionListener(new LoadExample("primegen.asm"));
-		virpet.addActionListener(new LoadExample("virpet.asm"));
-		noodleTimer.addActionListener(new LoadExample("noodletimer.snp"));
+		diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm"));
+		baby9.addActionListener(new LoadExample("demos/Baby9.snp"));
+		primegen.addActionListener(new LoadExample("demos/primegen.asm"));
+		virpet.addActionListener(new LoadExample("demos/virpet.asm"));
+		noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp"));
 		/*
                 refManual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -667,7 +674,7 @@ public class Baby extends JFrame implements ActionListener
 	{
 		if(control.getStopFlag() )
 		{
-			Baby.mainPanel.changeTexture("mainon.png");
+			Baby.mainPanel.changeTexture("/images/mainon.png");
                         Baby.mainPanel.repaint();
                         
                         try
@@ -685,7 +692,7 @@ public class Baby extends JFrame implements ActionListener
 		}
 		else
 		{
-			Baby.mainPanel.changeTexture("main.png");
+			Baby.mainPanel.changeTexture("/images/main.png");
 		    Baby.mainPanel.repaint();
 		}
 	}
@@ -923,11 +930,11 @@ public class Baby extends JFrame implements ActionListener
 		public void actionPerformed(ActionEvent e)
 		{
 		  try {
-		  	if (fileName.equals("noodletimer.snp") || fileName.equals("Baby9.snp")) 
+		  	if (fileName.equals("demos/noodletimer.snp") || fileName.equals("demos/Baby9.snp"))
 		  	   store.loadLocalSnapshot(fileName);
 		  	else 
 		           store.loadLocalModernAssembly(fileName);	
-		    Baby.mainPanel.changeTexture("main.png");
+		    Baby.mainPanel.changeTexture("/images/main.png");
 		    Baby.mainPanel.repaint();
 		    crtPanel.render();
 		    crtPanel.repaint();

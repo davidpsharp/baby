@@ -1,3 +1,4 @@
+package com.ccs.baby.ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,15 +7,15 @@ import java.io.*;
 
 
 
-class ToggleSwitch extends JCheckBox
+public class ToggleSwitch extends JCheckBox
 {
 
 	public ToggleSwitch(String textValue, int horizontalPos, int verticalPos)
 	{
 	
-		ImageIcon downIcon = loadImage("toggle_switch_down.png");
-		ImageIcon upIcon = loadImage("toggle_switch_up.png");
-		ImageIcon holeIcon = loadImage("hole.gif");
+		ImageIcon downIcon = loadImage("/images/toggle_switch_down.png");
+		ImageIcon upIcon = loadImage("/images/toggle_switch_up.png");
+		ImageIcon holeIcon = loadImage("/images/hole.gif");
 		
 		setIcon(upIcon);
 		setSelectedIcon(downIcon);
