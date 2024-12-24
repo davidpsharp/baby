@@ -14,6 +14,7 @@ import com.ccs.baby.components.InterlockingPushButton;
 import com.ccs.baby.components.PushButton;
 import com.ccs.baby.components.KeySwitch;
 import com.ccs.baby.components.ToggleSwitch;
+import com.ccs.baby.ui.CrtPanel.DisplayType;
 
 public class SwitchPanel extends JPanel implements ActionListener
 {
@@ -251,9 +252,9 @@ public class SwitchPanel extends JPanel implements ActionListener
 		monitorSelector.add(crSelect);
 		monitorSelector.add(accSelect);
 		monitorSelector.add(storeSelect);
-		crSelect.addActionListener(new DisplaySelectPressed(CrtPanel.CONTROL));
-		accSelect.addActionListener(new DisplaySelectPressed(CrtPanel.ACCUMULATOR));
-		storeSelect.addActionListener(new DisplaySelectPressed(CrtPanel.STORE));		
+		crSelect.addActionListener(new DisplaySelectPressed(CrtPanel.DisplayType.CONTROL));
+		accSelect.addActionListener(new DisplaySelectPressed(CrtPanel.DisplayType.ACCUMULATOR));
+		storeSelect.addActionListener(new DisplaySelectPressed(CrtPanel.DisplayType.STORE));
 		
 		// storageClearingKeys
 		// to be added to displayControls panel
@@ -523,9 +524,9 @@ public class SwitchPanel extends JPanel implements ActionListener
 	// change selected display
 	class DisplaySelectPressed implements ActionListener
 	{
-		int displayValue;
+		DisplayType displayValue;
 		
-		public DisplaySelectPressed(int value)
+		public DisplaySelectPressed(DisplayType value)
 		{
 			displayValue = value;
 		}

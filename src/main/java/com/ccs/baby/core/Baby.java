@@ -820,7 +820,7 @@ public class Baby extends JFrame implements ActionListener
 		
 		public void actionPerformed(ActionEvent e)
 		{
-			crtPanel.setCrtDisplay(CrtPanel.STORE);
+			crtPanel.setCrtDisplay(CrtPanel.DisplayType.STORE);
 			switchPanel.storeSelect.setSelected(true);
 		}
 	}
@@ -837,7 +837,7 @@ public class Baby extends JFrame implements ActionListener
 		
 		public void actionPerformed(ActionEvent e)
 		{
-			crtPanel.setCrtDisplay(CrtPanel.CONTROL);
+			crtPanel.setCrtDisplay(CrtPanel.DisplayType.CONTROL);
 			switchPanel.crSelect.setSelected(true);
 		}
 	}
@@ -854,7 +854,7 @@ public class Baby extends JFrame implements ActionListener
 		
 		public void actionPerformed(ActionEvent e)
 		{
-			crtPanel.setCrtDisplay(CrtPanel.ACCUMULATOR);
+			crtPanel.setCrtDisplay(CrtPanel.DisplayType.ACCUMULATOR);
 			switchPanel.accSelect.setSelected(true);
 		}
 	}

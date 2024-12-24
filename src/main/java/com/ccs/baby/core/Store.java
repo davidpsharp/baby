@@ -13,7 +13,7 @@ public class Store
 	private Control control;
 	
 	// array showing whether the line has changed since the display was last updated
-	public boolean lineAltered[];
+	public boolean isLineAltered[];
 	
 	// values for the different types of file that might be detected
 	public static final int UNACCEPTABLE = 0;
@@ -24,11 +24,11 @@ public class Store
 	{
 		// set up default data
 		line = new int[32];
-		lineAltered = new boolean[32];
+		isLineAltered = new boolean[32];
 		
 		for(int x = 0; x<32; x++)
 		{
-			lineAltered[x] = true;
+			isLineAltered[x] = true;
 		}
 		
 		
@@ -44,7 +44,7 @@ public class Store
 	public void setLine(int lineNumber, int value)
 	{
 		line[lineNumber] = value;
-		lineAltered[lineNumber] = true;
+		isLineAltered[lineNumber] = true;
 	}
 		
 	public int getLine(int lineNumber)
@@ -64,7 +64,7 @@ public class Store
 		for(int i=0; i<32; i++)
 		{
 			line[i] = 0;
-			lineAltered[i] = true;
+			isLineAltered[i] = true;
 		}
 	}
 	
