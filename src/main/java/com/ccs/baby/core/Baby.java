@@ -18,18 +18,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.JFrame;
 import java.applet.*;
 
-import com.ccs.baby.core.Animator;
-
-import com.ccs.baby.io.LoadSnapshotAssembly;
-import com.ccs.baby.io.SaveSnapshot;
-import com.ccs.baby.io.SaveAssembly;
-import com.ccs.baby.io.LoadExample;
-
-import com.ccs.baby.ui.ViewStore;
-import com.ccs.baby.ui.ViewControl;
-import com.ccs.baby.ui.ViewAccumulator;
-import com.ccs.baby.ui.ViewDisassembler;
-
+import com.ccs.baby.menu.MenuSetup;
 
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
@@ -212,7 +201,7 @@ public class Baby extends JFrame implements ActionListener
 		
 		// Set up and add menu bars to the window
 		JMenuBar menuBar = new JMenuBar();
-		menuSetup(menuBar);
+		new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this);
 		setJMenuBar(menuBar);
 		
 		// set main size of window
@@ -331,140 +320,6 @@ public class Baby extends JFrame implements ActionListener
 	
 
 
-	// set up all the menus
-	public void menuSetup(JMenuBar m){
-
-		// create 3 menus
-		JMenu fileMenu = new JMenu("File");
-		JMenu viewMenu = new JMenu("View");
-		JMenu exampleMenu = new JMenu("Examples");
-		JMenu helpMenu = new JMenu("Help");
-		
-		// file menu
-		JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
-		JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
-		JMenuItem saveAssembly = new JMenuItem("Save assembly");
-		JMenuItem close = new JMenuItem("Close");
-                JMenuItem refManual = new JMenuItem("Reference Manual");
-		
-		// examples menu
-		JMenuItem diffeqt = new JMenuItem("demos/diffeqt.asm");
-		JMenuItem baby9 = new JMenuItem("demos/Baby9.snp");
-		JMenuItem primegen = new JMenuItem("demos/primegen.asm");
-		JMenuItem virpet = new JMenuItem("demos/virpet.asm");
-		JMenuItem noodleTimer = new JMenuItem("demos/noodletimer.snp");
-		
-		// view menu
-		JMenuItem viewStore = new JMenuItem("Store");
-		JMenuItem viewControl = new JMenuItem("Control");
-		JMenuItem viewAccumulator = new JMenuItem("Accumulator");
-		//JMenuItem viewSwitchPanel = new JMenuItem("Switch Panel");
-		JMenuItem viewDisassembler = new JMenuItem("Disassembler");
-		
-		// help menu
-		JMenuItem about = new JMenuItem("About");
-		
-		// add action listeners for each item		
-		loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, this));
-		saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, this));
-		saveAssembly.addActionListener(new SaveAssembly(currentDir, store, this));
-		
-		diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm",store,crtPanel,this));
-		baby9.addActionListener(new LoadExample("demos/Baby9.snp",store,crtPanel,this));
-		primegen.addActionListener(new LoadExample("demos/primegen.asm",store,crtPanel,this));
-		virpet.addActionListener(new LoadExample("demos/virpet.asm",store,crtPanel,this));
-		noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp",store,crtPanel,this));
-		/*
-                refManual.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				ref.setVisible(true);
-                                try
-                                {
-                                    //viewer.setPage(new URL("http://www.cs.man.ac.uk/~toby/ssem/ssemref.html"));
-                                    //javax.swing.text.html.HTMLDocument r = new javax.swing.text.html.HTMLDocument();
-                                    //r.setBase(new URL("progref1.html"));
-                                    //viewer.setDocument(r);
-                                    
-                                    //java.net.URL refurl = Baby.class.getResource("refman.htm");
-                                    /viewer.setPage(new URL("http://www.cs.man.ac.uk/~toby/ssem/ssemref.html"));
-                                    //javax.swing.text.DefaultStyledDocument refmanual = new javax.swing.text.DefaultStyledDocument();
-                                    //refmanual.
-                                    //viewer.setDocument(refmanual);
-                                    //javax.swing.text.SimpleAttributeSet attr = new javax.swing.text.SimpleAttributeSet();
-
-                                   // attr.addAttribute(javax.swing.text.StyleConstants.FontSize, new Integer(12));
-
-                                    //viewer.getgetStyledDocument().setCharacterAttributes(0,viewer.getDocument().getText(0,viewer.getDocument().getLength()),attr,false);
-                                    
-                                    
-                                }
-                                catch (java.io.IOException err)
-                                {
-                                    viewer.setContentType("text/html");
-                                    viewer.setText("<html>Could not load reference manual </html>");
-                                }
-                                catch (NullPointerException err)
-                                {
-                                    viewer.setContentType("text/html");
-                                    viewer.setText("<html>Could not load reference manual </html>");
-                                }
-			}
-		});
-                */
-               
-                
-		close.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				System.exit(0);
-			}
-		});
-		
-		viewStore.addActionListener(new ViewStore(crtPanel, switchPanel));
-		viewControl.addActionListener(new ViewControl(crtPanel, switchPanel));
-		viewAccumulator.addActionListener(new ViewAccumulator(crtPanel, switchPanel));
-		//viewSwitchPanel.addActionListener(new ViewSwitchPanel(switchPanel));
-		viewDisassembler.addActionListener(new ViewDisassembler(disassembler));
-		
-		
-		
-		
-		about.addActionListener(new About());
-	
-		// set the keyboard click equivalent for each menu item
-		loadSnapshotAssembly.setMnemonic(KeyEvent.VK_L);
-
-		// add items to file menu
-		fileMenu.add(loadSnapshotAssembly);
-		fileMenu.add(saveSnapshot);
-		fileMenu.add(saveAssembly);
-		fileMenu.add(close);
-		
-		// add items to view menu
-		viewMenu.add(viewStore);
-		viewMenu.add(viewControl);
-		viewMenu.add(viewAccumulator);
-		//viewMenu.add(viewSwitchPanel);
-		viewMenu.add(viewDisassembler);
-		
-		exampleMenu.add(diffeqt);
-		exampleMenu.add(baby9);
-		exampleMenu.add(primegen);
-		exampleMenu.add(virpet);
-		exampleMenu.add(noodleTimer);
-		
-		// add items to help menu
-		//helpMenu.add(refManual);
-                helpMenu.add(about);
-                
-		
-		// add menus to bar
-		m.add(fileMenu);
-		m.add(viewMenu);	
-		m.add(exampleMenu);
-		m.add(helpMenu);
-	}
 
 	// start running animation either using threads or timer
 	// this is hardcoded and cannot me changed mid-session
@@ -712,19 +567,7 @@ public class Baby extends JFrame implements ActionListener
 		}
 	}
 	
-	// display the about window
-	class About implements ActionListener
-	{
-		public About()
-		{
-		}
-		public void actionPerformed(ActionEvent e)
-		{
-			JOptionPane.showMessageDialog(getContentPane(), "Manchester Baby Simulator\n" +
-			"by David Sharp\nJanuary 2001\nWith thanks to Chris Burton for his consultation\n"+
-			"on historical matters.\nGUI created from pictures of the Baby remake\nby Gulzaman Khan\nAugust 2006 ","Baby", JOptionPane.INFORMATION_MESSAGE);
-		}
-	}        
+
 	
 
 	
