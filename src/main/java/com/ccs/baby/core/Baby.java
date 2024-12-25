@@ -23,11 +23,13 @@ import com.ccs.baby.core.Animator;
 import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.io.SaveAssembly;
+import com.ccs.baby.io.LoadExample;
 
 import com.ccs.baby.ui.ViewStore;
 import com.ccs.baby.ui.ViewControl;
 import com.ccs.baby.ui.ViewAccumulator;
 import com.ccs.baby.ui.ViewDisassembler;
+
 
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
@@ -367,11 +369,11 @@ public class Baby extends JFrame implements ActionListener
 		saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, this));
 		saveAssembly.addActionListener(new SaveAssembly(currentDir, store, this));
 		
-		diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm"));
-		baby9.addActionListener(new LoadExample("demos/Baby9.snp"));
-		primegen.addActionListener(new LoadExample("demos/primegen.asm"));
-		virpet.addActionListener(new LoadExample("demos/virpet.asm"));
-		noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp"));
+		diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm",store,crtPanel,this));
+		baby9.addActionListener(new LoadExample("demos/Baby9.snp",store,crtPanel,this));
+		primegen.addActionListener(new LoadExample("demos/primegen.asm",store,crtPanel,this));
+		virpet.addActionListener(new LoadExample("demos/virpet.asm",store,crtPanel,this));
+		noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp",store,crtPanel,this));
 		/*
                 refManual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -724,30 +726,7 @@ public class Baby extends JFrame implements ActionListener
 		}
 	}        
 	
-	class LoadExample implements ActionListener
-	{
-		String fileName;
-		public LoadExample(String name)
-		{
-	      fileName = name;
-		}
-		public void actionPerformed(ActionEvent e)
-		{
-		  try {
-		  	if (fileName.equals("demos/noodletimer.snp") || fileName.equals("demos/Baby9.snp"))
-		  	   store.loadLocalSnapshot(fileName);
-		  	else 
-		           store.loadLocalModernAssembly(fileName);	
-		    Baby.mainPanel.setTexture(false);
-		    crtPanel.render();
-		    crtPanel.repaint();
-		  }
-		  catch(Exception ex)
-		  {
-		 	JOptionPane.showMessageDialog(getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		  }
-		}
-	}
+
 	
 	
 }
