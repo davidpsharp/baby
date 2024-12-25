@@ -20,6 +20,7 @@ import java.applet.*;
 
 import com.ccs.baby.core.Animator;
 
+import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.TexturedJPanel;
@@ -379,7 +380,7 @@ public class Baby extends JFrame implements ActionListener
 		JMenuItem about = new JMenuItem("About");
 		
 		// add action listeners for each item		
-		loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly());
+		loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, this));
 		saveSnapshot.addActionListener(new SaveSnapshot());
 		saveAssembly.addActionListener(new SaveAssembly());
 		
@@ -695,58 +696,9 @@ public class Baby extends JFrame implements ActionListener
 			Baby.mainPanel.setTexture(false);
 		}
 	}
-	
-	boolean firstLoad = true;
-	// deal with clicks on the "Load snapshot/assembly" menu item
-	class LoadSnapshotAssembly implements ActionListener
-	{
-   
-		public void actionPerformed(ActionEvent e)
-		{
-			JFileChooser fc;
-			// Open up a load box and select the item
-			if (firstLoad)
-			  fc=new JFileChooser(currentDir);
-			else 
-			  fc=new JFileChooser(fileChooserDirectory);
-			firstLoad = false;
-			
-			fc.setDialogTitle("Load snapshot or assembly...");
-			
-			
-			File file;
-			int returnVal = fc.showOpenDialog(getContentPane() );
-			
-			if (returnVal == JFileChooser.APPROVE_OPTION)
-			{
-				file = fc.getSelectedFile();
-				fileChooserDirectory = file.getParentFile();
-				String currentFile = file.toString();
-				try
-				{
-				// detect file type and then load appropriately if possible
-				
-					control.setInstructionsPerRefresh(4);
-					switch(store.getFileType(currentFile) )
-					{
-						case Store.UNACCEPTABLE		: JOptionPane.showMessageDialog(getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE); break;
-						case Store.SNAPSHOT			: store.loadSnapshot(currentFile); break;
-						case Store.ASSEMBLY			: store.loadModernAssembly(currentFile); break;
-						default						: JOptionPane.showMessageDialog(getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE); break;
-					}
-				}
-				catch(Exception ex)
-				{
-					JOptionPane.showMessageDialog(getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-					System.out.println("fnf");
-				}
-				
-			}
-			// update display
-			crtPanel.render();
-			getContentPane().repaint();
-		}
-	}
+
+
+
         
        
 	
