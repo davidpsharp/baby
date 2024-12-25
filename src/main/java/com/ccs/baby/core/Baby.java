@@ -22,6 +22,8 @@ import com.ccs.baby.core.Animator;
 
 import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.io.SaveSnapshot;
+import com.ccs.baby.io.SaveAssembly;
+
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.TexturedJPanel;
@@ -383,7 +385,7 @@ public class Baby extends JFrame implements ActionListener
 		// add action listeners for each item		
 		loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, this));
 		saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, this));
-		saveAssembly.addActionListener(new SaveAssembly());
+		saveAssembly.addActionListener(new SaveAssembly(currentDir, store, this));
 		
 		diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm"));
 		baby9.addActionListener(new LoadExample("demos/Baby9.snp"));
@@ -705,34 +707,7 @@ public class Baby extends JFrame implements ActionListener
 	
 
 	
-	class SaveAssembly implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			
-			// Open up a save box and choose name
-			JFileChooser fc = new JFileChooser(currentDir);
-			fc.setDialogTitle("Save assembly as...");
-			
-			int returnVal = fc.showSaveDialog(getContentPane() );
-			
-			if (returnVal == JFileChooser.APPROVE_OPTION)
-			{
-         		File file = fc.getSelectedFile();
-         		
-         		try
-         		{
-         			store.saveAssembly(file.toString() );
-         			
-         		}
-         		catch(Exception ex)
-         		{
-         			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-         		}
-        	}
-        	getContentPane().repaint();
-		}
-	}
+
 	
 	// change to display store
 	class ViewStore implements ActionListener
