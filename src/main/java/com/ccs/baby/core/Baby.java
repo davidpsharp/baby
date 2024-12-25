@@ -24,6 +24,11 @@ import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.io.SaveAssembly;
 
+import com.ccs.baby.ui.ViewStore;
+import com.ccs.baby.ui.ViewControl;
+import com.ccs.baby.ui.ViewAccumulator;
+import com.ccs.baby.ui.ViewDisassembler;
+
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.TexturedJPanel;
@@ -414,9 +419,9 @@ public class Baby extends JFrame implements ActionListener
 			}
 		});
 		
-		viewStore.addActionListener(new ViewStore(crtPanel));
-		viewControl.addActionListener(new ViewControl(crtPanel));
-		viewAccumulator.addActionListener(new ViewAccumulator(crtPanel));
+		viewStore.addActionListener(new ViewStore(crtPanel, switchPanel));
+		viewControl.addActionListener(new ViewControl(crtPanel, switchPanel));
+		viewAccumulator.addActionListener(new ViewAccumulator(crtPanel, switchPanel));
 		//viewSwitchPanel.addActionListener(new ViewSwitchPanel(switchPanel));
 		viewDisassembler.addActionListener(new ViewDisassembler(disassembler));
 		
@@ -684,91 +689,15 @@ public class Baby extends JFrame implements ActionListener
 	
 
 	
-	// change to display store
-	class ViewStore implements ActionListener
-	{
-		CrtPanel crtPanel;
-		
-		public ViewStore(CrtPanel aCrtPanel)
-		{
-			crtPanel = aCrtPanel;
-		}
-		
-		public void actionPerformed(ActionEvent e)
-		{
-			crtPanel.setCrtDisplay(CrtPanel.DisplayType.STORE);
-			switchPanel.storeSelect.setSelected(true);
-		}
-	}
+
 	
-	// change to display the Control
-	class ViewControl implements ActionListener
-	{
-		CrtPanel crtPanel;
-		
-		public ViewControl(CrtPanel aCrtPanel)
-		{
-			crtPanel = aCrtPanel;
-		}
-		
-		public void actionPerformed(ActionEvent e)
-		{
-			crtPanel.setCrtDisplay(CrtPanel.DisplayType.CONTROL);
-			switchPanel.crSelect.setSelected(true);
-		}
-	}
+
 	
-	// change to display the accumulator
-	class ViewAccumulator implements ActionListener
-	{
-		CrtPanel crtPanel;
-		
-		public ViewAccumulator(CrtPanel aCrtPanel)
-		{
-			crtPanel = aCrtPanel;
-		}
-		
-		public void actionPerformed(ActionEvent e)
-		{
-			crtPanel.setCrtDisplay(CrtPanel.DisplayType.ACCUMULATOR);
-			switchPanel.accSelect.setSelected(true);
-		}
-	}
+
 	
-	// display the switch panel (done initially by default)
-	class ViewSwitchPanel implements ActionListener
-	{
-		
-		SwitchPanel switchPanel;
-		
-		public ViewSwitchPanel(SwitchPanel aSwitchPanel)
-		{
-			switchPanel = aSwitchPanel;
-		}
-		
-		public void actionPerformed(ActionEvent e)
-		{
-			switchPanel.setVisible(true);
-		}
-	}
+
 	
-	// open the disassembly window
-	class ViewDisassembler implements ActionListener
-	{
-		
-		Disassembler disassembler;
-		
-		public ViewDisassembler(Disassembler aDisassembler)
-		{
-			disassembler = aDisassembler;
-		}
-		
-		public void actionPerformed(ActionEvent e)
-		{
-			disassembler.updateTextArea();
-			disassembler.setVisible(true);
-		}
-	}
+
 	
 	// reset the real world elapsed time to 0
 	class FpsLabelPushed implements ActionListener
