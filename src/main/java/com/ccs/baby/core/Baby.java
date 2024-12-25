@@ -21,6 +21,7 @@ import java.applet.*;
 import com.ccs.baby.core.Animator;
 
 import com.ccs.baby.io.LoadSnapshotAssembly;
+import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.TexturedJPanel;
@@ -381,7 +382,7 @@ public class Baby extends JFrame implements ActionListener
 		
 		// add action listeners for each item		
 		loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, this));
-		saveSnapshot.addActionListener(new SaveSnapshot());
+		saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, this));
 		saveAssembly.addActionListener(new SaveAssembly());
 		
 		diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm"));
@@ -702,34 +703,7 @@ public class Baby extends JFrame implements ActionListener
         
        
 	
-	class SaveSnapshot implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			
-			// Open up a save box and choose name
-			JFileChooser fc = new JFileChooser(currentDir);
-			fc.setDialogTitle("Save snapshot as...");
-			
-			int returnVal = fc.showSaveDialog(getContentPane() );
-			
-			if (returnVal == JFileChooser.APPROVE_OPTION)
-			{
-         		File file = fc.getSelectedFile();
-         		
-         		try
-         		{
-         			store.saveSnapshot(file.toString() );
-         			
-         		}
-         		catch(Exception ex)
-         		{
-         			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-         		}
-        	}
-        	getContentPane().repaint();
-		}
-	}
+
 	
 	class SaveAssembly implements ActionListener
 	{
