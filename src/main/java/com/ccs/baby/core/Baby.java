@@ -25,6 +25,9 @@ import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.TexturedJPanel;
 import com.ccs.baby.disassembler.Disassembler;
 
+import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.FpsLabelPushed;
+
 public class Baby extends JFrame implements ActionListener
 {
 	
@@ -36,11 +39,7 @@ public class Baby extends JFrame implements ActionListener
 	// using threads, if this is set to true then the threaded version is used which
 	// seems to be the best all round solution (Timer is poor on Solaris).
 	private final boolean threadedAnimation = true;
-	
-	// number of instructions real Baby executed in a second
-	private static final double realCyclesPerSecond = 700.0;
-	private double elapsedTime = 0; // in seconds
-	
+
 	// main component objects
 	private Store store;
 	private Control control;
@@ -55,7 +54,9 @@ public class Baby extends JFrame implements ActionListener
 	protected JButton runButton = new JButton("Run");
 	protected JButton stopButton = new JButton("Stop");
 	private JButton fpsLabel;
-	
+	private FpsLabelService fpsLabelService;
+
+
 	private Color backgroundColor = SwitchPanel.backgroundColor;
 
 	// timer control for animation (alternative to thread)
@@ -100,8 +101,9 @@ public class Baby extends JFrame implements ActionListener
 		  System.out.println("user.dir not accessible from applet");
                   System.out.println(e.getMessage());
 		}
-		
-               
+
+
+
                             
 		// check for clicks on modern controls
 		stepButton.addActionListener(this);
@@ -126,9 +128,10 @@ public class Baby extends JFrame implements ActionListener
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBackground(backgroundColor);
 		fpsLabel = new JButton("Speed and elapsed time info.");
-		fpsLabel.addActionListener( new FpsLabelPushed() );
+		fpsLabel.addActionListener( new FpsLabelPushed(fpsLabel, control) );
 		infoPanel.add(fpsLabel);
-		
+
+		fpsLabelService = new FpsLabelService(fpsLabel, control);
 		
 		crtPanel = new CrtPanel(store, control);
 		crtPanel.setOpaque(false);		
@@ -418,7 +421,7 @@ public class Baby extends JFrame implements ActionListener
 		// if the one second timer to measure the speed
 		else if( e.getSource() == fpsTimer )
 		{
-			updateFpsLabel();
+			fpsLabelService.updateFpsLabel();
 			
 			int actualFpsValue = control.getCycleCount()*control.getInstructionsPerRefresh();
 						
@@ -486,29 +489,7 @@ public class Baby extends JFrame implements ActionListener
 		}
 	}
 	
-	// update the speed display with the latest data
-	private void updateFpsLabel()
-	{
-		elapsedTime += (  ((double)(control.getCycleCount() * control.getInstructionsPerRefresh())) / realCyclesPerSecond  );
-			
-		// round percentage of real speed to 1 dec place
-		String percentage = "" + (((control.getCycleCount()*control.getInstructionsPerRefresh())/realCyclesPerSecond)*100);
-		int pointPos = percentage.indexOf('.');
-		if(pointPos != -1)
-			percentage = percentage.substring(0, pointPos+2);
-		
-		// round elapsed time in seconds to 1 dec place
-		String elapsedTimeS = "" + elapsedTime;
-		pointPos = elapsedTimeS.indexOf('.');
-		if(pointPos != -1)
-			elapsedTimeS = elapsedTimeS.substring(0, pointPos+2);
-							
-		fpsLabel.setText("" + (control.getCycleCount()*control.getInstructionsPerRefresh()) + " fps "
-							+ percentage + "% "
-							+ elapsedTimeS + "s");
-	}
-	
-        
+
         
 	// update the stop lamp according to the internally held stop flag
 	public void updateStopLamp()
@@ -539,33 +520,24 @@ public class Baby extends JFrame implements ActionListener
 
 
 
-        
-       
-	
 
-	
 
-	
 
-	
 
-	
 
-	
 
-	
 
-	
-	// reset the real world elapsed time to 0
-	class FpsLabelPushed implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			elapsedTime = 0;
-			control.setCycleCount(0);
-			updateFpsLabel();
-		}
-	}
+
+
+
+
+
+
+
+
+
+
+
 	
 
 	
