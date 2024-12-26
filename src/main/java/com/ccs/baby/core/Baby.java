@@ -20,19 +20,15 @@ import java.applet.*;
 
 import com.ccs.baby.menu.MenuSetup;
 
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.SwitchPanel;
-import com.ccs.baby.ui.TexturedJPanel;
-import com.ccs.baby.ui.LampManager;
+import com.ccs.baby.ui.*;
+import com.ccs.baby.ui.DebugPanel;
 
 import com.ccs.baby.disassembler.Disassembler;
 
-import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.FpsLabelPushed;
 
 import com.ccs.baby.animation.AnimationManager;
 
-public class Baby extends JFrame implements ActionListener
+public class Baby extends JFrame
 {
 	
 	// get current dir
@@ -45,16 +41,8 @@ public class Baby extends JFrame implements ActionListener
 	public SwitchPanel switchPanel;	
 	private Disassembler disassembler;
 	CrtPanel crtPanel;
+	DebugPanel debugPanel;
 
-	// modern controls
-	protected JButton stepButton = new JButton("Step");
-	protected JButton runButton = new JButton("Run");
-	protected JButton stopButton = new JButton("Stop");
-	private JButton fpsLabel;
-	private FpsLabelService fpsLabelService;
-
-
-	private Color backgroundColor = SwitchPanel.backgroundColor;
 
 	private AnimationManager animationManager;
 	public static volatile boolean running = false;
@@ -89,10 +77,7 @@ public class Baby extends JFrame implements ActionListener
 
 
                             
-		// check for clicks on modern controls
-		stepButton.addActionListener(this);
-		runButton.addActionListener(this);
-		stopButton.addActionListener(this);
+
 
 		// Create LampManager
 		LampManager lampManager = new LampManager();
@@ -106,28 +91,14 @@ public class Baby extends JFrame implements ActionListener
 		Container contentPane = getContentPane();
 		contentPane.setLayout( new BorderLayout() );
 			
-		JPanel toolPanel = new JPanel();
-		toolPanel.setBackground(backgroundColor);
-		toolPanel.add(stepButton);
-		toolPanel.add(runButton);
-		toolPanel.add(stopButton);
-		 
-		JPanel infoPanel = new JPanel();
-		infoPanel.setBackground(backgroundColor);
-		fpsLabel = new JButton("Speed and elapsed time info.");
-		fpsLabel.addActionListener( new FpsLabelPushed(fpsLabel, control) );
-		infoPanel.add(fpsLabel);
 
-		fpsLabelService = new FpsLabelService(fpsLabel, control);
 		
 		crtPanel = new CrtPanel(store, control);
 		crtPanel.setOpaque(false);		
-			
 
-		JPanel modernControls = new JPanel();
-		modernControls.setBackground(backgroundColor);
-		modernControls.add(infoPanel);
-		modernControls.add(toolPanel);
+
+
+
 		
 		mainPanel = new TexturedJPanel();
 		//mainPanel.setBackground(backgroundColor);
@@ -135,13 +106,13 @@ public class Baby extends JFrame implements ActionListener
                 globalPanel = new JPanel();
                 globalPanel.setLayout( new BorderLayout() );
                 //refManualPanel = new JPanel();
-                
+
                 //viewer = new javax.swing.JEditorPane();
                 //viewer = new javax.swing.JTextPane();
                // viewer.setEditable(false);
-               
-                
-                //JScrollPane scrollPane = new JScrollPane(viewer);     
+
+
+                //JScrollPane scrollPane = new JScrollPane(viewer);
                 //ref.add(scrollPane);
                 //ref.setSize(505,700);
                 //ref.setVisible(false);
@@ -160,13 +131,21 @@ public class Baby extends JFrame implements ActionListener
 		mainPanel.add(switchPanel);
 		mainPanel.setSize(690, 905);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
-		
+
+		// Add modernControls to mainPanel
+		debugPanel = new DebugPanel(control, switchPanel);
+		debugPanel.setOpaque(true);
+		contentPane.add(debugPanel, BorderLayout.SOUTH);
+
 		disassembler = new Disassembler(store, control, crtPanel);
 
 		// ???
 		//animator = new Animator(crtPanel, control, switchPanel);
 		
 		// note, thread immediate waits so we can always use notify to restart it
+
+
+		FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
 
 		// Initialize AnimationManager
 		animationManager = new AnimationManager(control, crtPanel, switchPanel, true, fpsLabelService);
@@ -177,7 +156,7 @@ public class Baby extends JFrame implements ActionListener
 
 		// Set up and add menu bars to the window
 		JMenuBar menuBar = new JMenuBar();
-		new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this);
+		new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
 		setJMenuBar(menuBar);
 		
 		// set main size of window
@@ -201,18 +180,16 @@ public class Baby extends JFrame implements ActionListener
 		crtPanel.render();
 		crtPanel.repaint();
 		
-		// set tool tips
-		stepButton.setToolTipText("Execute the next instruction.");
-		runButton.setToolTipText("Start executing the instructions in the store.");
-		stopButton.setToolTipText("Stop executing instructions.");
-		fpsLabel.setToolTipText("Displays the speed of the simulation.");
+
 		crtPanel.setToolTipText("The monitor.");
 //		stopLamp.setToolTipText("Lamp lit when the STP instruction is executed.");
 		
 		crtPanel.render();
 		// open window
 		setVisible(true);
-		
+
+		contentPane.revalidate();
+		contentPane.repaint();
 		
 		// open switch panel window too
 		//switchPanel.setVisible(true);
@@ -302,48 +279,6 @@ public class Baby extends JFrame implements ActionListener
 		animationManager.stopAnimation();
 		running = false;
 	}
-	
 
-	public void actionPerformed(ActionEvent e)
-	{
-		// if step button pressed
-		if( e.getSource() == stepButton )
-		{
-			switchPanel.setManAuto(true);
-			// set to write
-			switchPanel.setEraseWrite(true);
-			// set L stat switches to all be on
-			for(int lStatSwitch=0; lStatSwitch<5; lStatSwitch++)
-				switchPanel.lineSwitch[lStatSwitch].setSelected(true);
-			// likewise F stat switches
-			for(int fStatSwitch=0; fStatSwitch<3; fStatSwitch++)
-				switchPanel.functionSwitch[fStatSwitch].setSelected(true);
-				
-			switchPanel.kspSwitch.doClick();
-		}
-		else if( e.getSource() == runButton )
-		{
-			switchPanel.setManAuto(true);
-			// set to write
-			switchPanel.setEraseWrite(true);
-			// set L stat switches to all be on
-			for(int lStatSwitch=0; lStatSwitch<5; lStatSwitch++)
-				switchPanel.lineSwitch[lStatSwitch].setSelected(true);
-			// likewise F stat switches
-			for(int fStatSwitch=0; fStatSwitch<3; fStatSwitch++)
-				switchPanel.functionSwitch[fStatSwitch].setSelected(true);
-			// flick CS switch which starts the animation
-			if(!switchPanel.getPrePulse() )
-			{
-				switchPanel.prePulse.doClick();
-			}
-		}
-		// if stop button pressed the turn off the CS switch
-		else if( e.getSource() == stopButton )
-		{
-			if(switchPanel.getPrePulse() )
-				switchPanel.prePulse.doClick();
-		}
-	}
 
 }

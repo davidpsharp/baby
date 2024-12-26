@@ -5,10 +5,7 @@ import com.ccs.baby.io.LoadExample;
 import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.io.SaveAssembly;
 import com.ccs.baby.io.SaveSnapshot;
-import com.ccs.baby.ui.ViewAccumulator;
-import com.ccs.baby.ui.ViewControl;
-import com.ccs.baby.ui.ViewDisassembler;
-import com.ccs.baby.ui.ViewStore;
+import com.ccs.baby.ui.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,8 +14,6 @@ import java.awt.event.KeyEvent;
 
 import com.ccs.baby.core.Store;
 import com.ccs.baby.core.Control;
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.disassembler.Disassembler;
 
 import com.ccs.baby.menu.AboutMenu;
@@ -27,12 +22,12 @@ public class MenuSetup {
 
     private final JFrame frame;
 
-    public MenuSetup(JMenuBar m, Store store, Control control, CrtPanel crtPanel, SwitchPanel switchPanel, Disassembler disassembler, String currentDir, JFrame frame) {
+    public MenuSetup(JMenuBar m, Store store, Control control, CrtPanel crtPanel, SwitchPanel switchPanel, Disassembler disassembler, String currentDir, JFrame frame, DebugPanel debugPanel) {
         this.frame = frame;
-        setupMenus(m, store, control, crtPanel, switchPanel, disassembler, currentDir);
+        setupMenus(m, store, control, crtPanel, switchPanel, disassembler, currentDir, debugPanel);
     }
 
-    public void setupMenus(JMenuBar m, Store store, Control control, CrtPanel crtPanel, SwitchPanel switchPanel, Disassembler disassembler, String currentDir) {
+    public void setupMenus(JMenuBar m, Store store, Control control, CrtPanel crtPanel, SwitchPanel switchPanel, Disassembler disassembler, String currentDir, DebugPanel debugPanel) {
 
         // create 3 menus
         JMenu fileMenu = new JMenu("File");
@@ -60,6 +55,7 @@ public class MenuSetup {
         JMenuItem viewAccumulator = new JMenuItem("Accumulator");
         //JMenuItem viewSwitchPanel = new JMenuItem("Switch Panel");
         JMenuItem viewDisassembler = new JMenuItem("Disassembler");
+        JMenuItem viewDebugPanel = new JCheckBoxMenuItem("Debug ");
 
         // help menu
         JMenuItem about = new JMenuItem("About");
@@ -87,6 +83,7 @@ public class MenuSetup {
         viewAccumulator.addActionListener(new ViewAccumulator(crtPanel, switchPanel));
         //viewSwitchPanel.addActionListener(new ViewSwitchPanel(switchPanel));
         viewDisassembler.addActionListener(new ViewDisassembler(disassembler));
+        viewDebugPanel.addActionListener(new ViewDebugPanel(debugPanel));
 
 
         about.addActionListener(new AboutMenu(frame));
@@ -106,6 +103,7 @@ public class MenuSetup {
         viewMenu.add(viewAccumulator);
         //viewMenu.add(viewSwitchPanel);
         viewMenu.add(viewDisassembler);
+        viewMenu.add(viewDebugPanel);
 
         exampleMenu.add(diffeqt);
         exampleMenu.add(baby9);
