@@ -30,6 +30,7 @@ import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.ui.FpsLabelPushed;
 
+import com.ccs.baby.animation.AnimationManager;
 
 public class Baby extends JFrame implements ActionListener
 {
@@ -37,11 +38,6 @@ public class Baby extends JFrame implements ActionListener
 	// get current dir
 	private File fileChooserDirectory;
 	private static String currentDir;
-	
-	// there are two implementations of the animation, one using the Timer class and one
-	// using threads, if this is set to true then the threaded version is used which
-	// seems to be the best all round solution (Timer is poor on Solaris).
-	private final boolean threadedAnimation = true;
 
 	// main component objects
 	private Store store;
@@ -49,8 +45,6 @@ public class Baby extends JFrame implements ActionListener
 	public SwitchPanel switchPanel;	
 	private Disassembler disassembler;
 	CrtPanel crtPanel;
-	// thread control for animation
-	private Animator animator;
 
 	// modern controls
 	protected JButton stepButton = new JButton("Step");
@@ -62,21 +56,15 @@ public class Baby extends JFrame implements ActionListener
 
 	private Color backgroundColor = SwitchPanel.backgroundColor;
 
-	// timer control for animation (alternative to thread)
-	private javax.swing.Timer animateTimer;
-	public static boolean running = false;
+	private AnimationManager animationManager;
+	public static volatile boolean running = false;
+
 	public static TexturedJPanel mainPanel;
         public static JPanel globalPanel;
         //public static JPanel refManualPanel;
         //JFrame ref = new JFrame();
         //javax.swing.JEditorPane viewer;
         //javax.swing.JTextPane viewer;
-	
-	// timer for counting number of instructions executed each second to give speed
-	private javax.swing.Timer fpsTimer;
-	private java.util.Timer clockTimer;
-
-      
 
 	public Baby()
 	{
@@ -174,27 +162,19 @@ public class Baby extends JFrame implements ActionListener
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
 		disassembler = new Disassembler(store, control, crtPanel);
-		
-		// set up timer animation (currently not used)
-		// delay is in milliseconds
-		// unless timer is 0 then we get horrendous slow down
-		animateTimer = new javax.swing.Timer(0, this);
-		animateTimer.setInitialDelay(0);
-		animateTimer.setCoalesce(true);
-		
-		// create timer to calculate speed to tick once a second
-		fpsTimer = new javax.swing.Timer(1000, this);
-		fpsTimer.setInitialDelay(0);
-		
-		
-		
+
 		// ???
 		//animator = new Animator(crtPanel, control, switchPanel);
 		
 		// note, thread immediate waits so we can always use notify to restart it
-		
-		
-		
+
+		// Initialize AnimationManager
+		animationManager = new AnimationManager(control, crtPanel, switchPanel, true, fpsLabelService);
+
+
+
+
+
 		// Set up and add menu bars to the window
 		JMenuBar menuBar = new JMenuBar();
 		new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this);
@@ -310,140 +290,24 @@ public class Baby extends JFrame implements ActionListener
 		
 		baby.setVisible(true);
 		baby.setResizable(false);
-
-
 	}
-	
 
-
-
-	// start running animation either using threads or timer
-	// this is hardcoded and cannot me changed mid-session
-	public synchronized void startAnimation()
-	{
-		if(threadedAnimation)
-		{
-			if(!running)
-			{			
-				// create new thread for animation
-				animator = new Animator(crtPanel, control, switchPanel);
-				animator.startAnimating();
-			}
-		}
-		else
-		{
-			if( !animateTimer.isRunning() )
-			{
-				// start the animation timer running
-				animateTimer.start();
-			}
-		}
-		
-		// start fps timer
-		fpsTimer.start();
-		control.setCycleCount(0);
+	// Delegate animation control methods
+	public synchronized void startAnimation() {
+		animationManager.startAnimation();
 		running = true;
 	}
 
-	// halt animation
-	public void stopAnimation()
-	{	
-		if(threadedAnimation)
-		{	
-			if(running)
-			{
-				animator.stopAnimating();
-				running = false;
-			}
-		}
-		else
-		{
-			if(animateTimer.isRunning() )
-			{
-				animateTimer.stop();
-				running = false;
-			}
-		}
-		switchPanel.updateActionLine();
-
-		// repaint so that control with the PI can be drawn if necessary
-		crtPanel.render();
-		crtPanel.repaint();
-		fpsTimer.stop();
+	public synchronized void stopAnimation() {
+		animationManager.stopAnimation();
+		running = false;
 	}
 	
-	
-	// handle timers
+
 	public void actionPerformed(ActionEvent e)
 	{
-		// animation timer tick
-		if( e.getSource() == animateTimer )
-		{
-			
-			// if STP instruction has been executed stop the animation
-			if( control.getStopFlag() )
-			{
-				stopAnimation();
-			}
-			else
-			{
-				// execute X instructions before updating the display (while stop flag is unset)
-				for(int x = 0; x<control.getInstructionsPerRefresh() && !control.getStopFlag(); x++)
-				{	
-					// if auto on switchpanel then use store for instructions
-					if(switchPanel.getManAuto() )
-					{
-						control.executeAutomatic();
-					}
-					// else if man then use the line and functions switches from the switch panel
-					else
-					{
-						control.executeManual();
-					}
-				}
-				
-				// update display
-				crtPanel.render();
-				crtPanel.efficientRepaint();
-				
-				// increment number of cycles of X instructions executed
-				control.incCycleCount();	
-			}
-			
-		}
-		// if the one second timer to measure the speed
-		else if( e.getSource() == fpsTimer )
-		{
-			fpsLabelService.updateFpsLabel();
-			
-			int actualFpsValue = control.getCycleCount()*control.getInstructionsPerRefresh();
-						
-			// speed adjustment
-			// adjust number of instructions per refresh to get 700 fps or as close as possible
-			if(actualFpsValue > 730)		
-			{						
-				int newValue = control.getInstructionsPerRefresh();
-				newValue--;
-				if(newValue < 1) newValue = 1;
-				control.setInstructionsPerRefresh(newValue);
-			}
-			else if(actualFpsValue < 670)		
-			{	
-				int newValue = control.getInstructionsPerRefresh();
-				newValue++;		
-				if(newValue > 20) newValue = 20;
-				control.setInstructionsPerRefresh(newValue);
-			}
-			
-			// reset counter ready for the next second
-			control.setCycleCount(0);
-			
-			// if the Baby has stopped animating then no need to keep timing.
-			if(!Baby.running)
-				fpsTimer.stop();
-		}
 		// if step button pressed
-		else if( e.getSource() == stepButton )
+		if( e.getSource() == stepButton )
 		{
 			switchPanel.setManAuto(true);
 			// set to write

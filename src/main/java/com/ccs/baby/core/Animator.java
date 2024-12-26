@@ -11,7 +11,7 @@ import com.ccs.baby.ui.SwitchPanel;
  * meaning it will terminate automatically when the main application exits. It also
  * adjusts its thread priority for smoother execution.
  */
-class Animator extends Thread {
+public class Animator extends Thread {
 
     private volatile boolean keepAnimating = false; // Flag to indicate whether we currently are animating or not.
 
