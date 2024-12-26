@@ -23,10 +23,13 @@ import com.ccs.baby.menu.MenuSetup;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.TexturedJPanel;
+import com.ccs.baby.ui.LampManager;
+
 import com.ccs.baby.disassembler.Disassembler;
 
 import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.ui.FpsLabelPushed;
+
 
 public class Baby extends JFrame implements ActionListener
 {
@@ -72,14 +75,7 @@ public class Baby extends JFrame implements ActionListener
 	// timer for counting number of instructions executed each second to give speed
 	private javax.swing.Timer fpsTimer;
 	private java.util.Timer clockTimer;
-	
-	// stop lamp and icons
-	public JButton stopLamp;
-	ImageIcon onIcon;
-	ImageIcon offIcon;
 
-	// convert to java.sound.sampled.Clip as AudioClip lost to JApplet
-        //public static AudioClip gong;
       
 
 	public Baby()
@@ -109,10 +105,13 @@ public class Baby extends JFrame implements ActionListener
 		stepButton.addActionListener(this);
 		runButton.addActionListener(this);
 		stopButton.addActionListener(this);
-		
+
+		// Create LampManager
+		LampManager lampManager = new LampManager();
+
 		// create main hardware components
 		store = new Store();
-		control = new Control(store);
+		control = new Control(store, lampManager);
 		store.setControl(control);
 		
 		// set up display window gui
@@ -136,13 +135,7 @@ public class Baby extends JFrame implements ActionListener
 		crtPanel = new CrtPanel(store, control);
 		crtPanel.setOpaque(false);		
 			
-		stopLamp = new JButton(offIcon);
-		stopLamp.setFocusPainted(false);
-		stopLamp.setBorderPainted(false);
-		stopLamp.setContentAreaFilled(false);
-		Insets marginSpace = new Insets(3,3,3,3); // set margin
-		stopLamp.setMargin(marginSpace);
-		
+
 		JPanel modernControls = new JPanel();
 		modernControls.setBackground(backgroundColor);
 		modernControls.add(infoPanel);
@@ -234,7 +227,7 @@ public class Baby extends JFrame implements ActionListener
 		stopButton.setToolTipText("Stop executing instructions.");
 		fpsLabel.setToolTipText("Displays the speed of the simulation.");
 		crtPanel.setToolTipText("The monitor.");
-		stopLamp.setToolTipText("Lamp lit when the STP instruction is executed.");
+//		stopLamp.setToolTipText("Lamp lit when the STP instruction is executed.");
 		
 		crtPanel.render();
 		// open window
@@ -488,60 +481,5 @@ public class Baby extends JFrame implements ActionListener
 				switchPanel.prePulse.doClick();
 		}
 	}
-	
 
-        
-	// update the stop lamp according to the internally held stop flag
-	public void updateStopLamp()
-	{
-		if(control.getStopFlag() )
-		{
-			Baby.mainPanel.setTexture(true);
-
-                        
-                        try
-                        {
-                            //Baby.gong = getAudioClip(getCodeBase(), "TestSnd.wav"); 
-
-                            //Baby.gong.play();
-                        }
-                        catch (Exception e)
-                        {
-                            System.out.println("sound: "+e.getMessage());
-                        }
-                                
-			//switchPanel.setPrePulse(false);
-		}
-		else
-		{
-			Baby.mainPanel.setTexture(false);
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-	
-
-	
-	
 }
