@@ -49,10 +49,7 @@ public class Baby extends JFrame
 
 	public static TexturedJPanel mainPanel;
         public static JPanel globalPanel;
-        //public static JPanel refManualPanel;
-        //JFrame ref = new JFrame();
-        //javax.swing.JEditorPane viewer;
-        //javax.swing.JTextPane viewer;
+
 
 	public Baby()
 	{
@@ -103,22 +100,9 @@ public class Baby extends JFrame
 		mainPanel = new TexturedJPanel();
 		//mainPanel.setBackground(backgroundColor);
 		mainPanel.setLayout( new BorderLayout() );
-                globalPanel = new JPanel();
-                globalPanel.setLayout( new BorderLayout() );
-                //refManualPanel = new JPanel();
+//                globalPanel = new JPanel();
+//                globalPanel.setLayout( new BorderLayout() );
 
-                //viewer = new javax.swing.JEditorPane();
-                //viewer = new javax.swing.JTextPane();
-               // viewer.setEditable(false);
-
-
-                //JScrollPane scrollPane = new JScrollPane(viewer);
-                //ref.add(scrollPane);
-                //ref.setSize(505,700);
-                //ref.setVisible(false);
-                //ref.setAlwaysOnTop(true);
-                //ref.setLocation(730,250);
-                //viewer.addHyperlinkListener(new LinkClicked());
 
 	    
                 crtPanel.setPreferredSize(new Dimension(400, 400));
@@ -194,21 +178,7 @@ public class Baby extends JFrame
 		// open switch panel window too
 		//switchPanel.setVisible(true);
 	}
-        /*
-        class LinkClicked implements HyperlinkListener
-        {
-            public void hyperlinkUpdate(HyperlinkEvent event)
-            {
-                if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                  try {
-                    viewer.setPage(event.getURL());
-                  } catch(IOException ioe) {
-                    // Some warning to user
-                  }
-                }
-            }
-        }*/
-	
+
 	public void init() {
             //String s = this.getDocumentBase().toString();
                 

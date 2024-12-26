@@ -40,7 +40,7 @@ public class MenuSetup {
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
         JMenuItem close = new JMenuItem("Close");
-        JMenuItem refManual = new JMenuItem("Reference Manual");
+
 
         // examples menu
         JMenuItem diffeqt = new JMenuItem("demos/diffeqt.asm");
@@ -59,6 +59,7 @@ public class MenuSetup {
 
         // help menu
         JMenuItem about = new JMenuItem("About");
+        JMenuItem refManual = new JMenuItem("Reference Manual");
 
         // add action listeners for each item
         loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, frame));
@@ -87,6 +88,8 @@ public class MenuSetup {
 
 
         about.addActionListener(new AboutMenu(frame));
+        // Add an ActionListener for the Reference Manual
+        refManual.addActionListener(new ReferenceManual());
 
         // set the keyboard click equivalent for each menu item
         loadSnapshotAssembly.setMnemonic(KeyEvent.VK_L);
@@ -112,7 +115,7 @@ public class MenuSetup {
         exampleMenu.add(noodleTimer);
 
         // add items to help menu
-        //helpMenu.add(refManual);
+        helpMenu.add(refManual);
         helpMenu.add(about);
 
 
