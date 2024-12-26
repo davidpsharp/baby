@@ -5,250 +5,149 @@ package com.ccs.baby.core;
 // January 2001
 // requires Java v1.2 or later
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.BoxLayout;
-import javax.swing.event.*;
-import java.io.*;
-import java.util.*;
-import java.net.URL;
-import javax.swing.text.html.HTMLDocument;
-
+import java.awt.Container;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JFrame;
-import java.applet.*;
-
-import com.ccs.baby.menu.MenuSetup;
-
-import com.ccs.baby.ui.*;
-import com.ccs.baby.ui.DebugPanel;
 
 import com.ccs.baby.disassembler.Disassembler;
-
-
 import com.ccs.baby.animation.AnimationManager;
+import com.ccs.baby.menu.MenuSetup;
+import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.ui.TexturedJPanel;
+import com.ccs.baby.ui.LampManager;
+import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.DebugPanel;
 
-public class Baby extends JFrame
-{
-	
-	// get current dir
-	private File fileChooserDirectory;
-	private static String currentDir;
+public class Baby extends JFrame {
 
-	// main component objects
-	private Store store;
-	private Control control;
-	public SwitchPanel switchPanel;	
-	private Disassembler disassembler;
-	CrtPanel crtPanel;
-	DebugPanel debugPanel;
+    // Get the current directory
+    private static String currentDir;
 
+    private final AnimationManager animationManager;
+    public static volatile boolean running = false;
 
-	private AnimationManager animationManager;
-	public static volatile boolean running = false;
+    public static TexturedJPanel mainPanel;
 
-	public static TexturedJPanel mainPanel;
-        public static JPanel globalPanel;
+    public Baby() {
 
+        try {
+            currentDir = System.getProperty("user.home");
+            System.out.println(currentDir);
+        } catch (SecurityException e) {
+            System.out.println("user.dir not accessible from applet");
+            System.out.println(e.getMessage());
+        }
 
-	public Baby()
-	{
-		
-		// quit program when close icon clicked
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e)
-			{
-				System.exit(0);
-			}
-		});
-		
-		try {
-		  currentDir = System.getProperty("user.home");
-		  System.out.println(currentDir);
-		}
-		catch (SecurityException e) {
-		  System.out.println("user.dir not accessible from applet");
-                  System.out.println(e.getMessage());
-		}
+        // Create LampManager
+        LampManager lampManager = new LampManager();
 
+        // Create main hardware components
+        Store store = new Store();
+        Control control = new Control(store, lampManager);
+        store.setControl(control);
 
+        CrtPanel crtPanel = new CrtPanel(store, control);
+        crtPanel.setOpaque(false);
+        crtPanel.setPreferredSize(new Dimension(400, 386));
 
-                            
+        SwitchPanel switchPanel = new SwitchPanel(store, control, crtPanel, this);
+        switchPanel.setOpaque(false);
+        control.setSwitchPanel(switchPanel);    // Tell control about switchPanel
 
+        // Create Disassembler
+        Disassembler disassembler = new Disassembler(store, control, crtPanel);
 
-		// Create LampManager
-		LampManager lampManager = new LampManager();
+        // Create a container mainPanel that wraps crtPanel and switchPanel
+        mainPanel = new TexturedJPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setSize(690, 905);
+        mainPanel.add(crtPanel, BorderLayout.NORTH);
+        mainPanel.add(switchPanel);
 
-		// create main hardware components
-		store = new Store();
-		control = new Control(store, lampManager);
-		store.setControl(control);
-		
-		// set up display window gui
-		Container contentPane = getContentPane();
-		contentPane.setLayout( new BorderLayout() );
-			
+        // Setup a DebugPanel (aka modernControls)
+        DebugPanel debugPanel = new DebugPanel(control, switchPanel);
+        debugPanel.setOpaque(true);
 
-		
-		crtPanel = new CrtPanel(store, control);
-		crtPanel.setOpaque(false);		
+        // Set up display window GUI
+        Container contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(mainPanel, BorderLayout.CENTER);
+        contentPane.add(debugPanel, BorderLayout.SOUTH);
 
+        // Get the FpsLabelService from the debugPanel
+        FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
 
+        // Initialise AnimationManager
+        animationManager = new AnimationManager(control, crtPanel, switchPanel, true, fpsLabelService);
 
+        // Set up and add menu bars to the window
+        JMenuBar menuBar = new JMenuBar();
+        new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
+        setJMenuBar(menuBar);
 
-		
-		mainPanel = new TexturedJPanel();
-		//mainPanel.setBackground(backgroundColor);
-		mainPanel.setLayout( new BorderLayout() );
-//                globalPanel = new JPanel();
-//                globalPanel.setLayout( new BorderLayout() );
+        // Reset the hardware to initial values
+        store.reset();
+        control.reset();
 
+        // Load a program by default "diffeqt.asm"
+        try {
+            store.loadLocalModernAssembly("demos/diffeqt.asm");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
-	    
-                crtPanel.setPreferredSize(new Dimension(400, 400));
-		mainPanel.add(crtPanel, BorderLayout.NORTH);
-	    
-                switchPanel = new SwitchPanel(store, control, crtPanel, this);
-                switchPanel.setOpaque(false);
-		control.setSwitchPanel(switchPanel);	// tell control about switchPanel
-		crtPanel.setPreferredSize(new Dimension(400, 386));
-		mainPanel.add(switchPanel);
-		mainPanel.setSize(690, 905);
-		contentPane.add(mainPanel, BorderLayout.CENTER);
+        // render and display the CRT display
+        crtPanel.setToolTipText("The monitor.");
+        crtPanel.render();
+        crtPanel.repaint();
 
-		// Add modernControls to mainPanel
-		debugPanel = new DebugPanel(control, switchPanel);
-		debugPanel.setOpaque(true);
-		contentPane.add(debugPanel, BorderLayout.SOUTH);
+        // Open window
+        setVisible(true);
 
-		disassembler = new Disassembler(store, control, crtPanel);
-
-		// ???
-		//animator = new Animator(crtPanel, control, switchPanel);
-		
-		// note, thread immediate waits so we can always use notify to restart it
+        // This helps toggle the visibility of the debugPanel
+        contentPane.revalidate();
+        contentPane.repaint();
 
 
-		FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
-
-		// Initialize AnimationManager
-		animationManager = new AnimationManager(control, crtPanel, switchPanel, true, fpsLabelService);
-
-
-
-
-
-		// Set up and add menu bars to the window
-		JMenuBar menuBar = new JMenuBar();
-		new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
-		setJMenuBar(menuBar);
-		
-		// set main size of window
-		//setTitle("Baby Simulator");
-		
-		// reset the hardware to initial values		
-		store.reset();
-		control.reset();
-		
-		// load a program by default "hcf.asm"
-		try
-		{
-			store.loadLocalModernAssembly("demos/diffeqt.asm");
-		}
-		catch(Exception e)
-		{
-			JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		}
-				
-		// render and display the CRT display
-		crtPanel.render();
-		crtPanel.repaint();
-		
-
-		crtPanel.setToolTipText("The monitor.");
-//		stopLamp.setToolTipText("Lamp lit when the STP instruction is executed.");
-		
-		crtPanel.render();
-		// open window
-		setVisible(true);
-
-		contentPane.revalidate();
-		contentPane.repaint();
-		
-		// open switch panel window too
-		//switchPanel.setVisible(true);
-	}
-
-	public void init() {
-            //String s = this.getDocumentBase().toString();
-                
-            try
-            {
-                File aud = new File("horn.wav");
-                //Baby.gong = this.getAudioClip(aud.toURI().toURL()); 
-                
-               
+        // quit program when close icon clicked
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
             }
-            /*
-            catch (java.net.MalformedURLException e)
-            {
-              System.out.println(e.getMessage());
+        });
+    }
+
+    // Main method to create main window
+    public static void main(String args[]) {
+
+        Baby baby = new Baby();
+        baby.setSize(700, 950);
+        baby.setTitle("Baby");
+        baby.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
             }
-            catch (IOException e)
-            {
-              System.out.println(e.getMessage());  
-            }
-            */
-            catch (NullPointerException e)
-            {
-              System.out.println(e.getMessage());
-            }
-	
-		
-	}
-	
-	
-	// main method, create main window
-	public static void main(String args[]) {
+        });
 
-		
-                Baby baby = new Baby();
-                //JApplet app1 = new JApplet();
-                //BabyAppletStub babyAppletStub = new BabyAppletStub(baby);
-                //baby.setStub(babyAppletStub);
-                
-                baby.init();
-                
+        baby.setVisible(true);
+        baby.setResizable(false);
+    }
 
-        /*
-		Frame mainFrame = new Frame();
-		mainFrame.setSize(700, 950);
-		mainFrame.setTitle("Baby");
-		mainFrame.add(baby);
-		mainFrame.addWindowListener(new WindowAdapter(){public void windowClosing(WindowEvent e){System.exit(0);}});
-		
-		mainFrame.setVisible(true);
-		mainFrame.setResizable(false);
-		*/
+    // Delegate animation control methods
+    public synchronized void startAnimation() {
+        animationManager.startAnimation();
+        running = true;
+    }
 
-		baby.setSize(700, 950);
-		baby.setTitle("Baby");
-		baby.addWindowListener(new WindowAdapter(){public void windowClosing(WindowEvent e){System.exit(0);}});
-		
-		baby.setVisible(true);
-		baby.setResizable(false);
-	}
-
-	// Delegate animation control methods
-	public synchronized void startAnimation() {
-		animationManager.startAnimation();
-		running = true;
-	}
-
-	public synchronized void stopAnimation() {
-		animationManager.stopAnimation();
-		running = false;
-	}
-
-
+    public synchronized void stopAnimation() {
+        animationManager.stopAnimation();
+        running = false;
+    }
 }

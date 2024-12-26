@@ -19,5 +19,6 @@ public class StopLamp extends JButton {
         stopLamp.setContentAreaFilled(false);
         Insets marginSpace = new Insets(3,3,3,3); // set margin
         stopLamp.setMargin(marginSpace);
+        stopLamp.setToolTipText("Lamp lit when the STP instruction is executed.");
     }
 }
