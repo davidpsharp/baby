@@ -65,8 +65,10 @@ public class Disassembler extends JFrame
 	public void updateTextArea()
 	{
 		String output = "";
+
+		int controlInstruction = control.getControlInstruction();
 		
-		output += "; CI: " + control.getControlInstruction() + "\n";
+		output += "; CI: " + controlInstruction + "\n";
 		output += "; PI: " + store.disassembleModern(control.getPresentInstruction() ) + "\n";
 		output += "; ACC: " + control.getAccumulator() + "\n\n";
 		
@@ -78,7 +80,7 @@ public class Disassembler extends JFrame
 				lineNumberS = "0" + lineNumberS;
 			
 			
-			output += lineNumberS + "  " + store.disassembleModern( store.getLine(lineNumber) ) + "\n";
+			output += lineNumberS + "  " + store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction) ) + "\n";
 		}
 		
 		textArea.setText(output);
