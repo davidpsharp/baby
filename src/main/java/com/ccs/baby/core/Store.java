@@ -756,8 +756,14 @@ public class Store
 		}
 	}
 	
-	// takes a line and returns the NUM value or the mdoern mnemonic
 	public static String disassembleModern(int line)
+	{
+		return disassembleModern(line, false);
+	}
+
+	// takes a line and returns the NUM value or the mdoern mnemonic
+	// marks the line's comment if it's flagged as the current instruction to make it easy to spot on the disassembler
+	public static String disassembleModern(int line, boolean isCurrentInstruction)
 	{	
 		String output = "";
 		
@@ -783,7 +789,21 @@ public class Store
 		}
 		
 		// add alternative value
-		output += "; ";
+		if(isCurrentInstruction)
+		{
+			output += ";* ";
+		}
+		else
+		{
+			output += ";  ";
+		}
+
+		// add hex value of the line
+		// Useful as can often see the raw instruction in the 3 bits 13-15 (i.e. 4th nibble)
+		// and the line the instruction references in bits 0-4 (1st & 2nd nibble)
+		// and teaches the hex-binary relationship and emphasizes that the bit order on the store's
+		// display is unusual in being least signiticant bit on the left.
+		output += String.format("%08x", line) + " : ";
 		
 		// if any bits other than 0-4 and 13-15 are set then decide it's a NUM
 		if( (line & (~0x0000E01F)) != 0)
