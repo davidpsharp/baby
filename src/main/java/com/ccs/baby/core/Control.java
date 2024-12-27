@@ -3,6 +3,8 @@ package com.ccs.baby.core;
 import javax.swing.*;
 
 import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.LampManager;
+
 
 public class Control
 {
@@ -18,7 +20,8 @@ public class Control
 	
 	// used for special cases where old value affects new value
 	private int oldPresentInstruction = 0;
-	
+
+	private final LampManager lampManager;
 	private boolean stopFlag = false;
 	
 	// speed details here so can be synchronized with a get set method
@@ -39,10 +42,11 @@ public class Control
 	
 	
 	
-	
-	public Control(Store aStore)
+
+	public Control(Store aStore, LampManager lampManager)
 	{
 		store = aStore;
+		this.lampManager = lampManager;
 	}
 	
 	// reset to default values
@@ -138,7 +142,7 @@ public class Control
 	public void setStopFlag(boolean value)
 	{
 		stopFlag = value;
-		switchPanel.baby.updateStopLamp();
+		lampManager.updateStopLamp(value);
 	}
 
 	// approximately executes 700 instructions and counts number of store changes in order to enable
