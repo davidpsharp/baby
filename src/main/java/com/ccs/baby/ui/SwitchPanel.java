@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import com.ccs.baby.core.Store;
+import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Baby;
 
@@ -24,6 +25,7 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
 	private Control control;
 	public CrtPanel crtPanel;
 	public Baby baby;
+	private Disassembler disassembler;
 	
 	// buttons
 	public PushButton[] numberKey;
@@ -47,12 +49,13 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
 	
 	public static Color backgroundColor = new Color(206, 205, 201);
 	
-	public SwitchPanel(Store aStore, Control aControl, CrtPanel aCrtPanel, Baby aBaby)
+	public SwitchPanel(Store aStore, Control aControl, CrtPanel aCrtPanel, Baby aBaby, Disassembler aDisassembler)
 	{
 		store = aStore;
 		control = aControl;
 		crtPanel = aCrtPanel;
 		baby = aBaby;
+		disassembler = aDisassembler;
 		
 		// set up window
 		//setTitle("Switch panel");
@@ -508,7 +511,7 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
 		for (int fStatSwitch = 0; fStatSwitch < 3; fStatSwitch++)
 			functionSwitch[fStatSwitch].setSelected(true);
 
-		kspSwitch.doClick();
+		kspSwitch.doClick(); 
 	}
 	
 	////////////////////////////////////////////////////////////
@@ -627,6 +630,8 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
 				updateActionLine();
 				crtPanel.render();
 				crtPanel.repaint();
+
+				disassembler.updateDisassemblerOnStep();
 			}
 			else
 			{

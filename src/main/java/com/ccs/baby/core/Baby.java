@@ -63,13 +63,14 @@ public class Baby extends JFrame {
         crtPanel.setOpaque(false);
         crtPanel.setPreferredSize(new Dimension(400, 386));
 
+        // Create Disassembler
+        Disassembler disassembler = new Disassembler(store, control, crtPanel);
 
-        SwitchPanel switchPanel = new SwitchPanel(store, control, crtPanel, this);
+        SwitchPanel switchPanel = new SwitchPanel(store, control, crtPanel, this, disassembler);
         switchPanel.setOpaque(false);
         control.setSwitchPanel(switchPanel);    // Tell control about switchPanel
 
-        // Create Disassembler
-        Disassembler disassembler = new Disassembler(store, control, crtPanel);
+        
 
         // Create a container mainPanel that wraps crtPanel and switchPanel
         mainPanel = new TexturedJPanel();

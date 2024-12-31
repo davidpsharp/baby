@@ -20,6 +20,9 @@ public class Disassembler extends JFrame
 
 	JTextArea textArea;
 
+	boolean _updateOnStep = true;
+
+
 	public Disassembler(Store aStore, Control aControl, CrtPanel aCrtPanel)
 	{
 		store = aStore;
@@ -58,7 +61,15 @@ public class Disassembler extends JFrame
 		backPanel.add(controlsPanel, BorderLayout.NORTH);
 		backPanel.add(scrollPane, BorderLayout.CENTER);
 	
-		contentPane.add(backPanel);	
+		contentPane.add(backPanel);
+
+		updateOnStep.setSelected(_updateOnStep);
+	}
+
+	public void updateDisassemblerOnStep()
+	{
+		if(_updateOnStep)
+			updateTextArea();
 	}
 
 	// disassemble every line of the store and add to the displayed text area
@@ -95,7 +106,7 @@ public class Disassembler extends JFrame
 		}
 	}
 	
-	// assemble the information in the store into the text area
+	// assemble the information in the text area into the Store
 	class UpdateStore implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -129,6 +140,7 @@ public class Disassembler extends JFrame
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			_updateOnStep = ((JCheckBox)e.getSource()).isSelected();
 
 		}
 	}
