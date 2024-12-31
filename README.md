@@ -52,5 +52,5 @@ The output JAR file will be located in the target directory.
 Run the application using the java command:
 
 ```bash
-java -jar target/baby-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
 ```
