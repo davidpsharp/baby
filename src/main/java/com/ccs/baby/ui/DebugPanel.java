@@ -75,17 +75,7 @@ public class DebugPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // if step button pressed
         if (e.getSource() == stepButton) {
-            switchPanel.setManAuto(true);
-            // set to write
-            switchPanel.setEraseWrite(true);
-            // set L stat switches to all be on
-            for (int lStatSwitch = 0; lStatSwitch < 5; lStatSwitch++)
-                switchPanel.lineSwitch[lStatSwitch].setSelected(true);
-            // likewise F stat switches
-            for (int fStatSwitch = 0; fStatSwitch < 3; fStatSwitch++)
-                switchPanel.functionSwitch[fStatSwitch].setSelected(true);
-
-            switchPanel.kspSwitch.doClick();
+            switchPanel.singleStep();
         } else if (e.getSource() == runButton) {
             switchPanel.setManAuto(true);
             // set to write

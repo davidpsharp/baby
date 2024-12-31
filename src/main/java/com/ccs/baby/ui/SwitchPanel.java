@@ -16,7 +16,7 @@ import com.ccs.baby.components.KeySwitch;
 import com.ccs.baby.components.ToggleSwitch;
 import com.ccs.baby.ui.CrtPanel.DisplayType;
 
-public class SwitchPanel extends JPanel implements ActionListener
+public class SwitchPanel extends JPanel implements ActionListener, ComponentListener
 {
 	
 	// background hardware
@@ -59,7 +59,8 @@ public class SwitchPanel extends JPanel implements ActionListener
 		//this.setSize(300, 445);
 		
 		//Container contentPane = getContentPane();
-	    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS) );		 
+	    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS) );
+		
 		
 		//setBackground(backgroundColor);
 		
@@ -397,6 +398,9 @@ public class SwitchPanel extends JPanel implements ActionListener
 		// likewise F stat switches
 		for(int fStatSwitch=0; fStatSwitch<3; fStatSwitch++)
 			functionSwitch[fStatSwitch].setSelected(true);
+
+		// add resize listener for window resize handling
+        this.addComponentListener(this);
 	}
 	
 	
@@ -492,6 +496,20 @@ public class SwitchPanel extends JPanel implements ActionListener
 		}
 	}
 	
+	public void singleStep()
+	{
+		setManAuto(true);
+		// set to write
+		setEraseWrite(true);
+		// set L stat switches to all be on
+		for (int lStatSwitch = 0; lStatSwitch < 5; lStatSwitch++)
+			lineSwitch[lStatSwitch].setSelected(true);
+		// likewise F stat switches
+		for (int fStatSwitch = 0; fStatSwitch < 3; fStatSwitch++)
+			functionSwitch[fStatSwitch].setSelected(true);
+
+		kspSwitch.doClick();
+	}
 	
 	////////////////////////////////////////////////////////////
 	// START OF EVENT HANDLING INNER CLASSES
@@ -744,5 +762,22 @@ public class SwitchPanel extends JPanel implements ActionListener
 			updateActionLine();
 		}
 	}
+
+	// NoOp
+    public void componentHidden(ComponentEvent e) {
+    }
+
+    // NoOp
+    public void componentMoved(ComponentEvent e) {
+    }
+
+    // handle panel resize
+    public void componentResized(ComponentEvent e) {
+        //System.out.println(e.getComponent().getClass().getName() + ", width:" + e.getComponent().getWidth() + " height:" + e.getComponent().getHeight()); 
+    }
+
+    // NoOp
+    public void componentShown(ComponentEvent e) {
+    }
 
 }

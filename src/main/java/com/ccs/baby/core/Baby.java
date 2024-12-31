@@ -9,10 +9,17 @@ import java.awt.Container;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.animation.AnimationManager;
@@ -56,6 +63,7 @@ public class Baby extends JFrame {
         crtPanel.setOpaque(false);
         crtPanel.setPreferredSize(new Dimension(400, 386));
 
+
         SwitchPanel switchPanel = new SwitchPanel(store, control, crtPanel, this);
         switchPanel.setOpaque(false);
         control.setSwitchPanel(switchPanel);    // Tell control about switchPanel
@@ -90,6 +98,23 @@ public class Baby extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
         setJMenuBar(menuBar);
+
+        // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
+        // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
+        // by default Swing sets F10 to open the menu so have to override this and point to none first to disable it otherwise menu pops up.
+        menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
+        // Then set up F10 to do something useful...
+        KeyStroke ks_f10 = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
+        Action performStep = new AbstractAction("Step") {  
+            public void actionPerformed(ActionEvent e) {
+                 switchPanel.singleStep();
+            }
+        };
+        // TODO: have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
+        mainPanel.getActionMap().put("performStep", performStep);
+        mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
+
+
 
         // Reset the hardware to initial values
         store.reset();
