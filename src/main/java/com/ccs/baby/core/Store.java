@@ -527,6 +527,8 @@ public class Store
 	
 	}
 	
+
+	// TODO: de-duplicate the logic that was copied here when put into a JAR
 	
 	public void loadLocalModernAssembly(String fileName) throws AssemblyException, IOException
 	{
