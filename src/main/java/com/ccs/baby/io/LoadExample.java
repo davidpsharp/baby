@@ -5,9 +5,12 @@ import com.ccs.baby.core.Baby;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
+
+import java.io.IOException;
 
 
 public class LoadExample implements ActionListener {
@@ -26,10 +29,19 @@ public class LoadExample implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         try {
-            if (fileName.equals("demos/noodletimer.snp") || fileName.equals("demos/Baby9.snp"))
+            if (fileName.endsWith(".snp"))
+            {
                 store.loadLocalSnapshot(fileName);
-            else
+            }
+            else if(fileName.endsWith(".asm"))
+            {
                 store.loadLocalModernAssembly(fileName);
+            }
+            else
+            {
+                throw new IOException("Unknown example file load, not .asm or .snp");
+            }
+
             Baby.mainPanel.setTexture(false);
             crtPanel.render();
             crtPanel.repaint();
