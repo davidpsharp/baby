@@ -152,6 +152,17 @@ public class Baby extends JFrame {
     // Main method to create main window
     public static void main(String args[]) {
 
+        // scale whole UI (including text, menus, controls... everything) to handle hiDPI screens
+        // does not appear to work on MacOS but tested on Windows 10
+        // on OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
+        // if scales to taller than the screen then the width will keep increasing but height doesn't giving
+        // a squashed effect so may be worth calculating scale from screen height
+        // Scale factor of 1.5 works well on a 2560x1440 display.
+        //   System.setProperty("sun.java2d.uiScale","1.5");
+        // or alternatively can specify on the command line if not overridden in code here, e.g.
+        //   java -Dsun.java2d.uiScale=1.5 -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
+        // If done in code may want to not execute that command so that command line params can override it.
+        
         Baby baby = new Baby();
         baby.setSize(700, 950);
         baby.setTitle("Baby");
