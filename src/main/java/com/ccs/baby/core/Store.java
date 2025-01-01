@@ -880,6 +880,10 @@ public class Store
 	// in normal (LSB on the right) format
 	private static int parseBinaryString(String s) throws NumberFormatException
 	{
+
+		/*
+		// old logic kept temporarily
+		
 		int result = 0;
 		
 		if(s.length() > 32)
@@ -912,6 +916,11 @@ public class Store
 				}
 			}	
 		}
+		*/
+
+		// Integer.parseInt() can't cope with negatives but parseLong() cast to an int does
+		int result = (int)Long.parseLong(s, 2);
+
 		return result;
 	}	
 }
