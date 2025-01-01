@@ -764,8 +764,8 @@ public class Store
 	}
 
 	// takes a line and returns the NUM value or the mdoern mnemonic
-	// marks the line's comment if it's flagged as the current instruction to make it easy to spot on the disassembler
-	public static String disassembleModern(int line, boolean isCurrentInstruction)
+	// marks the line's comment if it's flagged as the next instruction to make it easy to spot on the disassembler
+	public static String disassembleModern(int line, boolean isNextInstruction)
 	{	
 		String output = "";
 		
@@ -791,7 +791,7 @@ public class Store
 		}
 		
 		// add alternative value
-		if(isCurrentInstruction)
+		if(isNextInstruction)
 		{
 			output += ";* ";
 		}

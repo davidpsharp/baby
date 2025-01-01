@@ -90,8 +90,9 @@ public class Disassembler extends JFrame
 			while(lineNumberS.length() < 2)
 				lineNumberS = "0" + lineNumberS;
 			
-			
-			output += lineNumberS + "  " + store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction) ) + "\n";
+			// identify if the line being written is the next one to be executed so it can be marked, recall that CI increments
+			// immediately before executing the next instruction (hence why JMPing to line 0 executes the instriction on line 1).
+			output += lineNumberS + "  " + store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction+1) ) + "\n";
 		}
 		
 		textArea.setText(output);
