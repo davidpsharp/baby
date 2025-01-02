@@ -4,6 +4,8 @@ A Java-based simulator for the Manchester Baby computer.
 
 See https://davidsharp.com/baby for more details, user documentation etc.
 
+![Photo of this simulator running next to the replica machine at the Science and Industry Museum, Manchester, England](https://davidsharp.com/baby/makerfaire.jpg)
+
 ## Quick Start
 
 ### Prerequisites
