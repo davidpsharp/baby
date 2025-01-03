@@ -82,6 +82,7 @@ public class Disassembler extends JFrame
 		output += "; CI: " + controlInstruction + "\n";
 		output += "; PI: " + store.disassembleModern(control.getPresentInstruction() ) + "\n";
 		output += "; ACC: " + control.getAccumulator() + "\n\n";
+		// TODO: add disassembled instruction to accumulator (minus the comment and NUM stuff) so can see self modifying code getting built
 		
 		for(int lineNumber=0; lineNumber<32; lineNumber++)
 		{

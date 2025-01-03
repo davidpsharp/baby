@@ -163,6 +163,16 @@ public class Baby extends JFrame {
         //   java -Dsun.java2d.uiScale=1.5 -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
         // If done in code may want to not execute that command so that command line params can override it.
         
+        if(args.length > 0)
+        {
+            // parse args
+            // TODO:
+            // -load - load program & show GUI, handle snp/asm formats
+            // -assemble - cmd line only, assemble and output assembled store SNP format to stdout.
+            // -disassemble - cmd line only, take SNP and output disassembled store to stdout.
+            // -execute - load program, execute in memory on command line and output result to stdout.
+        }
+
         Baby baby = new Baby();
         baby.setSize(700, 950);
         baby.setTitle("Baby");

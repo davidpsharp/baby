@@ -744,7 +744,7 @@ public class Store
 					lineData = operandValue;
 					lineData |= (functionNumber << 13);
 				}
-					
+				
 				setLine(lineNumber, lineData);	
 				
 			// if there was no mnemonic on the line	
