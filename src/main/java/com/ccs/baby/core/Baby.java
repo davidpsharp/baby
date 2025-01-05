@@ -30,6 +30,7 @@ import com.ccs.baby.ui.TexturedJPanel;
 import com.ccs.baby.ui.LampManager;
 import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.ui.DebugPanel;
+import com.ccs.baby.ui.Debugger;
 
 public class Baby extends JFrame {
 
@@ -185,6 +186,9 @@ public class Baby extends JFrame {
 
         baby.setVisible(true);
         baby.setResizable(false);
+
+        // test only
+        // Debugger debugger = new Debugger();
     }
 
     // Delegate animation control methods
