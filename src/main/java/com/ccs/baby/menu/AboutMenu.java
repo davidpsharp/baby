@@ -1,11 +1,25 @@
 package com.ccs.baby.menu;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// display the about window
+/**
+ * Displays the "About" window.
+ */
 public class AboutMenu implements ActionListener {
+
+    private static final String TITLE = "Manchester Baby";
+    private static final String MESSAGE = String.join("\n",
+            "Manchester Baby Simulator",
+            "by David Sharp",
+            "January 2001",
+            "With thanks to Chris Burton for his consultation on historical matters.",
+            "The GUI was created from pictures of the Baby remake",
+            "by Gulzaman Khan",
+            "August 2006"
+    );
 
     private final JFrame frame;
 
@@ -13,9 +27,13 @@ public class AboutMenu implements ActionListener {
         this.frame = frame;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(frame.getContentPane(), "Manchester Baby Simulator\n" +
-                "by David Sharp\nJanuary 2001\nWith thanks to Chris Burton for his consultation\n" +
-                "on historical matters.\nGUI created from pictures of the Baby remake\nby Gulzaman Khan\nAugust 2006 ", "Baby", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(
+                frame.getContentPane(),
+                MESSAGE,
+                TITLE,
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 }
