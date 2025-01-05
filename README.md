@@ -4,6 +4,8 @@ A Java-based simulator for the Manchester Baby computer.
 
 See https://davidsharp.com/baby for more details, user documentation etc.
 
+![Photo of this simulator running next to the replica machine at the Science and Industry Museum, Manchester, England](https://davidsharp.com/baby/makerfaire.jpg)
+
 ## Quick Start
 
 ### Prerequisites
@@ -43,5 +45,5 @@ The output JAR file will be located in the target directory.
 Run the application using the java command:
 
 ```bash
-java -jar target/baby-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
 ```

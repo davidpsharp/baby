@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import com.ccs.baby.core.Store;
+import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Baby;
 
@@ -16,7 +17,7 @@ import com.ccs.baby.components.KeySwitch;
 import com.ccs.baby.components.ToggleSwitch;
 import com.ccs.baby.ui.CrtPanel.DisplayType;
 
-public class SwitchPanel extends JPanel implements ActionListener
+public class SwitchPanel extends JPanel implements ActionListener, ComponentListener
 {
 	
 	// background hardware
@@ -24,6 +25,7 @@ public class SwitchPanel extends JPanel implements ActionListener
 	private Control control;
 	public CrtPanel crtPanel;
 	public Baby baby;
+	private Disassembler disassembler;
 	
 	// buttons
 	public PushButton[] numberKey;
@@ -47,19 +49,21 @@ public class SwitchPanel extends JPanel implements ActionListener
 	
 	public static Color backgroundColor = new Color(206, 205, 201);
 	
-	public SwitchPanel(Store aStore, Control aControl, CrtPanel aCrtPanel, Baby aBaby)
+	public SwitchPanel(Store aStore, Control aControl, CrtPanel aCrtPanel, Baby aBaby, Disassembler aDisassembler)
 	{
 		store = aStore;
 		control = aControl;
 		crtPanel = aCrtPanel;
 		baby = aBaby;
+		disassembler = aDisassembler;
 		
 		// set up window
 		//setTitle("Switch panel");
 		//this.setSize(300, 445);
 		
 		//Container contentPane = getContentPane();
-	    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS) );		 
+	    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS) );
+		
 		
 		//setBackground(backgroundColor);
 		
@@ -397,6 +401,9 @@ public class SwitchPanel extends JPanel implements ActionListener
 		// likewise F stat switches
 		for(int fStatSwitch=0; fStatSwitch<3; fStatSwitch++)
 			functionSwitch[fStatSwitch].setSelected(true);
+
+		// add resize listener for window resize handling
+        this.addComponentListener(this);
 	}
 	
 	
@@ -492,6 +499,20 @@ public class SwitchPanel extends JPanel implements ActionListener
 		}
 	}
 	
+	public void singleStep()
+	{
+		setManAuto(true);
+		// set to write
+		setEraseWrite(true);
+		// set L stat switches to all be on
+		for (int lStatSwitch = 0; lStatSwitch < 5; lStatSwitch++)
+			lineSwitch[lStatSwitch].setSelected(true);
+		// likewise F stat switches
+		for (int fStatSwitch = 0; fStatSwitch < 3; fStatSwitch++)
+			functionSwitch[fStatSwitch].setSelected(true);
+
+		kspSwitch.doClick(); 
+	}
 	
 	////////////////////////////////////////////////////////////
 	// START OF EVENT HANDLING INNER CLASSES
@@ -609,6 +630,8 @@ public class SwitchPanel extends JPanel implements ActionListener
 				updateActionLine();
 				crtPanel.render();
 				crtPanel.repaint();
+
+				disassembler.updateDisassemblerOnStep();
 			}
 			else
 			{
@@ -744,5 +767,22 @@ public class SwitchPanel extends JPanel implements ActionListener
 			updateActionLine();
 		}
 	}
+
+	// NoOp
+    public void componentHidden(ComponentEvent e) {
+    }
+
+    // NoOp
+    public void componentMoved(ComponentEvent e) {
+    }
+
+    // handle panel resize
+    public void componentResized(ComponentEvent e) {
+        //System.out.println(e.getComponent().getClass().getName() + ", width:" + e.getComponent().getWidth() + " height:" + e.getComponent().getHeight()); 
+    }
+
+    // NoOp
+    public void componentShown(ComponentEvent e) {
+    }
 
 }

@@ -527,6 +527,8 @@ public class Store
 	
 	}
 	
+
+	// TODO: de-duplicate the logic that was copied here when put into a JAR
 	
 	public void loadLocalModernAssembly(String fileName) throws AssemblyException, IOException
 	{
@@ -742,7 +744,7 @@ public class Store
 					lineData = operandValue;
 					lineData |= (functionNumber << 13);
 				}
-					
+				
 				setLine(lineNumber, lineData);	
 				
 			// if there was no mnemonic on the line	
@@ -762,8 +764,8 @@ public class Store
 	}
 
 	// takes a line and returns the NUM value or the mdoern mnemonic
-	// marks the line's comment if it's flagged as the current instruction to make it easy to spot on the disassembler
-	public static String disassembleModern(int line, boolean isCurrentInstruction)
+	// marks the line's comment if it's flagged as the next instruction to make it easy to spot on the disassembler
+	public static String disassembleModern(int line, boolean isNextInstruction)
 	{	
 		String output = "";
 		
@@ -789,7 +791,7 @@ public class Store
 		}
 		
 		// add alternative value
-		if(isCurrentInstruction)
+		if(isNextInstruction)
 		{
 			output += ";* ";
 		}
@@ -878,6 +880,10 @@ public class Store
 	// in normal (LSB on the right) format
 	private static int parseBinaryString(String s) throws NumberFormatException
 	{
+
+		/*
+		// old logic kept temporarily
+		
 		int result = 0;
 		
 		if(s.length() > 32)
@@ -910,6 +916,11 @@ public class Store
 				}
 			}	
 		}
+		*/
+
+		// Integer.parseInt() can't cope with negatives but parseLong() cast to an int does
+		int result = (int)Long.parseLong(s, 2);
+
 		return result;
 	}	
 }
