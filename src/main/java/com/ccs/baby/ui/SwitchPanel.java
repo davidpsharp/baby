@@ -2,19 +2,32 @@ package com.ccs.baby.ui;
 
 
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import com.ccs.baby.core.Store;
-import com.ccs.baby.disassembler.Disassembler;
-import com.ccs.baby.core.Control;
-import com.ccs.baby.core.Baby;
+import javax.swing.AbstractButton;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
 
 import com.ccs.baby.components.InterlockingPushButton;
-import com.ccs.baby.components.PushButton;
 import com.ccs.baby.components.KeySwitch;
+import com.ccs.baby.components.PushButton;
 import com.ccs.baby.components.ToggleSwitch;
+import com.ccs.baby.core.Baby;
+import com.ccs.baby.core.Control;
+import com.ccs.baby.core.Store;
+import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.ui.CrtPanel.DisplayType;
 
 public class SwitchPanel extends JPanel implements ActionListener, ComponentListener
@@ -401,6 +414,12 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
 		// likewise F stat switches
 		for(int fStatSwitch=0; fStatSwitch<3; fStatSwitch++)
 			functionSwitch[fStatSwitch].setSelected(true);
+		// set all unconnected L & F switches to all be down per Bob's comment that's what they do on the replica
+		dud.setSelected(true);
+		lineSwitch[5].setSelected(true);
+		lineSwitch[6].setSelected(true);
+		lineSwitch[12].setSelected(true);
+		functionSwitch[3].setSelected(true);
 
 		// add resize listener for window resize handling
         this.addComponentListener(this);
