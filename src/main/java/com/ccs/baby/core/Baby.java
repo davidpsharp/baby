@@ -101,6 +101,7 @@ public class Baby extends JFrame {
         new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
         setJMenuBar(menuBar);
 
+
         // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
         // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
         // by default Swing sets F10 to open the menu so have to override this and point to none first to disable it otherwise menu pops up.
@@ -152,7 +153,8 @@ public class Baby extends JFrame {
 
     // Main method to create main window
     public static void main(String args[]) {
-
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.awt.application.name", "Baby");
         // scale whole UI (including text, menus, controls... everything) to handle hiDPI screens
         // does not appear to work on MacOS but tested on Windows 10
         // on OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
