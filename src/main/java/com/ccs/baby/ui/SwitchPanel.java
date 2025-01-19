@@ -61,11 +61,11 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
     public static Color backgroundColor = new Color(206, 205, 201);
 
     public SwitchPanel(Store aStore, Control aControl, CrtPanel aCrtPanel, Baby aBaby, Disassembler aDisassembler) {
-        store = aStore;
-        control = aControl;
-        crtPanel = aCrtPanel;
-        baby = aBaby;
-        disassembler = aDisassembler;
+        this.store = aStore;
+        this.control = aControl;
+        this.crtPanel = aCrtPanel;
+        this.baby = aBaby;
+        this.disassembler = aDisassembler;
 
         // set up window
         //setTitle("Switch panel");
@@ -75,87 +75,9 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 
-        //setBackground(backgroundColor);
+        add(new TypewriterPanel(store, control, this));
 
 
-        // typewriter
-
-        JPanel typeWriter = new JPanel();
-        typeWriter.setOpaque(false);//.setBackground(backgroundColor);
-        typeWriter.setLayout(new GridBagLayout());            // 8 across. 5 down
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.CENTER;
-        //gbc.weightx = 2;
-        //typeWriter.setBorder( BorderFactory.createLoweredBevelBorder() );
-
-        numberKey = new PushButton[40];
-        // create 40 keys
-        for (int keyNumber = 0; keyNumber < 40; keyNumber++) {
-            numberKey[keyNumber] = new PushButton("", AbstractButton.CENTER);
-            // add mouse listeners to keys 0-31
-            if (keyNumber < 32)
-                numberKey[keyNumber].addMouseListener(new TypeWriterPushed(keyNumber, control, store, this));
-        }
-
-        // add keys in correct order for display with this layout
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 40; j += 5) {
-                gbc.gridx = j / 5;
-                gbc.gridy = i;
-                typeWriter.add(numberKey[i + j], gbc);
-            }
-            gbc.anchor = gbc.LINE_END;
-        }
-
-        //typeWriter.setBorder( BorderFactory.createLoweredBevelBorder() );
-        typeWriter.setPreferredSize(new Dimension(0, 270));
-        
-        /*
-		typeWriter.add(numberKey[0]);
-		typeWriter.add(numberKey[5]);
-		typeWriter.add(numberKey[10]);
-		typeWriter.add(numberKey[15]);
-		typeWriter.add(numberKey[20]);
-		typeWriter.add(numberKey[25]);
-		typeWriter.add(numberKey[30]);
-		typeWriter.add(numberKey[35]);
-		
-		typeWriter.add(numberKey[1]);
-		typeWriter.add(numberKey[6]);
-		typeWriter.add(numberKey[11]);
-		typeWriter.add(numberKey[16]);
-		typeWriter.add(numberKey[21]);
-		typeWriter.add(numberKey[26]);
-		typeWriter.add(numberKey[31]);
-		typeWriter.add(numberKey[36]);
-		
-		typeWriter.add(numberKey[2]);
-		typeWriter.add(numberKey[7]);
-		typeWriter.add(numberKey[12]);
-		typeWriter.add(numberKey[17]);
-		typeWriter.add(numberKey[22]);
-		typeWriter.add(numberKey[27]);
-		typeWriter.add(numberKey[32]);
-		typeWriter.add(numberKey[37]);
-		
-		typeWriter.add(numberKey[3]);
-		typeWriter.add(numberKey[8]);
-		typeWriter.add(numberKey[13]);
-		typeWriter.add(numberKey[18]);
-		typeWriter.add(numberKey[23]);
-		typeWriter.add(numberKey[28]);
-		typeWriter.add(numberKey[33]);
-		typeWriter.add(numberKey[38]);
-		
-		typeWriter.add(numberKey[4]);
-		typeWriter.add(numberKey[9]);
-		typeWriter.add(numberKey[14]);
-		typeWriter.add(numberKey[19]);
-		typeWriter.add(numberKey[24]);
-		typeWriter.add(numberKey[29]);
-		typeWriter.add(numberKey[34]);
-		typeWriter.add(numberKey[39]);
-		*/
 
         // staticisor
         //setBorder( BorderFactory.createLoweredBevelBorder() );
@@ -365,16 +287,13 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
 
         // add each panel to main panel
 
-        add(typeWriter);
+
         add(staticisor);
         add(displayControls);
 
         // add tool tips
         dud.setToolTipText("Left unconnected.");
-        for (int keyNumber = 0; keyNumber < 32; keyNumber++)
-            numberKey[keyNumber].setToolTipText("Typewriter adjusts bit " + keyNumber + " of the action line.");
-        for (int keyNumber = 32; keyNumber < 40; keyNumber++)
-            numberKey[keyNumber].setToolTipText("Left unconnected.");
+
         for (int x = 0; x < 5; x++)
             lineSwitch[x].setToolTipText("Selects the action line to be adjusted or executed.");
         lineSwitch[5].setToolTipText("Left unconnected.");
@@ -617,57 +536,7 @@ public class SwitchPanel extends JPanel implements ActionListener, ComponentList
         }
     }
 
-    // typewriter button pushed
-    class TypeWriterPushed implements MouseListener {
-        private int keyNumber;
-        private Control control;
-        private SwitchPanel switchPanel;
-        private Store store;
 
-        public TypeWriterPushed(int aKeyNumber, Control aControl, Store aStore, SwitchPanel aSwitchPanel) {
-            keyNumber = aKeyNumber;
-            control = aControl;
-            switchPanel = aSwitchPanel;
-            store = aStore;
-        }
-
-        public void mousePressed(MouseEvent e) {
-            // if running then adjust every action line
-            if (Baby.running) {
-                // signal control that a key is pressed
-                // arguments: key pressed, number of key pressed, is it a write?
-                control.setKeyPressed(true, keyNumber);
-
-                // note, m1sim incorrectly stops running in this case rather than corrupting store lines
-            }
-            // otherwise just do current action line
-            else {
-                int lineNumber = switchPanel.getLineValue();
-                // true = write, false = erase
-                if (switchPanel.getEraseWrite()) {
-                    store.setLine(lineNumber, store.getLine(lineNumber) | (1 << keyNumber));
-                } else {
-                    store.setLine(lineNumber, store.getLine(lineNumber) & (~(1 << keyNumber)));
-                }
-                switchPanel.redrawCrtPanel();
-            }
-        }
-
-        public void mouseReleased(MouseEvent e) {
-            // notify that the key is no longer pressed whether Baby is still
-            // running or not.
-            control.setKeyPressed(false, keyNumber);
-        }
-
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        public void mouseClicked(MouseEvent e) {
-        }
-
-        public void mouseExited(MouseEvent e) {
-        }
-    }
 
     class KlcPressed implements MouseListener {
         public void mousePressed(MouseEvent e) {
