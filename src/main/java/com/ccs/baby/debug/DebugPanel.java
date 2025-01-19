@@ -1,6 +1,9 @@
-package com.ccs.baby.ui;
+package com.ccs.baby.debug;
 
 import com.ccs.baby.core.Control;
+import com.ccs.baby.ui.FpsLabelPushed;
+import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.SwitchPanel;
 
 import javax.swing.*;
 import java.awt.*;
