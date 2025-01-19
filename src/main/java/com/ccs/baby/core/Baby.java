@@ -25,7 +25,7 @@ import com.ccs.baby.animation.AnimationManager;
 import com.ccs.baby.menu.MenuSetup;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.TexturedJPanel;
+import com.ccs.baby.ui.BackgroundPanel;
 import com.ccs.baby.ui.LampManager;
 import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.debug.DebugPanel;
@@ -38,7 +38,7 @@ public class Baby extends JFrame {
     private final AnimationManager animationManager;
     public static volatile boolean running = false;
 
-    public static TexturedJPanel mainPanel;
+    public static BackgroundPanel mainPanel;
 
     public Baby() {
 
@@ -72,7 +72,7 @@ public class Baby extends JFrame {
         
 
         // Create a container mainPanel that wraps crtPanel and switchPanel
-        mainPanel = new TexturedJPanel();
+        mainPanel = new BackgroundPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setSize(690, 905);
         mainPanel.add(crtPanel, BorderLayout.NORTH);
