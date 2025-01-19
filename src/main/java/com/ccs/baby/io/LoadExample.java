@@ -10,8 +10,6 @@ import java.io.IOException;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
 
-import java.io.IOException;
-
 
 public class LoadExample implements ActionListener {
 

@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
@@ -26,11 +25,10 @@ import com.ccs.baby.animation.AnimationManager;
 import com.ccs.baby.menu.MenuSetup;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.TexturedJPanel;
+import com.ccs.baby.ui.BackgroundPanel;
 import com.ccs.baby.ui.LampManager;
 import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.DebugPanel;
-import com.ccs.baby.ui.Debugger;
+import com.ccs.baby.debug.DebugPanel;
 
 public class Baby extends JFrame {
 
@@ -40,7 +38,7 @@ public class Baby extends JFrame {
     private final AnimationManager animationManager;
     public static volatile boolean running = false;
 
-    public static TexturedJPanel mainPanel;
+    public static BackgroundPanel mainPanel;
 
     public Baby() {
 
@@ -74,7 +72,7 @@ public class Baby extends JFrame {
         
 
         // Create a container mainPanel that wraps crtPanel and switchPanel
-        mainPanel = new TexturedJPanel();
+        mainPanel = new BackgroundPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setSize(690, 905);
         mainPanel.add(crtPanel, BorderLayout.NORTH);
@@ -100,6 +98,7 @@ public class Baby extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
         setJMenuBar(menuBar);
+
 
         // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
         // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
@@ -152,7 +151,8 @@ public class Baby extends JFrame {
 
     // Main method to create main window
     public static void main(String args[]) {
-
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.awt.application.name", "Baby");
         // scale whole UI (including text, menus, controls... everything) to handle hiDPI screens
         // does not appear to work on MacOS but tested on Windows 10
         // on OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)

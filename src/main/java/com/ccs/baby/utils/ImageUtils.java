@@ -90,8 +90,6 @@ public class ImageUtils {
         if (tracker.isErrorAny()) {
             throw new IllegalArgumentException("Failed to fully load image.");
         }
-
-
     }
 
     /**

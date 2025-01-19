@@ -1,4 +1,4 @@
-package com.ccs.baby.menu;
+package com.ccs.baby.manual;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

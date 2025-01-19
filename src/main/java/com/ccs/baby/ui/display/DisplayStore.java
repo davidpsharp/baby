@@ -1,14 +1,19 @@
-package com.ccs.baby.ui;
+package com.ccs.baby.ui.display;
+
+import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.ui.SwitchPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// change to display store
-public class ViewStore implements ActionListener {
+/**
+ * This class is responsible for displaying the store.
+ */
+public class DisplayStore implements ActionListener {
     CrtPanel crtPanel;
     SwitchPanel switchPanel;
 
-    public ViewStore(CrtPanel aCrtPanel, SwitchPanel aSwitchPanel) {
+    public DisplayStore(CrtPanel aCrtPanel, SwitchPanel aSwitchPanel) {
         crtPanel = aCrtPanel;
         switchPanel = aSwitchPanel;
     }

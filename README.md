@@ -29,15 +29,6 @@ brew install maven
 ```bash
 mvn dependency:resolve
 ```
-#### Troubleshooting
-If you encounter any issues with the `vladium` dependency, you can install it manually.
-
-1. Download the [hrtlib-1.0.jar file](https://artifacts.alfresco.com/nexus/content/repositories/public/com/vladium/utils/timing/hrtlib/1.0/hrtlib-1.0.jar).
-2. Install the hrtlib-1.0.jar file to your local Maven repository:
-
-```bash
-mvn install:install-file -Dfile=/path/to/hrtlib-1.0.jar -DgroupId=com.vladium.utils.timing -DartifactId=hrtlib -Dversion=1.0 -Dpackaging=jar
-```
 
 ### Build
 

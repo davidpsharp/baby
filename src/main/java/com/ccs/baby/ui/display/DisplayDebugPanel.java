@@ -1,14 +1,19 @@
-package com.ccs.baby.ui;
+package com.ccs.baby.ui.display;
+
+import com.ccs.baby.debug.DebugPanel;
 
 import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ViewDebugPanel implements ActionListener {
+/**
+ * This class is responsible for displaying the debug panel.
+ */
+public class DisplayDebugPanel implements ActionListener {
 
     private final DebugPanel debugPanel;
 
-    public ViewDebugPanel(DebugPanel aDebugPanel) {
+    public DisplayDebugPanel(DebugPanel aDebugPanel) {
         this.debugPanel = aDebugPanel;
     }
 

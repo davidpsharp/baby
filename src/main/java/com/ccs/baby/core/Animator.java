@@ -83,7 +83,7 @@ public class Animator extends Thread {
                 try {
                     TimeUnit.NANOSECONDS.sleep(DEFAULT_FRAME_TIME - elapsedTime);
                 } catch (InterruptedException e) {
-                    // Log or handle interruption appropriately
+                    // Handle interruption appropriately
                     Thread.currentThread().interrupt();
                     break;
                 }
