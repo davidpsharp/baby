@@ -6,7 +6,7 @@ import com.ccs.baby.core.Control;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.disassembler.Disassembler;
-import com.ccs.baby.ui.DebugPanel;
+import com.ccs.baby.debug.DebugPanel;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;

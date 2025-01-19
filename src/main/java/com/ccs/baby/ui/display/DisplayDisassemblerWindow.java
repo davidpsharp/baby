@@ -1,16 +1,18 @@
-package com.ccs.baby.ui;
+package com.ccs.baby.ui.display;
 
 import com.ccs.baby.disassembler.Disassembler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// open the disassembly window
-public class ViewDisassembler implements ActionListener {
+/**
+ * This class is responsible for displaying the disassembler window.
+ */
+public class DisplayDisassemblerWindow implements ActionListener {
 
     Disassembler disassembler;
 
-    public ViewDisassembler(Disassembler aDisassembler) {
+    public DisplayDisassemblerWindow(Disassembler aDisassembler) {
         disassembler = aDisassembler;
     }
 

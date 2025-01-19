@@ -3,12 +3,12 @@ package com.ccs.baby.menu;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.disassembler.Disassembler;
-import com.ccs.baby.ui.DebugPanel;
-import com.ccs.baby.ui.ViewStore;
-import com.ccs.baby.ui.ViewControl;
-import com.ccs.baby.ui.ViewAccumulator;
-import com.ccs.baby.ui.ViewDisassembler;
-import com.ccs.baby.ui.ViewDebugPanel;
+import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.ui.display.DisplayStore;
+import com.ccs.baby.ui.display.DisplayControl;
+import com.ccs.baby.ui.display.DisplayAccumulator;
+import com.ccs.baby.ui.display.DisplayDisassemblerWindow;
+import com.ccs.baby.ui.display.DisplayDebugPanel;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -41,11 +41,11 @@ public class ViewMenu {
         JMenuItem viewDebugPanel = new JCheckBoxMenuItem("Debug ");
 
         // Add action listeners for each item
-        viewStore.addActionListener(new ViewStore(crtPanel, switchPanel));
-        viewControl.addActionListener(new ViewControl(crtPanel, switchPanel));
-        viewAccumulator.addActionListener(new ViewAccumulator(crtPanel, switchPanel));
-        viewDisassembler.addActionListener(new ViewDisassembler(disassembler));
-        viewDebugPanel.addActionListener(new ViewDebugPanel(debugPanel));
+        viewStore.addActionListener(new DisplayStore(crtPanel, switchPanel));
+        viewControl.addActionListener(new DisplayControl(crtPanel, switchPanel));
+        viewAccumulator.addActionListener(new DisplayAccumulator(crtPanel, switchPanel));
+        viewDisassembler.addActionListener(new DisplayDisassemblerWindow(disassembler));
+        viewDebugPanel.addActionListener(new DisplayDebugPanel(debugPanel));
 
         // Add mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
         viewMenu.setMnemonic(KeyEvent.VK_V); // Alt + V

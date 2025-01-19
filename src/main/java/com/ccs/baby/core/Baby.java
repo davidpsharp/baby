@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
@@ -29,8 +28,7 @@ import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.TexturedJPanel;
 import com.ccs.baby.ui.LampManager;
 import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.DebugPanel;
-import com.ccs.baby.ui.Debugger;
+import com.ccs.baby.debug.DebugPanel;
 
 public class Baby extends JFrame {
 

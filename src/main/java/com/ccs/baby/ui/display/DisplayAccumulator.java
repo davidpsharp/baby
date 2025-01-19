@@ -1,17 +1,19 @@
-package com.ccs.baby.ui;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+package com.ccs.baby.ui.display;
 
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.SwitchPanel;
 
-// change to display the accumulator
-public class ViewAccumulator implements ActionListener {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * This class is responsible for displaying the accumulator.
+ */
+public class DisplayAccumulator implements ActionListener {
     CrtPanel crtPanel;
     SwitchPanel switchPanel;
 
-    public ViewAccumulator(CrtPanel aCrtPanel, SwitchPanel aSwitchPanel) {
+    public DisplayAccumulator(CrtPanel aCrtPanel, SwitchPanel aSwitchPanel) {
         crtPanel = aCrtPanel;
         switchPanel = aSwitchPanel;
     }
