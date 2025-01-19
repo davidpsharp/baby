@@ -1,4 +1,4 @@
-package com.ccs.baby.components;
+package com.ccs.baby.ui.components;
 
 import javax.swing.JCheckBox;
 import javax.swing.ImageIcon;

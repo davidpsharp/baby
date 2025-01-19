@@ -19,10 +19,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 
-import com.ccs.baby.components.InterlockingPushButton;
-import com.ccs.baby.components.KeySwitch;
-import com.ccs.baby.components.PushButton;
-import com.ccs.baby.components.ToggleSwitch;
+import com.ccs.baby.ui.components.InterlockingPushButton;
+import com.ccs.baby.ui.components.KeySwitch;
+import com.ccs.baby.ui.components.PushButton;
+import com.ccs.baby.ui.components.ToggleSwitch;
 import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Store;

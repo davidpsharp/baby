@@ -1,4 +1,4 @@
-package com.ccs.baby.components;
+package com.ccs.baby.ui.components;
 
 import com.ccs.baby.utils.ImageUtils;
 
