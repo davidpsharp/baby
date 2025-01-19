@@ -1,8 +1,6 @@
 package com.ccs.baby.components;
 
-import javax.swing.JRadioButton;
-import javax.swing.ImageIcon;
-import javax.swing.AbstractButton;
+import javax.swing.*;
 import java.awt.Insets;
 
 import com.ccs.baby.utils.ImageUtils;
@@ -22,10 +20,9 @@ public class InterlockingPushButton extends JRadioButton {
     /**
      * Constructs an InterlockingPushButton with the specified button text and vertical position for the text.
      *
-     * @param buttonText           the text to be displayed on the button
-     * @param verticalTextPosition the vertical position of the text relative to the button icon
+     * @param toolTipText The text to display when the button is hovered over.
      */
-    public InterlockingPushButton(String buttonText, int verticalTextPosition) {
+    public InterlockingPushButton(String toolTipText) {
         setIcon(DEFAULT_OUT_ICON);
         setSelectedIcon(DEFAULT_IN_ICON);
 
@@ -36,8 +33,8 @@ public class InterlockingPushButton extends JRadioButton {
         setMargin(DEFAULT_MARGIN);
 
         setHorizontalTextPosition(AbstractButton.CENTER);
-        setVerticalTextPosition(verticalTextPosition);
+        setVerticalAlignment(SwingConstants.TOP);
 
-        setText(buttonText);
+        setToolTipText(toolTipText);
     }
 }
