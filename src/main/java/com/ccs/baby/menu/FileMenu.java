@@ -9,8 +9,10 @@ import com.ccs.baby.core.Control;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import java.awt.event.KeyEvent;
+
 
 public class FileMenu {
 
@@ -41,10 +43,20 @@ public class FileMenu {
         close.addActionListener(e -> System.exit(0));
 
         // Set mnemonics (keyboard shortcuts)
-        loadSnapshotAssembly.setMnemonic(KeyEvent.VK_L); // Alt + L
-        saveSnapshot.setMnemonic(KeyEvent.VK_S); // Alt + S
-        saveAssembly.setMnemonic(KeyEvent.VK_A); // Alt + A
-        close.setMnemonic(KeyEvent.VK_C); // Alt + C
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            // MacOS specific mnemonics
+            loadSnapshotAssembly.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.META_DOWN_MASK)); // Cmd + L
+            saveSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.META_DOWN_MASK)); // Cmd + S
+            saveAssembly.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK)); // Cmd + A
+            close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.META_DOWN_MASK)); // Cmd + W
+        } else {
+            // Windows/Linux specific mnemonics
+            fileMenu.setMnemonic(KeyEvent.VK_F); // Alt + F
+            loadSnapshotAssembly.setMnemonic(KeyEvent.VK_L); // Alt + L
+            saveSnapshot.setMnemonic(KeyEvent.VK_S); // Alt + S
+            saveAssembly.setMnemonic(KeyEvent.VK_A); // Alt + A
+            close.setMnemonic(KeyEvent.VK_C); // Alt + C
+        }
 
         // Add items to the file menu
         fileMenu.add(loadSnapshotAssembly);

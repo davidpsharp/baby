@@ -2,10 +2,7 @@ package com.ccs.baby.menu;
 
 import com.ccs.baby.manual.ReferenceManual;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import java.awt.event.KeyEvent;
 
@@ -47,10 +44,10 @@ public class HelpMenu {
         ));
         refManual.addActionListener(new ReferenceManual());
 
-        // Set mnemonics (keyboard shortcuts)
+        // Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
         helpMenu.setMnemonic(KeyEvent.VK_H); // Alt + H
-        about.setMnemonic(KeyEvent.VK_A); // Alt + A
-        refManual.setMnemonic(KeyEvent.VK_R); // Alt + R
+        about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK )); // Ctrl + Alt + A
+        refManual.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)); // Ctrl + Alt + R
 
         // Add items to the menu
         helpMenu.add(refManual);

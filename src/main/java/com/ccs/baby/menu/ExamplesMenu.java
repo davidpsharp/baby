@@ -4,10 +4,9 @@ import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.io.LoadExample;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JFrame;
+import javax.swing.*;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +49,9 @@ public class ExamplesMenu {
         } else {
             buildStaticMenu(exampleMenu, store, crtPanel, frame);
         }
+
+        // Add mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
+        exampleMenu.setMnemonic(KeyEvent.VK_E); // Alt + E
 
         return exampleMenu;
     }
