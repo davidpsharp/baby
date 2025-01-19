@@ -4,89 +4,139 @@ import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.io.LoadExample;
 
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JFrame;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 public class ExamplesMenu {
 
-    // gate on whether to build menu of demo programs dynamically from whatever is in folder (experimental) OR old hardcoded logic used previously
+    // Toggle to determine whether to dynamically build the menu of demo programs from the folder structure
+    // (experimental) or use the previous hardcoded logic
     private static final boolean DYNAMIC_EXAMPLES = false;
+    private static final String EXAMPLES_FOLDER = "demos/";
 
-
+    /**
+     * Create the Examples menu
+     *
+     * @param store    the store to load the example program into
+     * @param crtPanel the CRT panel to display the store
+     * @param frame    the frame to display the example program in
+     * @return the Examples menu
+     */
     public static JMenu createExampleMenu(Store store, CrtPanel crtPanel, JFrame frame) {
         JMenu exampleMenu = new JMenu("Examples");
 
-        // build example programs menu from folder/file structure within JAR
         if (DYNAMIC_EXAMPLES) {
+            // TODO: Resolve issues with absolute and relative paths, and the differences between loading files from a
+            //  JAR versus iterating over files in a folder on disk. Ensure compatibility in both debugging and JAR
+            //  execution modes.
 
-            // TODO: getting in a mess at the moment w absolute & relative paths AND also difference between loading files from JAR versus iterating over files in folder on disk
-            String uriString;
             try {
-                uriString = getClass().getClassLoader().getResource("demos/").toURI().toString(); // prev passed in thsi string but only worked in debugger
-                System.out.println("demos Uri:" + uriString);
-                buildExamplesMenu(uriString, exampleMenu, store, crtPanel, frame);
+                URL resource = ExamplesMenu.class.getClassLoader().getResource(EXAMPLES_FOLDER);
+                if (resource == null) {
+                    throw new URISyntaxException(EXAMPLES_FOLDER, "Resource not found");
+                }
+                String uriString = resource.toURI().toString(); // Previous logic passed in this string, but only worked in debugger
+                buildDynamicMenu(uriString, exampleMenu, store, crtPanel, frame);
             } catch (URISyntaxException exception) {
-                System.out.println("can't find demos");
+                System.out.println("Can't find example programs at URI");
             }
+
         } else {
-            // old static examples menu - worked in JAR or debugger
-            JMenuItem diffeqt = new JMenuItem("demos/diffeqt.asm");
-            JMenuItem baby9 = new JMenuItem("demos/Baby9.snp");
-            JMenuItem primegen = new JMenuItem("demos/primegen.asm");
-            JMenuItem virpet = new JMenuItem("demos/virpet.asm");
-            JMenuItem noodleTimer = new JMenuItem("demos/noodletimer.snp");
-
-            diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm", store, crtPanel, frame));
-            baby9.addActionListener(new LoadExample("demos/Baby9.snp", store, crtPanel, frame));
-            primegen.addActionListener(new LoadExample("demos/primegen.asm", store, crtPanel, frame));
-            virpet.addActionListener(new LoadExample("demos/virpet.asm", store, crtPanel, frame));
-            noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp", store, crtPanel, frame));
-
-            exampleMenu.add(diffeqt);
-            exampleMenu.add(baby9);
-            exampleMenu.add(primegen);
-            exampleMenu.add(virpet);
-            exampleMenu.add(noodleTimer);
+            buildStaticMenu(exampleMenu, store, crtPanel, frame);
         }
-
 
         return exampleMenu;
     }
 
-    private void buildExamplesMenu(String uriString, JMenu menu, Store store, CrtPanel crtPanel, JFrame frame) {
+    /**
+     * Build the old static examples menu that worked in JAR or debugger
+     *
+     * @param menu     the menu to add the items to
+     * @param store    the store to load the example program into
+     * @param crtPanel the CRT panel to display the store
+     * @param frame    the frame to display the example program in
+     */
+    private static void buildStaticMenu(JMenu menu, Store store, CrtPanel crtPanel, JFrame frame) {
+
+        // Create menu items
+        JMenuItem diffeqt = new JMenuItem("demos/diffeqt.asm");
+        JMenuItem baby9 = new JMenuItem("demos/Baby9.snp");
+        JMenuItem primegen = new JMenuItem("demos/primegen.asm");
+        JMenuItem virpet = new JMenuItem("demos/virpet.asm");
+        JMenuItem noodleTimer = new JMenuItem("demos/noodletimer.snp");
+
+        // Add action listeners for each item
+        diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm", store, crtPanel, frame));
+        baby9.addActionListener(new LoadExample("demos/Baby9.snp", store, crtPanel, frame));
+        primegen.addActionListener(new LoadExample("demos/primegen.asm", store, crtPanel, frame));
+        virpet.addActionListener(new LoadExample("demos/virpet.asm", store, crtPanel, frame));
+        noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp", store, crtPanel, frame));
+
+        // Add items to the examples menu
+        menu.add(diffeqt);
+        menu.add(baby9);
+        menu.add(primegen);
+        menu.add(virpet);
+        menu.add(noodleTimer);
+    }
+
+    /**
+     * Build the dynamic example programs menu from folder/file structure within JAR
+     *
+     * @param menu     the menu to add the items to
+     * @param store    the store to load the example program into
+     * @param crtPanel the CRT panel to display the store
+     * @param frame    the frame to display the example program in
+     */
+    private static void buildDynamicMenu(String uriString, JMenu menu, Store store, CrtPanel crtPanel, JFrame frame) {
+
+        // TODO: The current implementation works fine in the debugger but is broken when running in two modes:
+        //  1. A folder structure for when running in debugger
+        //  2. JAR mode when files are packaged in a JAR
+        //  Additionally, we may want to load files from a folder outside the JAR if users provide more programs.
+        //  Consider removing in-JAR files to make the application more self-contained, especially for running in a WASM JVM.
+
         URI uri;
+
         try {
             uri = new URI(uriString);
-            System.out.println("uri:" + uri.toString());
+            System.out.println("uri:" + uri);
         } catch (URISyntaxException exception) {
-            // give up if can't get uri
+            // Give up if it can't get uri
             System.err.println("Can't find example programs at URI:" + uriString);
             return;
         }
 
-        // TODO: works fine in debugger but BADLY broken as needs to run in two modes, with a folder structure for when running in debugger and with JAR mode when files all in a JAR
-        // plus may want to load files from folder outside the JAR if users provide more programs. Could ditch in-JAR files but then less self contained, esp if
-        // attempting to run in a WASM JVM for example.
-
         File dir = new File(uri);
-        for (File nextFile : dir.listFiles()) {
-            System.out.println(nextFile.isDirectory() + ": " + nextFile.getName());
+        File[] files = dir.listFiles();
 
-            if (nextFile.isFile()) {
-                if (nextFile.getName().endsWith(".snp") || nextFile.getName().endsWith(".asm")) {
-                    JMenuItem menuItem = new JMenuItem(nextFile.getName());
-                    String temp = nextFile.getPath(); //$ .getAbsolutePath();
-                    menuItem.addActionListener(new LoadExample(nextFile.getAbsolutePath(), store, crtPanel, frame));
-                    menu.add(menuItem);
+        if (files != null) {
+            for (File nextFile : files) {
+                System.out.println(nextFile.isDirectory() + ": " + nextFile.getName());
+
+                if (nextFile.isFile()) {
+                    if (nextFile.getName().endsWith(".snp") || nextFile.getName().endsWith(".asm")) {
+                        JMenuItem menuItem = new JMenuItem(nextFile.getName());
+                        String temp = nextFile.getPath(); //$ .getAbsolutePath();
+                        menuItem.addActionListener(new LoadExample(nextFile.getAbsolutePath(), store, crtPanel, frame));
+                        menu.add(menuItem);
+                    }
+                } else if (nextFile.isDirectory()) {
+                    JMenu newSubMenu = new JMenu(nextFile.getName());
+                    menu.add(newSubMenu);
+
+                    // Recursively call this method on contents of the next folder down
+                    buildDynamicMenu("file:" + nextFile.getAbsolutePath(), newSubMenu, store, crtPanel, frame);
                 }
-            } else if (nextFile.isDirectory()) {
-                JMenu newSubMenu = new JMenu(nextFile.getName());
-                menu.add(newSubMenu);
-                // recursively call this method on contents of the next folder down
-                buildExamplesMenu("file:" + nextFile.getAbsolutePath(), newSubMenu, store, crtPanel, frame);
             }
+        } else {
+            System.err.println("Error: Unable to list files in directory " + dir.getAbsolutePath());
         }
 
 
