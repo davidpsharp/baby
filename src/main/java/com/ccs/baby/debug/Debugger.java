@@ -45,8 +45,14 @@ public class Debugger extends JFrame implements ActionListener
     Color currentDebugLineColor = new Color(76,76,25);
     Style currentLineStyle;
 
+    private final boolean SHOW_IN_PROGRESS_DEBUGGER = false;
+
     public Debugger()
     {
+        // if we don't want to share this feature yet then do nothing
+        if(!SHOW_IN_PROGRESS_DEBUGGER)
+            return;
+            
         setTitle("Baby Debugger");
         setSize(1000, 800);
 
@@ -66,7 +72,7 @@ public class Debugger extends JFrame implements ActionListener
         highlighter = new BabyAsmSyntaxHighlighter(textPane);
 
         // default style
-        textPane.setFont( new Font("Monospaced",Font.BOLD,12) );
+        textPane.setFont( new Font("Monospaced",Font.BOLD,13) );
         
         textPane.setForeground(BabyAsmSyntaxHighlighter.color_foreground_yellow);
         textPane.setBackground(BabyAsmSyntaxHighlighter.color_background_off_black);
@@ -119,7 +125,6 @@ public class Debugger extends JFrame implements ActionListener
         // set up updates to syntax highlighting
         doc.addDocumentListener(new DebuggerDocumentListener());
 
-        
         setVisible(true);
     }
 

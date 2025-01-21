@@ -5,30 +5,32 @@ package com.ccs.baby.core;
 // January 2001
 // requires Java v1.2 or later
 
-import java.awt.Container;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import java.awt.event.WindowEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.animation.AnimationManager;
-import com.ccs.baby.menu.MenuSetup;
-import com.ccs.baby.ui.SwitchPanel;
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.BackgroundPanel;
-import com.ccs.baby.ui.LampManager;
-import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.debug.Debugger;
+import com.ccs.baby.disassembler.Disassembler;
+import com.ccs.baby.menu.MenuSetup;
+import com.ccs.baby.ui.BackgroundPanel;
+import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.LampManager;
+import com.ccs.baby.ui.SwitchPanel;
 
 public class Baby extends JFrame {
 
@@ -151,8 +153,10 @@ public class Baby extends JFrame {
 
     // Main method to create main window
     public static void main(String args[]) {
+        // On MacOS put menu at top of the screen like native MacOS software
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", "Baby");
+
         // scale whole UI (including text, menus, controls... everything) to handle hiDPI screens
         // does not appear to work on MacOS but tested on Windows 10
         // on OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
@@ -187,8 +191,8 @@ public class Baby extends JFrame {
         baby.setVisible(true);
         baby.setResizable(false);
 
-        // test only
-        // Debugger debugger = new Debugger();
+        // Initialise WIP editor/debugger, control whether it does anything in the Debugger constructor...
+        com.ccs.baby.debug.Debugger debugger = new Debugger();
     }
 
     // Delegate animation control methods
