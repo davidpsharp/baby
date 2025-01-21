@@ -52,7 +52,6 @@ public class LoadSnapshotAssembly implements ActionListener {
             try {
                 // detect file type and then load appropriately if possible
 
-                control.setInstructionsPerRefresh(4);
                 switch (store.getFileType(currentFile)) {
                     case Store.UNACCEPTABLE:
                         JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);

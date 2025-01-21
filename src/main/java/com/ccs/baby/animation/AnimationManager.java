@@ -83,6 +83,8 @@ public class AnimationManager {
     }
 
     // halt animation
+    // TODO: bug, this doesn't get called if STP instruction executed (in threaded running mode, possibly in timer mode too)
+    // only called if stop/run switch pressed or Stop button pressed on debug panel; means keeps fpsTimer going when needs to stop :(
     public synchronized void stopAnimation() {
         if (threadedAnimation) {
             if (running) {

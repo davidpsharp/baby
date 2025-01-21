@@ -32,8 +32,9 @@ public class FpsLabelService {
         if (pointPos != -1)
             elapsedTimeS = elapsedTimeS.substring(0, pointPos + 2);
 
-        fpsLabel.setText("" + (control.getCycleCount() * control.getInstructionsPerRefresh()) + " fps "
+        fpsLabel.setText("" + (control.getCycleCount() * control.getInstructionsPerRefresh()) + " instr/sec "
                 + percentage + "% "
-                + elapsedTimeS + "s");
+                + elapsedTimeS + "s "
+                + control.getInstructionsPerRefresh() + " instr/redraw");
     }
 }
