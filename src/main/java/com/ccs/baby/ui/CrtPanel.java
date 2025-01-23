@@ -39,6 +39,7 @@ public class CrtPanel extends JPanel {
     private DisplayType currentDisplay = DisplayType.STORE; // The current display type
     private final boolean renderAccurately = true; // Whether to render the Control and Accumulator accurately
     private final BufferedImage bufferedImage = new BufferedImage(DEFAULT_CRT_WIDTH, DEFAULT_CRT_HEIGHT, BufferedImage.TYPE_INT_ARGB); // The image to be drawn
+    private Graphics2D big = bufferedImage.createGraphics();
     private int actionLine = 0;
 
     private final Store store;
@@ -171,7 +172,6 @@ public class CrtPanel extends JPanel {
 
     // renders the Store to the buffered image
     private void renderStore() {
-        Graphics2D big = bufferedImage.createGraphics();
 
         for (int lineNumber = 0; lineNumber < 32; lineNumber++) {
             // for each line that has been changed since last redraw
@@ -190,8 +190,6 @@ public class CrtPanel extends JPanel {
 
     // render control
     public void renderControl() {
-        Graphics2D big = bufferedImage.createGraphics();
-
         // if rendering accurately repeat display all the way down
         if (renderAccurately) {
             // if the baby is running then PI exists so draw it
@@ -216,8 +214,6 @@ public class CrtPanel extends JPanel {
 
     // render accumulator
     public void renderAccumulator() {
-        Graphics2D big = bufferedImage.createGraphics();
-
         drawDataAtLine(control.getAccumulator(), 0, big);
 
         // if rendering accuraterly draw accumulator on all lines
