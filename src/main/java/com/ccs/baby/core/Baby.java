@@ -94,7 +94,7 @@ public class Baby extends JFrame {
         FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
 
         // Initialise AnimationManager
-        animationManager = new AnimationManager(control, crtPanel, switchPanel, true, fpsLabelService);
+        animationManager = new AnimationManager(control, crtPanel, switchPanel, fpsLabelService);
 
         // Set up and add menu bars to the window
         JMenuBar menuBar = new JMenuBar();

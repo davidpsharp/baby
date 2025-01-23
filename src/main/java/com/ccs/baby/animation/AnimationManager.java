@@ -17,18 +17,8 @@ public class AnimationManager {
     private final CrtPanel crtPanel;
     private final SwitchPanel switchPanel;
 
-    // there are two implementations of the animation, one using the Timer class and one
-    // using threads, if this is set to true then the threaded version is used which
-    // seems to be the best all round solution (Timer is poor on Solaris).
-    private final boolean threadedAnimation;
-
-    // timer control for animation (alternative to thread)
-    private Timer animateTimer;
-
     // timer for counting number of instructions executed each second to give speed
     private Timer fpsTimer;
-
-    private java.util.Timer clockTimer;
 
     // thread control for animation
     private Animator animator;
@@ -37,45 +27,26 @@ public class AnimationManager {
 
     private boolean running = false;
 
-    public AnimationManager(Control control, CrtPanel crtPanel, SwitchPanel switchPanel, boolean threadedAnimation, FpsLabelService fpsLabelService) {
+    public AnimationManager(Control control, CrtPanel crtPanel, SwitchPanel switchPanel, FpsLabelService fpsLabelService) {
         this.control = control;
         this.crtPanel = crtPanel;
         this.switchPanel = switchPanel;
-        this.threadedAnimation = threadedAnimation;
         this.fpsLabelService = fpsLabelService;
-        setupTimers();
-    }
-
-    private void setupTimers() {
-
-        // set up timer animation (currently not used)
-        // delay is in milliseconds
-        // unless timer is 0 then we get horrendous slow down
-        animateTimer = new Timer(0, this::handleAnimateTimer);
-        animateTimer.setInitialDelay(0);
-        animateTimer.setCoalesce(true);
 
         // create timer to calculate speed to tick once a second
         fpsTimer = new Timer(1000, this::handleFpsTimer);
         fpsTimer.setInitialDelay(0);
     }
 
-    // start running animation either using threads or timer
-    // this is hardcoded and cannot me changed mid-session
+    // start running animation
     public synchronized void startAnimation() {
-        if (threadedAnimation) {
-            if (!running) {
-                // create new thread for animation
-                animator = new Animator(crtPanel, control, switchPanel);
-                animator.startAnimating();
-            }
-        } else {
-            if (!animateTimer.isRunning()) {
-                // start the animation timer running
-                animateTimer.start();
-            }
+        
+        if (!running) {
+            // create new thread for animation
+            animator = new Animator(crtPanel, control, switchPanel);
+            animator.startAnimating();
         }
-
+        
         // start fps timer
         fpsTimer.start();
         control.setCycleCount(0);
@@ -86,17 +57,11 @@ public class AnimationManager {
     // TODO: bug, this doesn't get called if STP instruction executed (in threaded running mode, possibly in timer mode too)
     // only called if stop/run switch pressed or Stop button pressed on debug panel; means keeps fpsTimer going when needs to stop :(
     public synchronized void stopAnimation() {
-        if (threadedAnimation) {
-            if (running) {
-                animator.stopAnimating();
-                running = false;
-            }
-        } else {
-            if (animateTimer.isRunning()) {
-                animateTimer.stop();
-                running = false;
-            }
+        if (running) {
+            animator.stopAnimating();
+            running = false;
         }
+       
         switchPanel.updateActionLine();
 
         // repaint so that control with the PI can be drawn if necessary
@@ -105,36 +70,9 @@ public class AnimationManager {
         fpsTimer.stop();
     }
 
-    // animation timer tick
-    private void handleAnimateTimer(ActionEvent e) {
-        // if STP instruction has been executed stop the animation
-        if (control.getStopFlag()) {
-            stopAnimation();
-        } else {
-            // execute X instructions before updating the display (while stop flag is unset)
-            for (int x = 0; x < control.getInstructionsPerRefresh() && !control.getStopFlag(); x++) {
-                // if auto on switchpanel then use store for instructions
-                if (switchPanel.getManAuto()) {
-                    control.executeAutomatic();
-                }
-                // else if man then use the line and functions switches from the switch panel
-                else {
-                    control.executeManual();
-                }
-            }
-
-            // update display
-            crtPanel.render();
-            crtPanel.efficientRepaint();
-
-            // increment number of cycles of X instructions executed
-            control.incCycleCount();
-        }
-    }
 
     // if the one second timer to measure the speed
     private void handleFpsTimer(ActionEvent e) {
-
 
         fpsLabelService.updateFpsLabel();
 
@@ -160,7 +98,6 @@ public class AnimationManager {
         // if the Baby has stopped animating then no need to keep timing.
         if (!running)
             fpsTimer.stop();
-
 
     }
 }
