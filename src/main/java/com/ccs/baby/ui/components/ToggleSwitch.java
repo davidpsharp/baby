@@ -1,7 +1,6 @@
 package com.ccs.baby.ui.components;
 
-import javax.swing.JCheckBox;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 import com.ccs.baby.utils.ImageUtils;
 
@@ -18,13 +17,11 @@ public class ToggleSwitch extends JCheckBox {
     private static final ImageIcon DEFAULT_HOLE_ICON = ImageUtils.loadImageIcon("/images/hole.gif", DEFAULT_SCALE);
 
     /**
-     * Constructs an ToggleSwitch with the specified button text with vertical and horizontal position for the text.
+     *  Constructs a ToggleSwitch with the specified button text and vertical position for the text.
      *
-     * @param buttonText             the text to be displayed on the button
-     * @param verticalTextPosition   the vertical position of the text relative to the button icon
-     * @param horizontalTextPosition the horizontal position of the text relative to the button icon
+     * @param toolTipText The text to display when the button is hovered over.
      */
-    public ToggleSwitch(String buttonText, int horizontalTextPosition, int verticalTextPosition) {
+    public ToggleSwitch(String toolTipText) {
 
         setIcon(DEFAULT_UP_ICON);
         setSelectedIcon(DEFAULT_DOWN_ICON);
@@ -36,10 +33,10 @@ public class ToggleSwitch extends JCheckBox {
 
         setSelected(false);
 
-        setHorizontalTextPosition(horizontalTextPosition);
-        setVerticalTextPosition(verticalTextPosition);
+        setHorizontalTextPosition(AbstractButton.CENTER);
+        setVerticalTextPosition(SwingConstants.TOP);
 
-        setText(buttonText);
+        setToolTipText(toolTipText);
     }
 }
 
