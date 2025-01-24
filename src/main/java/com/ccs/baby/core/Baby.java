@@ -198,11 +198,9 @@ public class Baby extends JFrame {
     // Delegate animation control methods
     public synchronized void startAnimation() {
         animationManager.startAnimation();
-        running = true;
     }
 
     public synchronized void stopAnimation() {
         animationManager.stopAnimation();
-        running = false;
     }
 }

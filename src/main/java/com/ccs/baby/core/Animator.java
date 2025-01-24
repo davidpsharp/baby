@@ -13,7 +13,7 @@ import com.ccs.baby.ui.SwitchPanel;
  */
 public class Animator extends Thread {
 
-    private volatile boolean keepAnimating = false; // Flag to indicate whether we currently are animating or not.
+    private volatile boolean keepAnimating = false; // Flag to indicate whether to keep animating (or terminate thread)
 
     private final CrtPanel crtPanel;
     private final Control control;
@@ -38,7 +38,7 @@ public class Animator extends Thread {
      * Starts the animation.
      */
     public void startAnimating() {
-        keepAnimating = true;
+        // start the animation thread
         if (!isAlive()) {
             start();
         }
@@ -57,6 +57,12 @@ public class Animator extends Thread {
 
         final long DEFAULT_FRAME_TIME = 10_000_000L; // 10 ms in nanoseconds
         setPriority(Thread.NORM_PRIORITY + 1); // Increment thread priority if needed
+        
+        keepAnimating = true;
+
+        control.setCycleCount(0);
+
+        Baby.running = true; // Indicate that the animation has started
 
         // Animation loop, while allowed to keep animating
         while (keepAnimating) {
@@ -91,6 +97,8 @@ public class Animator extends Thread {
         }
 
         Baby.running = false; // Indicate that the animation has stopped
+
+        // recall when run() completes the Thread terminates
     }
 
     /**

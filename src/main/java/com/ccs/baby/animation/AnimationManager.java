@@ -41,25 +41,22 @@ public class AnimationManager {
     // start running animation
     public synchronized void startAnimation() {
         
-        if (!running) {
-            // create new thread for animation
+        if (!Baby.running) {
+            // create new thread for animation (create a new one as recall a thread can only be started once)
             animator = new Animator(crtPanel, control, switchPanel);
             animator.startAnimating();
         }
         
         // start fps timer
         fpsTimer.start();
-        control.setCycleCount(0);
-        running = true;
+
     }
 
     // halt animation
-    // TODO: bug, this doesn't get called if STP instruction executed (in threaded running mode, possibly in timer mode too)
-    // only called if stop/run switch pressed or Stop button pressed on debug panel; means keeps fpsTimer going when needs to stop :(
+    // only called if stop/run switch pressed or Stop button pressed on debug panel
     public synchronized void stopAnimation() {
-        if (running) {
+        if (Baby.running) {
             animator.stopAnimating();
-            running = false;
         }
        
         switchPanel.updateActionLine();
@@ -67,12 +64,15 @@ public class AnimationManager {
         // repaint so that control with the PI can be drawn if necessary
         crtPanel.render();
         crtPanel.repaint();
-        fpsTimer.stop();
     }
 
 
     // if the one second timer to measure the speed
     private void handleFpsTimer(ActionEvent e) {
+
+        // if the Baby has stopped animating then no need to keep timing, make this the last FPS update...
+        if (!Baby.running)
+            fpsTimer.stop();
 
         fpsLabelService.updateFpsLabel();
 
@@ -94,10 +94,6 @@ public class AnimationManager {
 
         // reset counter ready for the next second
         control.setCycleCount(0);
-
-        // if the Baby has stopped animating then no need to keep timing.
-        if (!running)
-            fpsTimer.stop();
 
     }
 }
