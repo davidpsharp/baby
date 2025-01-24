@@ -1,5 +1,6 @@
 package com.ccs.baby.core;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import com.ccs.baby.ui.CrtPanel;
@@ -56,48 +57,55 @@ public class Animator extends Thread {
     public void run() {
 
         final long DEFAULT_FRAME_TIME = 10_000_000L; // 10 ms in nanoseconds
+
         setPriority(Thread.NORM_PRIORITY + 1); // Increment thread priority if needed
         
         keepAnimating = true;
 
         control.setCycleCount(0);
 
-        Baby.running = true; // Indicate that the animation has started
+        try
+        {
 
-        // Animation loop, while allowed to keep animating
-        while (keepAnimating) {
-            long startTime = System.nanoTime();
+            Baby.running = true; // Indicate that the animation has started
 
-            // Stop animation if STP lamp lit
-            if (control.getStopFlag()) {
-                stopAnimating();
-                break;
-            }
+            // Animation loop, while allowed to keep animating
+            while (keepAnimating) {
+                long startTime = System.nanoTime();
 
-            executeInstructions();
-
-            // Render and repaint
-            crtPanel.render();
-            crtPanel.efficientRepaint();
-            control.incCycleCount();
-
-            // Calculate elapsed time
-            long elapsedTime = System.nanoTime() - startTime;
-
-            // Maintain consistent frame rate
-            if (elapsedTime < DEFAULT_FRAME_TIME) {
-                try {
-                    TimeUnit.NANOSECONDS.sleep(DEFAULT_FRAME_TIME - elapsedTime);
-                } catch (InterruptedException e) {
-                    // Handle interruption appropriately
-                    Thread.currentThread().interrupt();
+                // Stop animation if STP lamp lit
+                if (control.getStopFlag()) {
+                    stopAnimating();
                     break;
+                }
+
+                executeInstructions();
+
+                // Render and repaint
+                crtPanel.render();
+                crtPanel.efficientRepaint();
+                control.incCycleCount();
+
+                // Calculate elapsed time
+                long elapsedTime = System.nanoTime() - startTime;
+
+                // Maintain consistent frame rate
+                if (elapsedTime < DEFAULT_FRAME_TIME) {
+                    try {
+                        TimeUnit.NANOSECONDS.sleep(DEFAULT_FRAME_TIME - elapsedTime);
+                    } catch (InterruptedException e) {
+                        // Handle interruption appropriately
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
             }
         }
-
-        Baby.running = false; // Indicate that the animation has stopped
-
+        finally
+        {
+            Baby.running = false; // Indicate that the animation has stopped
+        }
+        
         // recall when run() completes the Thread terminates
     }
 
