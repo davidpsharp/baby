@@ -71,8 +71,6 @@ public class Baby extends JFrame {
         switchPanel.setOpaque(false);
         control.setSwitchPanel(switchPanel);    // Tell control about switchPanel
 
-        
-
         // Create a container mainPanel that wraps crtPanel and switchPanel
         mainPanel = new BackgroundPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -172,10 +170,12 @@ public class Baby extends JFrame {
         {
             // parse args
             // TODO:
-            // -load - load program & show GUI, handle snp/asm formats
-            // -assemble - cmd line only, assemble and output assembled store SNP format to stdout.
-            // -disassemble - cmd line only, take SNP and output disassembled store to stdout.
-            // -execute - load program, execute in memory on command line and output result to stdout.
+            // -load <file> - load program & show GUI, handle snp/asm formats
+            // -asm <file> - cmd line only, assemble and output assembled store SNP format to stdout.
+            // -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
+            // -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
+            // -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
+            // -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
         }
 
         Baby baby = new Baby();

@@ -47,7 +47,7 @@ public class AnimationManager {
             animator.startAnimating();
         }
         
-        // start fps timer
+        // start fps timer *after* animation has started (timer self-terminates if animation is not running)
         fpsTimer.start();
 
     }
@@ -67,7 +67,7 @@ public class AnimationManager {
     }
 
 
-    // if the one second timer to measure the speed
+    // one second timer to measure the speed and correct to real machine speed
     private void handleFpsTimer(ActionEvent e) {
 
         // if the Baby has stopped animating then no need to keep timing, make this the last FPS update...
