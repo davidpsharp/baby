@@ -70,30 +70,36 @@ public class AnimationManager {
     // one second timer to measure the speed and correct to real machine speed
     private void handleFpsTimer(ActionEvent e) {
 
-        // if the Baby has stopped animating then no need to keep timing, make this the last FPS update...
-        if (!Baby.running)
-            fpsTimer.stop();
-
         fpsLabelService.updateFpsLabel();
+        
+        if (Baby.running)
+        {
+            // we don't want to adjust speed if baby has finished executing as may have only done a few
+            // instructions before hit STP instruction which would make this adjust the speed to go faster
 
-        int actualFpsValue = control.getCycleCount() * control.getInstructionsPerRefresh();
+            int actualFpsValue = control.getCycleCount() * control.getInstructionsPerRefresh();
 
-        // speed adjustment
-        // adjust number of instructions per refresh to get 700 fps or as close as possible
-        if (actualFpsValue > 730) {
-            int newValue = control.getInstructionsPerRefresh();
-            newValue--;
-            if (newValue < 1) newValue = 1;
-            control.setInstructionsPerRefresh(newValue);
-        } else if (actualFpsValue < 670) {
-            int newValue = control.getInstructionsPerRefresh();
-            newValue++;
-            if (newValue > 20) newValue = 20;
-            control.setInstructionsPerRefresh(newValue);
+            // adjust number of instructions per refresh to get 700 fps or as close as possible
+            if (actualFpsValue > 730) {
+                int newValue = control.getInstructionsPerRefresh();
+                newValue--;
+                if (newValue < 1) newValue = 1;
+                control.setInstructionsPerRefresh(newValue);
+            } else if (actualFpsValue < 670) {
+                int newValue = control.getInstructionsPerRefresh();
+                newValue++;
+                if (newValue > 20) newValue = 20;
+                control.setInstructionsPerRefresh(newValue);
+            }
+
+            // reset counter ready for the next second
+            control.setCycleCount(0);
         }
-
-        // reset counter ready for the next second
-        control.setCycleCount(0);
+        else
+        {
+            // if the Baby has stopped animating then no need to keep timing, make this the last FPS update...
+            fpsTimer.stop();
+        }
 
     }
 }
