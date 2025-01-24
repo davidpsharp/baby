@@ -5,30 +5,32 @@ package com.ccs.baby.core;
 // January 2001
 // requires Java v1.2 or later
 
-import java.awt.Container;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import java.awt.event.WindowEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import com.ccs.baby.disassembler.Disassembler;
 import com.ccs.baby.animation.AnimationManager;
-import com.ccs.baby.menu.MenuSetup;
-import com.ccs.baby.ui.SwitchPanel;
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.BackgroundPanel;
-import com.ccs.baby.ui.LampManager;
-import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.debug.Debugger;
+import com.ccs.baby.disassembler.Disassembler;
+import com.ccs.baby.menu.MenuSetup;
+import com.ccs.baby.ui.BackgroundPanel;
+import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.LampManager;
+import com.ccs.baby.ui.SwitchPanel;
 
 public class Baby extends JFrame {
 
@@ -69,8 +71,6 @@ public class Baby extends JFrame {
         switchPanel.setOpaque(false);
         control.setSwitchPanel(switchPanel);    // Tell control about switchPanel
 
-        
-
         // Create a container mainPanel that wraps crtPanel and switchPanel
         mainPanel = new BackgroundPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -92,7 +92,7 @@ public class Baby extends JFrame {
         FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
 
         // Initialise AnimationManager
-        animationManager = new AnimationManager(control, crtPanel, switchPanel, true, fpsLabelService);
+        animationManager = new AnimationManager(control, crtPanel, switchPanel, fpsLabelService);
 
         // Set up and add menu bars to the window
         JMenuBar menuBar = new JMenuBar();
@@ -151,8 +151,10 @@ public class Baby extends JFrame {
 
     // Main method to create main window
     public static void main(String args[]) {
+        // On MacOS put menu at top of the screen like native MacOS software
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", "Baby");
+
         // scale whole UI (including text, menus, controls... everything) to handle hiDPI screens
         // does not appear to work on MacOS but tested on Windows 10
         // on OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
@@ -168,10 +170,12 @@ public class Baby extends JFrame {
         {
             // parse args
             // TODO:
-            // -load - load program & show GUI, handle snp/asm formats
-            // -assemble - cmd line only, assemble and output assembled store SNP format to stdout.
-            // -disassemble - cmd line only, take SNP and output disassembled store to stdout.
-            // -execute - load program, execute in memory on command line and output result to stdout.
+            // -load <file> - load program & show GUI, handle snp/asm formats
+            // -asm <file> - cmd line only, assemble and output assembled store SNP format to stdout.
+            // -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
+            // -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
+            // -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
+            // -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
         }
 
         Baby baby = new Baby();
@@ -187,18 +191,16 @@ public class Baby extends JFrame {
         baby.setVisible(true);
         baby.setResizable(false);
 
-        // test only
-        // Debugger debugger = new Debugger();
+        // Initialise WIP editor/debugger, control whether it does anything in the Debugger constructor...
+        com.ccs.baby.debug.Debugger debugger = new Debugger();
     }
 
     // Delegate animation control methods
     public synchronized void startAnimation() {
         animationManager.startAnimation();
-        running = true;
     }
 
     public synchronized void stopAnimation() {
         animationManager.stopAnimation();
-        running = false;
     }
 }

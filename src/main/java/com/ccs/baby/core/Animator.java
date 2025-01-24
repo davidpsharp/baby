@@ -1,5 +1,6 @@
 package com.ccs.baby.core;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import com.ccs.baby.ui.CrtPanel;
@@ -13,7 +14,7 @@ import com.ccs.baby.ui.SwitchPanel;
  */
 public class Animator extends Thread {
 
-    private volatile boolean keepAnimating = false; // Flag to indicate whether we currently are animating or not.
+    private volatile boolean keepAnimating = false; // Flag to indicate whether to keep animating (or terminate thread)
 
     private final CrtPanel crtPanel;
     private final Control control;
@@ -38,7 +39,7 @@ public class Animator extends Thread {
      * Starts the animation.
      */
     public void startAnimating() {
-        keepAnimating = true;
+        // start the animation thread
         if (!isAlive()) {
             start();
         }
@@ -56,41 +57,56 @@ public class Animator extends Thread {
     public void run() {
 
         final long DEFAULT_FRAME_TIME = 10_000_000L; // 10 ms in nanoseconds
+
         setPriority(Thread.NORM_PRIORITY + 1); // Increment thread priority if needed
+        
+        keepAnimating = true;
 
-        // Animation loop, while allowed to keep animating
-        while (keepAnimating) {
-            long startTime = System.nanoTime();
+        control.setCycleCount(0);
 
-            // Stop animation if STP lamp lit
-            if (control.getStopFlag()) {
-                stopAnimating();
-                break;
-            }
+        try
+        {
 
-            executeInstructions();
+            Baby.running = true; // Indicate that the animation has started
 
-            // Render and repaint
-            crtPanel.render();
-            crtPanel.efficientRepaint();
-            control.incCycleCount();
+            // Animation loop, while allowed to keep animating
+            while (keepAnimating) {
+                long startTime = System.nanoTime();
 
-            // Calculate elapsed time
-            long elapsedTime = System.nanoTime() - startTime;
-
-            // Maintain consistent frame rate
-            if (elapsedTime < DEFAULT_FRAME_TIME) {
-                try {
-                    TimeUnit.NANOSECONDS.sleep(DEFAULT_FRAME_TIME - elapsedTime);
-                } catch (InterruptedException e) {
-                    // Handle interruption appropriately
-                    Thread.currentThread().interrupt();
+                // Stop animation if STP lamp lit
+                if (control.getStopFlag()) {
+                    stopAnimating();
                     break;
+                }
+
+                executeInstructions();
+
+                // Render and repaint
+                crtPanel.render();
+                crtPanel.efficientRepaint();
+                control.incCycleCount();
+
+                // Calculate elapsed time
+                long elapsedTime = System.nanoTime() - startTime;
+
+                // Maintain consistent frame rate
+                if (elapsedTime < DEFAULT_FRAME_TIME) {
+                    try {
+                        TimeUnit.NANOSECONDS.sleep(DEFAULT_FRAME_TIME - elapsedTime);
+                    } catch (InterruptedException e) {
+                        // Handle interruption appropriately
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
             }
         }
-
-        Baby.running = false; // Indicate that the animation has stopped
+        finally
+        {
+            Baby.running = false; // Indicate that the animation has stopped
+        }
+        
+        // recall when run() completes the Thread terminates
     }
 
     /**
