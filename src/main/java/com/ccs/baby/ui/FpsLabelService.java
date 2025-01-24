@@ -10,7 +10,7 @@ public class FpsLabelService {
 
     // number of instructions real Baby executed in a second
     private static final double REAL_CYCLES_PER_SECOND = 700.0;
-    private double elapsedTime = 0; // in seconds
+    private double elapsedTime = 0; // in seconds // TODO: is this simulated or wall-clock time?
 
     public FpsLabelService(JButton fpsLabel, Control control) {
         this.fpsLabel = fpsLabel;

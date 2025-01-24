@@ -40,6 +40,16 @@ public class Control
 	private boolean kacPressed = false;
 	private boolean setToErase = false;
 	
+	// function number encodings for different instructions 
+	private static final int FUNC_JMP = 0;
+	private static final int FUNC_JRP = 1;
+	private static final int FUNC_LDN = 2;
+	private static final int FUNC_STO = 3;
+	private static final int FUNC_SUB = 4;
+	private static final int FUNC_SUB5 = 5;
+	private static final int FUNC_CMP = 6;
+	private static final int FUNC_STP = 7;
+
 	
 	
 
@@ -409,25 +419,16 @@ public class Control
 					break;
 		}
 	}
-	
+		
+
 	// return true if the function from the line will make use of the action number
 	// used to check if the action line is used so it can be corrupted if necessary
 	public boolean makesUseOfActionLine(int instructionValue)
 	{
-		boolean result = false;
-		switch( getFunctionNumber(instructionValue) )
-		{
-			case 0 :
-			case 1 :
-			case 2 :
-			case 3 :
-			case 4 :
-			case 5 : result = true; break;
-			case 6 :
-			case 7 : result = false; break;
-			default : result = false; break;
-		}
-		return result;
+		// only STP and CMP do not refer to an action line (i.e. function numbers 6 & 7)
+		// so return true if it's not one of those
+		int funcNumber = getFunctionNumber(instructionValue);
+		return (funcNumber != FUNC_CMP) && (funcNumber != FUNC_STP);
 	}
 	
 	public String toString()
