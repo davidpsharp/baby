@@ -5,9 +5,11 @@ package com.ccs.baby.core;
 // January 2001
 // requires Java v1.2 or later
 
+import java.awt.Container;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -25,7 +27,10 @@ import com.ccs.baby.animation.AnimationManager;
 import com.ccs.baby.debug.DebugPanel;
 import com.ccs.baby.debug.Debugger;
 import com.ccs.baby.disassembler.Disassembler;
+import com.ccs.baby.animation.AnimationManager;
 import com.ccs.baby.menu.MenuSetup;
+import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.BackgroundPanel;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.FpsLabelService;
