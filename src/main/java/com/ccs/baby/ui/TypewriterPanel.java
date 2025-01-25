@@ -26,7 +26,7 @@ public class TypewriterPanel extends JPanel {
     public TypewriterPanel() {
 
         setLayout(new GridBagLayout());
-        setPreferredSize(new Dimension(0, 400));
+        setPreferredSize(new Dimension(0, 270));
         setOpaque(false);
 
         numberKeys = new PushButton[TOTAL_KEYS];

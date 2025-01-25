@@ -1,7 +1,6 @@
 package com.ccs.baby.controller;
 
 import com.ccs.baby.manager.AnimationManager;
-import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.disassembler.Disassembler;
@@ -22,7 +21,7 @@ public class CrtControlPanelController {
     private final StaticisorPanel staticisorPanel;
     private final Disassembler disassembler;
 
-    public CrtControlPanelController(ActionLineManager actionLineManager, AnimationManager animationManager, CrtControlPanel crtControlPanel, Baby baby, Store store, Control control, CrtPanel crtPanel, StaticisorPanel staticisorPanel, Disassembler disassembler) {
+    public CrtControlPanelController(ActionLineManager actionLineManager, AnimationManager animationManager, CrtControlPanel crtControlPanel, Store store, Control control, CrtPanel crtPanel, StaticisorPanel staticisorPanel, Disassembler disassembler) {
         this.actionLineManager = actionLineManager;
         this.animationManager = animationManager;
         this.crtControlPanel = crtControlPanel;
