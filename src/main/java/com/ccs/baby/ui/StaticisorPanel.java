@@ -19,7 +19,7 @@ public class StaticisorPanel extends JPanel {
 
         setLayout(new GridBagLayout());
         setOpaque(false);
-        setPreferredSize(new Dimension(300, 0));
+        setPreferredSize(new Dimension(300, 135));
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.insets = new Insets(0, 0, 0, 0);
