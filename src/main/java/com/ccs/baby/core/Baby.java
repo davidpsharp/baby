@@ -89,9 +89,9 @@ public class Baby extends JFrame {
         // Initialise AnimationManager
         AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanel, fpsLabelService, actionLineManager);
 
-        TypewriterPanelController typewriterPanelController = new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
-        StaticisorPanelController staticisorPanelController = new StaticisorPanelController(staticisorPanel, actionLineManager);
-        CrtControlPanelController crtControlPanelController = new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
+        new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
+        new StaticisorPanelController(staticisorPanel, actionLineManager);
+        new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
 
         // Create a container mainPanel that wraps crtPanel and switchPanel
         mainPanel = new BackgroundPanel();
@@ -117,7 +117,7 @@ public class Baby extends JFrame {
         menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
         // Then set up F10 to do something useful...
         KeyStroke ks_f10 = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
-        Action performStep = new AbstractAction("Step") {  
+        Action performStep = new AbstractAction("Step") {
             public void actionPerformed(ActionEvent e) {
                 control.singleStep();
             }
@@ -125,7 +125,6 @@ public class Baby extends JFrame {
         // TODO: have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
         mainPanel.getActionMap().put("performStep", performStep);
         mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
-
 
 
         // Reset the hardware to initial values
@@ -176,17 +175,17 @@ public class Baby extends JFrame {
         // or alternatively can specify on the command line if not overridden in code here, e.g.
         //   java -Dsun.java2d.uiScale=1.5 -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
         // If done in code may want to not execute that command so that command line params can override it.
-        
-        if(args.length > 0)
-        {
+
+        if (args.length > 0) {
             // parse args
+
             // TODO:
-            // -load <file> - load program & show GUI, handle snp/asm formats
-            // -asm <file> - cmd line only, assemble and output assembled store SNP format to stdout.
-            // -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
-            // -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
-            // -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
-            // -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
+            //  -load <file> - load program & show GUI, handle snp/asm formats
+            //  -asm <file> - cmd line only, assemble and output assembled store SNP format to stdout.
+            //  -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
+            //  -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
+            //  -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
+            //  -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
         }
 
         Baby baby = new Baby();

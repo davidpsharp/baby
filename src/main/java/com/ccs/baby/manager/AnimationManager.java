@@ -4,7 +4,6 @@ import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 
 import com.ccs.baby.core.Animator;
-import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.FpsLabelService;
