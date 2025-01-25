@@ -61,6 +61,11 @@ public class CrtControlPanel extends JPanel {
         displayStoreButton = new InterlockingPushButton("Displays the store on the monitor.");
         displayStoreButton.addActionListener(e -> runCallback(onDisplayStoreChange));
 
+        // Group display buttons to ensure mutual exclusivity
+        ButtonGroup displayButtonGroup = new ButtonGroup();
+        displayButtonGroup.add(displayControlButton);
+        displayButtonGroup.add(displayAccumulatorButton);
+        displayButtonGroup.add(displayStoreButton);
 
         // controlSwitchPanel
         JPanel controlSwitchPanel = new JPanel();
