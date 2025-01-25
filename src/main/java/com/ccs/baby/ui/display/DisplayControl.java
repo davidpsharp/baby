@@ -1,7 +1,7 @@
 package com.ccs.baby.ui.display;
 
 import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.CrtControlPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,16 +10,16 @@ import java.awt.event.ActionListener;
  * This class is responsible for displaying the control.
  */
 public class DisplayControl implements ActionListener {
-    CrtPanel crtPanel;
-    SwitchPanel switchPanel;
+    private final CrtPanel crtPanel;
+    private final CrtControlPanel crtControlPanel;
 
-    public DisplayControl(CrtPanel aCrtPanel, SwitchPanel aSwitchPanel) {
-        crtPanel = aCrtPanel;
-        switchPanel = aSwitchPanel;
+    public DisplayControl(CrtPanel crtPanel, CrtControlPanel crtControlPanel) {
+        this.crtPanel = crtPanel;
+        this.crtControlPanel = crtControlPanel;
     }
 
     public void actionPerformed(ActionEvent e) {
         crtPanel.setCrtDisplay(CrtPanel.DisplayType.CONTROL);
-        switchPanel.crSelect.setSelected(true);
+        crtControlPanel.displayControlButton.setSelected(true);
     }
 }

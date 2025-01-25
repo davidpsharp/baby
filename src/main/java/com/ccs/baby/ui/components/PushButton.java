@@ -1,14 +1,11 @@
 package com.ccs.baby.ui.components;
 
-import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.AbstractButton;
 
 import com.ccs.baby.utils.ImageUtils;
 
-/**
- * A custom JButton that simulates a push switch with custom icons.
- */
 public class PushButton extends JButton {
 
     private static final int DEFAULT_SCALE = 2400;
@@ -18,12 +15,11 @@ public class PushButton extends JButton {
     private static final ImageIcon DEFAULT_OUT_ICON = ImageUtils.loadImageIcon("/images/pushout.gif", DEFAULT_SCALE);
 
     /**
-     * Constructs an PushButton with the specified button text and vertical position for the text.
+     * A custom JButton that simulates a push switch with custom icons.
      *
-     * @param buttonText           the text to be displayed on the button
-     * @param verticalTextPosition the vertical position of the text relative to the button icon
+     * @param toolTipText the text to display when the button is hovered over
      */
-    public PushButton(String buttonText, int verticalTextPosition) {
+    public PushButton(String toolTipText) {
         setIcon(DEFAULT_OUT_ICON);
         setPressedIcon(DEFAULT_IN_ICON);
 
@@ -32,8 +28,9 @@ public class PushButton extends JButton {
         setContentAreaFilled(false);
 
         setHorizontalTextPosition(AbstractButton.CENTER);
-        setVerticalTextPosition(verticalTextPosition);
+        setVerticalTextPosition(AbstractButton.CENTER);
 
-        setText(buttonText);
+        setText("");
+        setToolTipText(toolTipText);
     }
 }

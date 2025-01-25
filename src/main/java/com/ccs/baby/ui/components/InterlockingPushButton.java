@@ -5,9 +5,6 @@ import java.awt.Insets;
 
 import com.ccs.baby.utils.ImageUtils;
 
-/**
- * A custom JRadioButton that simulates an interlocking push button with custom icons.
- */
 public class InterlockingPushButton extends JRadioButton {
 
     private static final Insets DEFAULT_MARGIN = new Insets(3, 3, 3, 3);
@@ -18,7 +15,7 @@ public class InterlockingPushButton extends JRadioButton {
     private static final ImageIcon DEFAULT_OUT_ICON = ImageUtils.loadImageIcon("/images/ibuttonout.gif", DEFAULT_SCALE);
 
     /**
-     * Constructs an InterlockingPushButton with the specified button text and vertical position for the text.
+     * A custom JRadioButton that simulates an interlocking push button with custom icons.
      *
      * @param toolTipText The text to display when the button is hovered over.
      */
