@@ -1,10 +1,10 @@
 package com.ccs.baby.core;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import com.ccs.baby.manager.AnimationManager;
 import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.StaticisorPanel;
 
 /**
  * The Animator class is responsible for managing and executing an animation loop
@@ -18,19 +18,19 @@ public class Animator extends Thread {
 
     private final CrtPanel crtPanel;
     private final Control control;
-    private final SwitchPanel switchPanel;
+    private final StaticisorPanel staticisorPanel;
 
     /**
-     * Constructs an Animator with the specified CrtPanel, Control, and SwitchPanel.
+     * Constructs an Animator with the specified CrtPanel, Control, and staticisorPanel.
      *
      * @param crtPanel    the CrtPanel instance used for rendering the display
      * @param control     the Control instance used for executing instructions
-     * @param switchPanel the SwitchPanel instance used for manual and automatic control
+     * @param staticisorPanel the StaticisorPanel instance used for managing the manual/automatic mode
      */
-    public Animator(CrtPanel crtPanel, Control control, SwitchPanel switchPanel) {
+    public Animator(CrtPanel crtPanel, Control control, StaticisorPanel staticisorPanel) {
         this.crtPanel = crtPanel;
         this.control = control;
-        this.switchPanel = switchPanel;
+        this.staticisorPanel = staticisorPanel;
 
         setDaemon(true); // If the main thread quits, so will this one
     }
@@ -67,7 +67,7 @@ public class Animator extends Thread {
         try
         {
 
-            Baby.running = true; // Indicate that the animation has started
+            AnimationManager.animationRunning = true; // Indicate that the animation has started
 
             // Animation loop, while allowed to keep animating
             while (keepAnimating) {
@@ -103,7 +103,7 @@ public class Animator extends Thread {
         }
         finally
         {
-            Baby.running = false; // Indicate that the animation has stopped
+            AnimationManager.animationRunning = false; // Indicate that the animation has stopped
         }
         
         // recall when run() completes the Thread terminates
@@ -114,7 +114,7 @@ public class Animator extends Thread {
      */
     private void executeInstructions() {
         for (int x = 0; x < control.getInstructionsPerRefresh() && !control.getStopFlag(); x++) {
-            if (switchPanel.getManAuto()) {
+            if (staticisorPanel.getManAuto()) {
                 control.executeAutomatic(); // Use store for instructions
             } else {
                 control.executeManual(); // Use line and functions switches from the SwitchPanel

@@ -3,43 +3,36 @@ package com.ccs.baby.core;
 // Manchester Baby Simulator
 // by David Sharp
 // January 2001
-// requires Java v1.2 or later
+// requires Java v8 or later
 
-import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 
-import com.ccs.baby.animation.AnimationManager;
-import com.ccs.baby.debug.DebugPanel;
-import com.ccs.baby.debug.Debugger;
-import com.ccs.baby.disassembler.Disassembler;
-import com.ccs.baby.menu.MenuSetup;
-import com.ccs.baby.ui.BackgroundPanel;
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.LampManager;
-import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.disassembler.*;
+import com.ccs.baby.manager.*;
+import com.ccs.baby.menu.*;
+import com.ccs.baby.ui.*;
+import com.ccs.baby.controller.*;
+import com.ccs.baby.debug.*;
 
 public class Baby extends JFrame {
 
     // Get the current directory
     private static String currentDir;
-
-    private final AnimationManager animationManager;
-    public static volatile boolean running = false;
-
     public static BackgroundPanel mainPanel;
 
     public Baby() {
@@ -67,9 +60,38 @@ public class Baby extends JFrame {
         // Create Disassembler
         Disassembler disassembler = new Disassembler(store, control, crtPanel);
 
-        SwitchPanel switchPanel = new SwitchPanel(store, control, crtPanel, this, disassembler);
+        // Create switch panel components
+        StaticisorPanel staticisorPanel = new StaticisorPanel();
+        TypewriterPanel typewriterPanel = new TypewriterPanel();
+        CrtControlPanel crtControlPanel = new CrtControlPanel();
+
+        // Tell control about staticisorPanel and crtControlPanel
+        control.setSwitchPanel(staticisorPanel, crtControlPanel);
+
+        // A container for all switch panel components
+        JPanel switchPanel = new JPanel();
+        switchPanel.setLayout(new BoxLayout(switchPanel, BoxLayout.Y_AXIS));
         switchPanel.setOpaque(false);
-        control.setSwitchPanel(switchPanel);    // Tell control about switchPanel
+        switchPanel.add(typewriterPanel);
+        switchPanel.add(staticisorPanel);
+        switchPanel.add(crtControlPanel);
+
+        // Create Action Line Manager
+        ActionLineManager actionLineManager = new ActionLineManager(staticisorPanel, crtPanel, control);
+
+        // Setup a DebugPanel (aka modernControls)
+        DebugPanel debugPanel = new DebugPanel(control, staticisorPanel, crtControlPanel);
+        debugPanel.setOpaque(true);
+
+        // Get the FpsLabelService from the debugPanel
+        FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
+
+        // Initialise AnimationManager
+        AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanel, fpsLabelService, actionLineManager);
+
+        new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
+        new StaticisorPanelController(staticisorPanel, actionLineManager);
+        new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
 
         // Create a container mainPanel that wraps crtPanel and switchPanel
         mainPanel = new BackgroundPanel();
@@ -78,27 +100,16 @@ public class Baby extends JFrame {
         mainPanel.add(crtPanel, BorderLayout.NORTH);
         mainPanel.add(switchPanel);
 
-        // Setup a DebugPanel (aka modernControls)
-        DebugPanel debugPanel = new DebugPanel(control, switchPanel);
-        debugPanel.setOpaque(true);
-
         // Set up display window GUI
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.add(mainPanel, BorderLayout.CENTER);
         contentPane.add(debugPanel, BorderLayout.SOUTH);
 
-        // Get the FpsLabelService from the debugPanel
-        FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
-
-        // Initialise AnimationManager
-        animationManager = new AnimationManager(control, crtPanel, switchPanel, fpsLabelService);
-
         // Set up and add menu bars to the window
         JMenuBar menuBar = new JMenuBar();
-        new MenuSetup(menuBar, store, control, crtPanel, switchPanel, disassembler, currentDir, this, debugPanel);
+        new MenuSetup(menuBar, store, control, crtPanel, crtControlPanel, disassembler, currentDir, this, debugPanel);
         setJMenuBar(menuBar);
-
 
         // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
         // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
@@ -106,15 +117,14 @@ public class Baby extends JFrame {
         menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
         // Then set up F10 to do something useful...
         KeyStroke ks_f10 = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
-        Action performStep = new AbstractAction("Step") {  
+        Action performStep = new AbstractAction("Step") {
             public void actionPerformed(ActionEvent e) {
-                 switchPanel.singleStep();
+                control.singleStep();
             }
         };
         // TODO: have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
         mainPanel.getActionMap().put("performStep", performStep);
         mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
-
 
 
         // Reset the hardware to initial values
@@ -165,17 +175,17 @@ public class Baby extends JFrame {
         // or alternatively can specify on the command line if not overridden in code here, e.g.
         //   java -Dsun.java2d.uiScale=1.5 -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
         // If done in code may want to not execute that command so that command line params can override it.
-        
-        if(args.length > 0)
-        {
+
+        if (args.length > 0) {
             // parse args
+
             // TODO:
-            // -load <file> - load program & show GUI, handle snp/asm formats
-            // -asm <file> - cmd line only, assemble and output assembled store SNP format to stdout.
-            // -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
-            // -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
-            // -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
-            // -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
+            //  -load <file> - load program & show GUI, handle snp/asm formats
+            //  -asm <file> - cmd line only, assemble and output assembled store SNP format to stdout.
+            //  -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
+            //  -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
+            //  -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
+            //  -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
         }
 
         Baby baby = new Baby();
@@ -191,16 +201,8 @@ public class Baby extends JFrame {
         baby.setVisible(true);
         baby.setResizable(false);
 
-        // Initialise WIP editor/debugger, control whether it does anything in the Debugger constructor...
-        com.ccs.baby.debug.Debugger debugger = new Debugger();
+        // test only
+        // Debugger debugger = new Debugger();
     }
 
-    // Delegate animation control methods
-    public synchronized void startAnimation() {
-        animationManager.startAnimation();
-    }
-
-    public synchronized void stopAnimation() {
-        animationManager.stopAnimation();
-    }
 }

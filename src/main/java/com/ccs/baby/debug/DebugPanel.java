@@ -1,9 +1,10 @@
 package com.ccs.baby.debug;
 
 import com.ccs.baby.core.Control;
+import com.ccs.baby.ui.CrtControlPanel;
 import com.ccs.baby.ui.FpsLabelPushed;
 import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.SwitchPanel;
+import com.ccs.baby.ui.StaticisorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,22 +17,25 @@ public class DebugPanel extends JPanel implements ActionListener {
     protected JButton stepButton = new JButton("Step");
     protected JButton runButton = new JButton("Run");
     protected JButton stopButton = new JButton("Stop");
-    private JButton fpsLabel;
-    private FpsLabelService fpsLabelService;
+    private final FpsLabelService fpsLabelService;
 
     public static Color backgroundColor = new Color(206, 205, 201);
 
-    private Control control;
-    private SwitchPanel switchPanel;
+    private final Control control;
+    private final StaticisorPanel staticisorPanel;
+    private final CrtControlPanel crtControlPanel;
 
-    public DebugPanel(Control aControl, SwitchPanel aSwitchPanel) {
+    public DebugPanel(Control control, StaticisorPanel staticisorPanel, CrtControlPanel crtControlPanel) {
+
+        this.control = control;
+        this.staticisorPanel = staticisorPanel;
+        this.crtControlPanel = crtControlPanel;
+
 
         setLayout(new BorderLayout(0, 0)); // Ensure no gaps
         setBackground(backgroundColor);
         setVisible(false);
 
-        control = aControl;
-        switchPanel = aSwitchPanel;
 
         JPanel toolPanel = new JPanel();
         toolPanel.setBackground(backgroundColor);
@@ -44,7 +48,7 @@ public class DebugPanel extends JPanel implements ActionListener {
         infoPanel.setBackground(backgroundColor);
         infoPanel.setBorder(null);
 
-        fpsLabel = new JButton("Speed and elapsed time info.");
+        JButton fpsLabel = new JButton("Speed and elapsed time info.");
         fpsLabel.addActionListener(new FpsLabelPushed(fpsLabel, control));
         infoPanel.add(fpsLabel);
 
@@ -78,25 +82,23 @@ public class DebugPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // if step button pressed
         if (e.getSource() == stepButton) {
-            switchPanel.singleStep();
+            control.singleStep();
         } else if (e.getSource() == runButton) {
-            switchPanel.setManAuto(true);
+            staticisorPanel.setManAuto(true);
             // set to write
-            switchPanel.setEraseWrite(true);
-            // set L stat switches to all be on
-            for (int lStatSwitch = 0; lStatSwitch < 5; lStatSwitch++)
-                switchPanel.lineSwitch[lStatSwitch].setSelected(true);
-            // likewise F stat switches
-            for (int fStatSwitch = 0; fStatSwitch < 3; fStatSwitch++)
-                switchPanel.functionSwitch[fStatSwitch].setSelected(true);
+            crtControlPanel.setWriteErase(true);
+            staticisorPanel.setLineSwitches(true);
+
             // flick CS switch which starts the animation
-            if (!switchPanel.getPrePulse()) {
-                switchPanel.prePulse.doClick();
+            if (!crtControlPanel.getStopRun()) {
+                crtControlPanel.simulateStopRunToggle();
             }
         }
         // if stop button pressed the turn off the CS switch
         else if (e.getSource() == stopButton) {
-            if (switchPanel.getPrePulse()) switchPanel.prePulse.doClick();
+            if (crtControlPanel.getStopRun()) {
+                crtControlPanel.simulateStopRunToggle();
+            }
         }
     }
 }

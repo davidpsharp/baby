@@ -1,37 +1,38 @@
-package com.ccs.baby.animation;
+package com.ccs.baby.manager;
 
-import com.ccs.baby.core.Animator;
-import com.ccs.baby.core.Baby;
-import com.ccs.baby.core.Control;
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.SwitchPanel;
-
-import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 
+import com.ccs.baby.core.Animator;
+import com.ccs.baby.core.Control;
+import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.StaticisorPanel;
+
 
 public class AnimationManager {
 
     private final Control control;
     private final CrtPanel crtPanel;
-    private final SwitchPanel switchPanel;
+    private final StaticisorPanel staticisorPanel;
+    private final ActionLineManager actionLineManger;
 
     // timer for counting number of instructions executed each second to give speed
-    private Timer fpsTimer;
+    private final Timer fpsTimer;
 
     // thread control for animation
     private Animator animator;
 
     private final FpsLabelService fpsLabelService;
 
-    private boolean running = false;
+    public static volatile boolean animationRunning = false;
 
-    public AnimationManager(Control control, CrtPanel crtPanel, SwitchPanel switchPanel, FpsLabelService fpsLabelService) {
+    public AnimationManager(Control control, CrtPanel crtPanel, StaticisorPanel staticisorPanel, FpsLabelService fpsLabelService, ActionLineManager actionLineManger) {
         this.control = control;
         this.crtPanel = crtPanel;
-        this.switchPanel = switchPanel;
+        this.staticisorPanel = staticisorPanel;
         this.fpsLabelService = fpsLabelService;
+        this.actionLineManger = actionLineManger;
 
         // create timer to calculate speed to tick once a second
         fpsTimer = new Timer(1000, this::handleFpsTimer);
@@ -40,13 +41,13 @@ public class AnimationManager {
 
     // start running animation
     public synchronized void startAnimation() {
-        
-        if (!Baby.running) {
+
+        if (!animationRunning) {
             // create new thread for animation (create a new one as recall a thread can only be started once)
-            animator = new Animator(crtPanel, control, switchPanel);
+            animator = new Animator(crtPanel, control, staticisorPanel);
             animator.startAnimating();
         }
-        
+
         // start fps timer *after* animation has started (timer self-terminates if animation is not running)
         fpsTimer.start();
 
@@ -55,11 +56,11 @@ public class AnimationManager {
     // halt animation
     // only called if stop/run switch pressed or Stop button pressed on debug panel
     public synchronized void stopAnimation() {
-        if (Baby.running) {
+        if (animationRunning) {
             animator.stopAnimating();
         }
-       
-        switchPanel.updateActionLine();
+
+        actionLineManger.updateActionLine();
 
         // repaint so that control with the PI can be drawn if necessary
         crtPanel.render();
@@ -71,9 +72,8 @@ public class AnimationManager {
     private void handleFpsTimer(ActionEvent e) {
 
         fpsLabelService.updateFpsLabel();
-        
-        if (Baby.running)
-        {
+
+        if (animationRunning) {
             // we don't want to adjust speed if baby has finished executing as may have only done a few
             // instructions before hit STP instruction which would make this adjust the speed to go faster
 
@@ -94,9 +94,7 @@ public class AnimationManager {
 
             // reset counter ready for the next second
             control.setCycleCount(0);
-        }
-        else
-        {
+        } else {
             // if the Baby has stopped animating then no need to keep timing, make this the last FPS update...
             fpsTimer.stop();
         }

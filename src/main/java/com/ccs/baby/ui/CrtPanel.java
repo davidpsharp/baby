@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Image;
 
 import com.ccs.baby.core.Store;
-import com.ccs.baby.core.Baby;
+import com.ccs.baby.manager.AnimationManager;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.utils.ImageUtils;
 
@@ -30,7 +30,7 @@ public class CrtPanel extends JPanel {
     public static final int DEFAULT_SPACING = 3;
     private static final int DEFAULT_SCALE = 2400;
 
-    // Cached images are all 7x3 GIFs
+    // NOTE: Cached images are all 7x3 GIFs
     private static final Image BIT_ONE_IMAGE = ImageUtils.loadImage("/images/bit1.gif", DEFAULT_SCALE);
     private static final Image BIT_ZERO_IMAGE = ImageUtils.loadImage("/images/bit0.gif", DEFAULT_SCALE);
     private static final Image BIT_ONE_BRIGHT_IMAGE = ImageUtils.loadImage("/images/bit1bright.gif", DEFAULT_SCALE);
@@ -59,7 +59,11 @@ public class CrtPanel extends JPanel {
         repaint();
     }
 
-    // change the tube displayed
+    /**
+     * Change the display type of the CRT.
+     *
+     * @param display the new display type
+     */
     public void setCrtDisplay(DisplayType display) {
         DisplayType beforeDisplay = currentDisplay;
 
@@ -88,13 +92,20 @@ public class CrtPanel extends JPanel {
             repaint();
         }
     }
-    
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        update(g);
+
+    /**
+     * Paints the component.
+     *
+     * @param graphicsIn the graphics context to paint to
+     */
+    public void paintComponent(Graphics graphicsIn) {
+        super.paintComponent(graphicsIn);
+        update(graphicsIn);
     }
 
-    // only redraw the amount of screen necessary
+    /**
+     * Repaints the amount of screen necessary.
+     */
     public synchronized void efficientRepaint() {
         switch (currentDisplay) {
             // only redraw the store lines that have changed
@@ -123,11 +134,23 @@ public class CrtPanel extends JPanel {
         }
     }
 
-    // draw the image to the graphics context
-    public void update(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+    /**
+     * Draw the image to the graphics context.
+     *
+     * @param graphicsIn the graphics context to draw to
+     */
+    public void update(Graphics graphicsIn) {
+        Graphics2D graphics2D = (Graphics2D) graphicsIn;
 
-        g2.drawImage(bufferedImage, 0, 0, this);
+        graphics2D.drawImage(bufferedImage, 0, 0, this);
+    }
+
+    /**
+     * Set the display type of the CRT panel.
+     */
+    public void redrawCrtPanel() {
+        render();
+        repaint();
     }
 
     public void setActionLine(int newActionLine) {
@@ -193,7 +216,7 @@ public class CrtPanel extends JPanel {
         // if rendering accurately repeat display all the way down
         if (renderAccurately) {
             // if the baby is running then PI exists so draw it
-            if (Baby.running) {
+            if (AnimationManager.animationRunning) {
                 // if baby is running then CI and PI are displayed
                 for (int line = 0; line < 32; line += 2) {
                     drawDataAtLine(control.getControlInstruction(), line, big);
