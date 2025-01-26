@@ -33,6 +33,7 @@ public class MenuSetup {
      */
     public void setupMenus(JMenuBar menuBarItem, Store store, Control control, CrtPanel crtPanel, SwitchPanel switchPanel, Disassembler disassembler, String currentDir, DebugPanel debugPanel) {
         menuBarItem.add(FileMenu.createFileMenu(store, control, currentDir, frame));
+        //menuBarItem.add(ControlsMenu.)
         menuBarItem.add(ViewMenu.createViewMenu(crtPanel, switchPanel, disassembler, debugPanel));
         menuBarItem.add(ExamplesMenu.createExampleMenu(store, crtPanel, frame));
         menuBarItem.add(HelpMenu.createHelpMenu(frame));
