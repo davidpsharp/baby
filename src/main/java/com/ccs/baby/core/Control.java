@@ -1,16 +1,13 @@
 package com.ccs.baby.core;
 
-import javax.swing.*;
-
-import com.ccs.baby.ui.SwitchPanel;
 import com.ccs.baby.ui.LampManager;
-
+import com.ccs.baby.ui.*;
 
 public class Control
 {
 
 	// store
-	private Store store;
+	private final Store store;
 
 	private int accumulator;
 
@@ -28,7 +25,8 @@ public class Control
 	private int cycleCount = 0;
 	private int instructionsPerRefresh = 2;
 	
-	public SwitchPanel switchPanel;
+	public StaticisorPanel staticisorPanel;
+	public CrtControlPanel crtControlPanel;
 	
 	// values as to various keys on the switchpanel which may be held down
 	// and will affect execution
@@ -69,9 +67,10 @@ public class Control
 	}
 	
 	// 2-stage construction to set up the switchpanel which is mutually dependent on the control
-	public void setSwitchPanel(SwitchPanel aSwitchPanel)
+	public void setSwitchPanel(StaticisorPanel staticisorPanel, CrtControlPanel crtControlPanel)
 	{
-		switchPanel = aSwitchPanel;
+		this.staticisorPanel = staticisorPanel;
+		this.crtControlPanel = crtControlPanel;
 	}
 	
 	// get and set functions for....
@@ -196,7 +195,19 @@ public class Control
 		return storeChanges;
 	}
 
-	
+
+	public void singleStep() {
+		staticisorPanel.setManAuto(true);
+		// set to write
+		crtControlPanel.setWriteErase(true);
+		// set L stat switches to all be on
+		staticisorPanel.setLineSwitches(true);
+		// likewise F stat switches
+		staticisorPanel.setFunctionSwitches(true);
+
+		crtControlPanel.simulateKspClick();
+	}
+
 
 	// execute a single instruction from store
 	public synchronized void executeAutomatic()
@@ -210,7 +221,7 @@ public class Control
 		// if any of the F and L stat switches are set to off (0) then the bit can't
 		// get from the C tube to the staticisors so clear any bits not set to 1 in the staticisor
 		// in the CI to be used
-		int switchValue = switchPanel.getLineAndFunctionValue();
+		int switchValue = getLineAndFunctionValue();
 		int controlInstructionValue = getControlInstruction() & switchValue;
 		
 		// fetch instruction into present instruction
@@ -225,7 +236,7 @@ public class Control
 		if(keyPressed)
 		{	
 			// if write selected
-			if( switchPanel.getEraseWrite())
+			if( crtControlPanel.getWriteErase())
 			{
 				// so corrupt present instruction
 				presentInstruction |= (1<<keyNumberPressed);
@@ -315,7 +326,13 @@ public class Control
 		performInstruction( presentInstructionValue );
 		
 	}
-	
+
+
+	// return executable value of the line and function switches
+	// (as would be represented if taken from store)
+	public synchronized int getLineAndFunctionValue() {
+		return staticisorPanel.getLineValue() | (staticisorPanel.getFunctionValue() << 13);
+	}
 	
 	// note,
 	// Chris Burton suggests that he recalls something about:
@@ -329,7 +346,7 @@ public class Control
 	{
 		
 		// get instruction from switches
-		int instructionValue = switchPanel.getLineAndFunctionValue();
+		int instructionValue = getLineAndFunctionValue();
 		
 		// if kac button held down then set accumulator to 0
 		if(kacPressed)
@@ -339,7 +356,7 @@ public class Control
 			store.reset();
 			
 		if(klcPressed)
-			store.setLine( switchPanel.getLineValue(), 0 );
+			store.setLine( staticisorPanel.getLineValue(), 0 );
 			
 		if(kccPressed)
 		{
@@ -353,7 +370,7 @@ public class Control
 		if(keyPressed)
 		{
 			// if write selected
-			if( switchPanel.getEraseWrite())
+			if( crtControlPanel.getWriteErase())
 			{
 				// note the operand line DOES get corrupted even if it's not actually used e.g. in CMP and STP
 				// get action line
