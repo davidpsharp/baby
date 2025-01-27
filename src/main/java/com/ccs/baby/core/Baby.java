@@ -22,6 +22,9 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.awt.Taskbar;
 
 import com.ccs.baby.disassembler.*;
 import com.ccs.baby.io.LoadExample;
@@ -41,6 +44,21 @@ public class Baby extends JFrame {
     public Baby() {
 
         setTitle("Manchester Baby Simulator v" + Version.getVersion());
+
+        // In Baby constructor, after creating the window
+        try {
+            // Set window icon
+            Image icon = new ImageIcon(getClass().getResource("/icons/baby.png")).getImage();
+            setIconImage(icon);
+            
+            // For macOS dock icon
+            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                // macOS-specific dock icon setting (requires Java 9 or later)
+                Taskbar.getTaskbar().setIconImage(icon);
+            }
+        } catch (Exception e) {
+            System.err.println("Could not load application icon: " + e);
+        }
 
         try {
             currentDir = System.getProperty("user.home");
