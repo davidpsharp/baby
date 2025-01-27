@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class ExamplesMenu {
 
     // Toggle to determine whether to dynamically build the menu of demo programs from the folder structure
-    // (experimental) or use the previous hardcoded logic
+    // or use the previous hardcoded logic
     private static final boolean DYNAMIC_EXAMPLES = true;
 
     private static final String EXAMPLES_FOLDER = "demos";
@@ -73,8 +73,9 @@ public class ExamplesMenu {
         return exampleMenu;
     }
 
+
     /**
-     * Build the old static examples menu that worked in JAR or debugger
+     * Deprecated - Build the old static examples menu that works in JAR or debugger
      *
      * @param menu     the menu to add the items to
      * @param store    the store to load the example program into
@@ -89,13 +90,19 @@ public class ExamplesMenu {
         JMenuItem primegen = new JMenuItem("demos/primegen.asm");
         JMenuItem virpet = new JMenuItem("demos/virpet.asm");
         JMenuItem noodleTimer = new JMenuItem("demos/noodletimer.snp");
-
+        
         // Add action listeners for each item
-        diffeqt.addActionListener(new LoadExample("demos/diffeqt.asm", store, crtPanel, frame));
-        baby9.addActionListener(new LoadExample("demos/Baby9.snp", store, crtPanel, frame));
-        primegen.addActionListener(new LoadExample("demos/primegen.asm", store, crtPanel, frame));
-        virpet.addActionListener(new LoadExample("demos/virpet.asm", store, crtPanel, frame));
-        noodleTimer.addActionListener(new LoadExample("demos/noodletimer.snp", store, crtPanel, frame));
+        try {
+            diffeqt.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/diffeqt.asm"), store, crtPanel, frame));
+            baby9.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/Baby9.snp"), store, crtPanel, frame));
+            primegen.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/primegen.asm"), store, crtPanel, frame));
+            virpet.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/virpet.asm"), store, crtPanel, frame));
+            noodleTimer.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/noodletimer.snp"), store, crtPanel, frame));
+        }
+        catch(URISyntaxException ex)
+        {
+            JOptionPane.showMessageDialog(frame.getContentPane(), "Error building menu of example programs. "  + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         // Add items to the examples menu
         menu.add(diffeqt);
@@ -103,10 +110,53 @@ public class ExamplesMenu {
         menu.add(primegen);
         menu.add(virpet);
         menu.add(noodleTimer);
+
+        
+
+                     
     }
 
-   
+    public static JMenu createMenuFromResource(JMenu rootMenu, String resourcePath) throws URISyntaxException, IOException {
+        ClassLoader classLoader = Baby.class.getClassLoader();
+        URI uri = classLoader.getResource(resourcePath).toURI();
+    
+        Path myPath;
+        if ("jar".equals(uri.getScheme())) {
+            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+            myPath = fileSystem.getPath(resourcePath);
+        } else {
+            myPath = Paths.get(uri);
+        }
+        
+        processDirectory(rootMenu, myPath);
+        return rootMenu;
+    }
 
+    private static void processDirectory(JMenu parentMenu, Path directory) throws IOException {
+        try (Stream<Path> paths = Files.walk(directory, 1)) {
+            paths.filter(path -> !path.equals(directory))
+                 .forEach(path -> {
+                     try {
+                         if (Files.isDirectory(path)) {
+                             JMenu subMenu = new JMenu(path.getFileName().toString());
+                             parentMenu.add(subMenu);
+                             processDirectory(subMenu, path);
+                         } else {
+                             String fileName = path.getFileName().toString().toLowerCase();
+                             if (fileName.endsWith(".snp") || fileName.endsWith(".asm")) {
+                                 JMenuItem menuItem = createMenuItemForFile(path);
+                                 parentMenu.add(menuItem);
+                             }
+                         }
+                     } catch (URISyntaxException | IOException e) {
+                         System.err.println("Error processing path: " + path);
+                         e.printStackTrace();
+                     }
+                 });
+        }
+    }
+   
+/* 
     public static JMenu createMenuFromResource(JMenu rootMenu, String resourcePath) throws URISyntaxException, IOException {
 
         ClassLoader classLoader = Baby.class.getClassLoader();
@@ -144,6 +194,8 @@ public class ExamplesMenu {
         
         return rootMenu;
     }
+
+    
     
     private static void addSubMenuItems(JMenu parentMenu, Path directory) throws IOException {
         try (Stream<Path> paths = Files.walk(directory, 1)) {
@@ -165,6 +217,7 @@ public class ExamplesMenu {
                  });
         }
     }
+        */
     
     private static JMenuItem createMenuItemForFile(Path filePath) throws URISyntaxException, IOException {
         JMenuItem menuItem = new JMenuItem(filePath.getFileName().toString());

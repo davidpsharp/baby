@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 
 import com.ccs.baby.disassembler.*;
+import com.ccs.baby.io.LoadExample;
 import com.ccs.baby.manager.*;
 import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
@@ -137,12 +138,11 @@ public class Baby extends JFrame {
 
         // Load a program by default "diffeqt.asm"
         try {
-            String defaultFile = "demos/diffeqt.asm";
-            ClassLoader classLoader = Baby.class.getClassLoader();
-            URI uri = classLoader.getResource(defaultFile).toURI();         
-            java.nio.file.Path myPath = Paths.get(uri);
-            store.loadLocalModernAssembly(uri.toString());
             
+            String defaultFile = "demos/diffeqt.asm";
+            String uriString = LoadExample.getUriStringForResource(defaultFile);
+            store.loadLocalModernAssembly(uriString);
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }

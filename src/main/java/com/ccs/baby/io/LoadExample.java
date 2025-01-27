@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -51,5 +51,11 @@ public class LoadExample implements ActionListener {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public static String getUriStringForResource(String fileName) throws URISyntaxException
+    {
+        ClassLoader classLoader = Baby.class.getClassLoader();
+        return classLoader.getResource(fileName).toURI().toString();
     }
 }
