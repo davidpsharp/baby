@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -451,7 +453,7 @@ public class Store
 		}		
 	}
 	
-	
+	/*
 	public InputStream openFile(String fileName) throws IOException
     {
 	
@@ -478,14 +480,69 @@ public class Store
 
         }
 		return inputStream;
-/*
-		java.net.URL url = getClass().getClassLoader().getResource(fileName);
-      if(url == null)
-        throw new IOException("File not found: " + fileName);
-      return url.openStream();
-*/	  
+	  
     }
+		*/
 	
+	/**
+	 * Gets an InputStream for various flavours of URI e.g.
+	 * JAR resources: jar:file:/path/to/app.jar!/demos/program.asm
+	 * ZIP files: jar:file:/path/to/baby_programs.zip!/folder/program.asm
+	 * Regular files: file:/path/to/program.asm or just /path/to/program.asm
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public InputStream openFile(String fileName) throws IOException {
+		try {
+			URI uri = new URI(fileName);
+			String scheme = uri.getScheme();
+			
+			// If it's a resource in a JAR file
+			if ("jar".equals(scheme) && fileName.contains(".jar!")) {
+				return Store.class.getResourceAsStream(
+					fileName.substring(fileName.indexOf("!") + 1)
+				);
+			}
+			// If it's a file in a ZIP
+			else if ("jar".equals(scheme) && fileName.contains(".zip!")) {
+				// Format should be: jar:file:/path/to/file.zip!/path/inside/zip
+				String[] parts = uri.getSchemeSpecificPart().split("!");
+				if (parts.length != 2) {
+					throw new IOException("Invalid ZIP URI format: " + fileName);
+				}
+				
+				// Get the path to the ZIP file
+				Path zipPath = Paths.get(URI.create(parts[0]));
+				String entryPath = parts[1];
+				if (entryPath.startsWith("/")) {
+					entryPath = entryPath.substring(1); // Remove leading slash
+				}
+				
+				// Open the ZIP file and get the entry
+				java.nio.file.FileSystem zipFs = FileSystems.newFileSystem(zipPath, (ClassLoader) null);
+				Path path = zipFs.getPath(entryPath);
+				return Files.newInputStream(path);
+			}
+			// Regular file URI
+			else if ("file".equals(scheme) || scheme == null) {
+				Path path = Paths.get(uri);
+				return Files.newInputStream(path);
+			}
+			// Unknown URI scheme
+			else {
+				throw new IOException("Unsupported URI scheme: " + scheme);
+			}
+		}
+		catch (URISyntaxException ex) {
+			// If it's not a valid URI, try as a direct file path
+			System.err.println("Not a valid URI, trying as direct file path: " + ex.toString());
+			return new FileInputStream(fileName);
+		}
+	}
+
+
+
 	// load a modern assembly file into the store, mainly file input issues
 	public void loadModernAssembly(String fileName) throws AssemblyException, IOException
 	{
