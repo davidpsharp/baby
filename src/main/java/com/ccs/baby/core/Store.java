@@ -1,6 +1,10 @@
 package com.ccs.baby.core;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -450,10 +454,36 @@ public class Store
 	
 	public InputStream openFile(String fileName) throws IOException
     {
-      java.net.URL url = getClass().getClassLoader().getResource(fileName);
+	
+		InputStream inputStream;
+        if (fileName.contains("!")) {
+            inputStream = Store.class.getResourceAsStream(
+                fileName.substring(fileName.indexOf("!") + 1)
+            );
+        } else {
+            
+			try
+			{
+				String path =  Paths.get(new URI(fileName)).toString();
+				inputStream = new FileInputStream(path);
+			}
+			catch(URISyntaxException ex)
+			{
+				System.out.print(ex.toString());
+
+				// try this then...
+				inputStream = new FileInputStream(fileName);
+			}
+			
+
+        }
+		return inputStream;
+/*
+		java.net.URL url = getClass().getClassLoader().getResource(fileName);
       if(url == null)
         throw new IOException("File not found: " + fileName);
       return url.openStream();
+*/	  
     }
 	
 	// load a modern assembly file into the store, mainly file input issues
@@ -528,11 +558,13 @@ public class Store
 	}
 	
 
-	// TODO: de-duplicate the logic that was copied here when put into a JAR
 	
+
+	// TODO: de-duplicate the logic that was copied here when put into a JAR
+
 	public void loadLocalModernAssembly(String fileName) throws AssemblyException, IOException
 	{
-		
+
 		// setup file
 		//File assemblyFile = new File(fileName);
 		

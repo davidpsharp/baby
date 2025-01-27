@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
 
@@ -17,7 +20,7 @@ public class LoadExample implements ActionListener {
     private final Store store;
     private final CrtPanel crtPanel;
     private final JFrame frame;
-
+    
     public LoadExample(String name, Store store, CrtPanel crtPanel, JFrame frame) {
         fileName = name;
         this.store = store;
@@ -26,7 +29,9 @@ public class LoadExample implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        
         try {
+
             if (fileName.endsWith(".snp"))
             {
                 store.loadLocalSnapshot(fileName);

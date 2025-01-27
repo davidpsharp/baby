@@ -9,6 +9,11 @@ import java.awt.Container;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -126,16 +131,20 @@ public class Baby extends JFrame {
         mainPanel.getActionMap().put("performStep", performStep);
         mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
 
-
         // Reset the hardware to initial values
         store.reset();
         control.reset();
 
         // Load a program by default "diffeqt.asm"
         try {
-            store.loadLocalModernAssembly("demos/diffeqt.asm");
+            String defaultFile = "demos/diffeqt.asm";
+            ClassLoader classLoader = Baby.class.getClassLoader();
+            URI uri = classLoader.getResource(defaultFile).toURI();         
+            java.nio.file.Path myPath = Paths.get(uri);
+            store.loadLocalModernAssembly(uri.toString());
+            
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         // render and display the CRT display
