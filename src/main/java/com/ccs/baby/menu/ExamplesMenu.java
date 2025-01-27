@@ -53,7 +53,7 @@ public class ExamplesMenu {
     
         if (DYNAMIC_EXAMPLES) {
 
-            // save refs to objects to avoid passing throughout recursive call stack, dirty but quick
+            // save refs to objects to avoid passing throughout recursive call stack
             _store = store;
             _crtPanel = crtPanel;
             _frame = frame;

@@ -32,6 +32,7 @@ import com.ccs.baby.io.LoadExample;
 import com.ccs.baby.manager.*;
 import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
+import com.ccs.baby.utils.Version;
 import com.ccs.baby.controller.*;
 import com.ccs.baby.debug.*;
 
@@ -42,6 +43,8 @@ public class Baby extends JFrame {
     public static BackgroundPanel mainPanel;
 
     public Baby() {
+
+        setTitle("Manchester Baby Simulator v" + Version.getVersion());
 
         try {
             currentDir = System.getProperty("user.home");
@@ -199,7 +202,6 @@ public class Baby extends JFrame {
 
         Baby baby = new Baby();
         baby.setSize(700, 950);
-        baby.setTitle("Baby");
         baby.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
