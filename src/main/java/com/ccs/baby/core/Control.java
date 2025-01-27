@@ -36,7 +36,6 @@ public class Control
 	private boolean kccPressed = false;
 	private boolean klcPressed = false;
 	private boolean kacPressed = false;
-	private boolean setToErase = false;
 	
 	// function number encodings for different instructions 
 	private static final int FUNC_JMP = 0;
@@ -176,16 +175,16 @@ public class Control
 			localPresentInstruction = localStore[ getLineNumber(localControlInstruction) ];
 			switch( getFunctionNumber(localPresentInstruction) )
 			{
-				case 0 : localControlInstruction = localStore[ getLineNumber(localPresentInstruction) ]; break;
-				case 1 : localControlInstruction += localStore[ getLineNumber(localPresentInstruction) ]; break;
-				case 2 : localAccumulator = -( localStore[ getLineNumber(localPresentInstruction) ] ); break;
-				case 3 : localStore[ getLineNumber(localPresentInstruction) ] = localAccumulator;
+				case FUNC_JMP : localControlInstruction = localStore[ getLineNumber(localPresentInstruction) ]; break;
+				case FUNC_JRP : localControlInstruction += localStore[ getLineNumber(localPresentInstruction) ]; break;
+				case FUNC_LDN : localAccumulator = -( localStore[ getLineNumber(localPresentInstruction) ] ); break;
+				case FUNC_STO : localStore[ getLineNumber(localPresentInstruction) ] = localAccumulator;
 						 storeChanges++;
 						 break;
-				case 4 :					// also sub so drop through to case 5
-				case 5 : localAccumulator -= localStore[ getLineNumber(localPresentInstruction) ]; break;
-				case 6 : if( localAccumulator < 0 ) localControlInstruction++; break;
-				case 7 : localStopFlag = true; break;
+				case FUNC_SUB :					// also sub so drop through to case 5
+				case FUNC_SUB5 : localAccumulator -= localStore[ getLineNumber(localPresentInstruction) ]; break;
+				case FUNC_CMP : if( localAccumulator < 0 ) localControlInstruction++; break;
+				case FUNC_STP : localStopFlag = true; break;
 			}
 		}
 		// if stops in first second then execute it slowly
@@ -404,33 +403,33 @@ public class Control
 		
 		switch( getFunctionNumber(instructionValue) )
 		{
-			case 0 : 
+			case FUNC_JMP : 
 					// jmp	(s, C)
 					controlInstruction = store.getLine( getLineNumber(instructionValue) );
 					break;
-			case 1 :
+			case FUNC_JRP :
 					// jrp	(c+s, C)
 					controlInstruction += store.getLine( getLineNumber(instructionValue) );
 					break;
-			case 2 :
+			case FUNC_LDN :
 					// ldn	(-s, A)
 					accumulator = -( store.getLine( getLineNumber(instructionValue) ) );
 					break;
-			case 3 :
+			case FUNC_STO :
 					// sto	(a, S)
 					store.setLine( getLineNumber(instructionValue), accumulator);
 					break;
-			case 4 :					// also sub so drop through to case 5
-			case 5 :
+			case FUNC_SUB :					// also sub so drop through to case 5
+			case FUNC_SUB5 :
 					// sub	(a-s, A)
 					accumulator -= store.getLine( getLineNumber(instructionValue) );
 					break;
-			case 6 :
+			case FUNC_CMP :
 					// cmp	(Test)
 					if( accumulator < 0 )
 						incrementControlInstruction();
 					break;
-			case 7 :
+			case FUNC_STP :
 					// stp	(Stop)
 					setStopFlag(true);
 					break;

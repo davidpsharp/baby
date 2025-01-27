@@ -4,7 +4,6 @@ import com.ccs.baby.manual.ReferenceManual;
 
 import javax.swing.*;
 
-import java.awt.event.KeyEvent;
 
 
 public class ControlsMenu {

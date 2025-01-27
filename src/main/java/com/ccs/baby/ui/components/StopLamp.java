@@ -1,7 +1,4 @@
 package com.ccs.baby.ui.components;
-
-import com.ccs.baby.utils.ImageUtils;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,7 +6,6 @@ public class StopLamp extends JButton {
 
     // stop lamp and icons
     public JButton stopLamp;
-    private static ImageIcon onIcon;
     private static ImageIcon offIcon;
 
     public StopLamp() {

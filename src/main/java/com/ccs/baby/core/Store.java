@@ -173,61 +173,43 @@ public class Store
 	// UNACCEPTABLE - no number on first uncommented line
 	// SNAPSHOT - colon on the first uncommented line after the initial number
 	// ASSEMBLY - otherwise
-	public int getFileType(String fileName) throws IOException, SnapshotException
-	{
-		// setup file
+	public int getFileType(String fileName) throws IOException, SnapshotException {
 		File snapshotFile = new File(fileName);
-		// snapshot reader
-		FileReader snapshotReader;
 		
-		// open snapshot file
-		try
-		{
-			snapshotReader = new FileReader(snapshotFile);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new SnapshotException(e.getMessage());
-		}
-      
-		// create buffered reader from input stream
-		BufferedReader in = new BufferedReader(snapshotReader);
-		
-		// check for a number of lines value on the first non-comment line
-		
-		int numberOfLines = -1;
-		// while lines to read and we haven't yet read the number of lines value
-		while( in.ready() && (numberOfLines == -1) )
-		{		
-			// read number of lines in snapshot
-			// trim whitespace
-			String numberOfLinesS = (in.readLine()).trim();
+		try (FileReader snapshotReader = new FileReader(snapshotFile);
+			 BufferedReader in = new BufferedReader(snapshotReader)) {
 			
-			// if the line isn't empty
-			if( !numberOfLinesS.equals("") )
-			{
-				// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
-				if(numberOfLinesS.charAt(0) != ';')
-				{
-					try
-					{
-						numberOfLines = Integer.parseInt(numberOfLinesS);
-					}
-					catch(NumberFormatException e)
-					{
-						return UNACCEPTABLE;
+			// check for a number of lines value on the first non-comment line
+			int numberOfLines = -1;
+			// while lines to read and we haven't yet read the number of lines value
+			while (in.ready() && (numberOfLines == -1)) {
+				// read number of lines in snapshot
+				// trim whitespace
+				String numberOfLinesS = (in.readLine()).trim();
+				
+				// if the line isn't empty
+				if (!numberOfLinesS.equals("")) {
+					// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
+					if (numberOfLinesS.charAt(0) != ';') {
+						try {
+							numberOfLines = Integer.parseInt(numberOfLinesS);
+						} catch (NumberFormatException e) {
+							return UNACCEPTABLE;
+						}
 					}
 				}
 			}
+			if (numberOfLines == -1)
+				return UNACCEPTABLE;
+			
+			String nextLine = in.readLine();
+			if (nextLine.indexOf(':') == -1)
+				return ASSEMBLY;
+			else
+				return SNAPSHOT;
+		} catch (FileNotFoundException e) {
+			throw new SnapshotException(e.getMessage());
 		}
-		if(numberOfLines == -1)
-			return UNACCEPTABLE;
-		
-		String nextLine = in.readLine();
-		if(nextLine.indexOf(':') == -1)
-			return ASSEMBLY;
-		else
-			return SNAPSHOT;
 	}
 	
 	public void loadLocalSnapshot(String fileName) throws SnapshotException, IOException

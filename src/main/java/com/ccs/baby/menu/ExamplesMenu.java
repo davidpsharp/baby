@@ -12,15 +12,14 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+
 
 
 import java.io.*;
-import java.net.URISyntaxException;
+
 import java.nio.file.*;
 import java.nio.file.FileSystem;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.stream.Stream;
 
 public class ExamplesMenu {

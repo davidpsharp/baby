@@ -24,6 +24,7 @@ public class LoadSnapshotAssembly implements ActionListener {
     public LoadSnapshotAssembly(Store store, Control control, JFrame frame) {
         this.store = store;
         this.control = control;
+        // TODO: BUG: this is clearly wrong, shouldn't be creating a new CrtPanel here, needs to refer to the one on the main window
         this.crtPanel = new CrtPanel(store, control);
         this.frame = frame;
 
