@@ -31,6 +31,8 @@ import com.ccs.baby.io.LoadExample;
 import com.ccs.baby.manager.*;
 import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
+import com.ccs.baby.utils.AppSettings;
+import com.ccs.baby.utils.PreferencesService;
 import com.ccs.baby.utils.Version;
 import com.ccs.baby.controller.*;
 import com.ccs.baby.debug.*;
@@ -42,6 +44,8 @@ public class Baby extends JFrame {
     public static BackgroundPanel mainPanel;
 
     public Baby() {
+
+        AppSettings settings = AppSettings.getInstance();
 
         setTitle("Manchester Baby Simulator v" + Version.getVersion());
 
@@ -153,10 +157,10 @@ public class Baby extends JFrame {
         store.reset();
         control.reset();
 
-        // Load a program by default "diffeqt.asm"
+        // Load an initial program
         try {
             
-            String defaultFile = "demos/diffeqt.asm";
+            String defaultFile = settings.getInitialExample();
             String uriString = LoadExample.getUriStringForResource(defaultFile);
             store.loadLocalModernAssembly(uriString);
 
@@ -180,6 +184,8 @@ public class Baby extends JFrame {
         // quit program when close icon clicked
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                PreferencesService preferences = PreferencesService.getInstance();
+                preferences.savePreferences(); 
                 System.exit(0);
             }
         });
@@ -216,12 +222,7 @@ public class Baby extends JFrame {
 
         Baby baby = new Baby();
         baby.setSize(700, 950);
-        baby.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
+    
 
         baby.setVisible(true);
         baby.setResizable(false);
