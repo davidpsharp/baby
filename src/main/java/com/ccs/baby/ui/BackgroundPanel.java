@@ -18,7 +18,8 @@ public class BackgroundPanel extends JPanel {
 
     // Cached images
     private static final Image DEFAULT_PANEL = ImageUtils.loadImage("/images/main.png", 800000);
-    private static final Image PANEL_LAMP_ON = ImageUtils.loadImage("/images/mainon.png", 800000);
+    private static Image PANEL_LAMP_ON;
+    private static final Image PANEL_LAMP_ONLY = ImageUtils.loadImage("/images/mainonlamp.png", 800000);
 
     /**
      * Constructs a new BackgroundPanel with the default panel texture.
@@ -27,6 +28,10 @@ public class BackgroundPanel extends JPanel {
         if (DEFAULT_PANEL == null) {
             throw new IllegalArgumentException("Default panel image could not be loaded");
         }
+
+        // create the combined overlay image for when lamp is on at run-time to reduce JAR size
+        PANEL_LAMP_ON = ImageUtils.combineImages(DEFAULT_PANEL, PANEL_LAMP_ONLY);
+
         currentImage = ImageUtils.toBufferedImage(DEFAULT_PANEL);
     }
 
@@ -37,6 +42,7 @@ public class BackgroundPanel extends JPanel {
      *                 If false, sets the texture to the default panel.
      */
     public void setTexture(boolean isLampOn) {
+        
         Image targetImage = isLampOn ? PANEL_LAMP_ON : DEFAULT_PANEL;
 
         if (targetImage == null) {
