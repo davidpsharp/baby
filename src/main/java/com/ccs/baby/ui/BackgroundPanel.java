@@ -17,7 +17,7 @@ public class BackgroundPanel extends JPanel {
     BufferedImage currentImage;
 
     // Cached images
-    private static final Image DEFAULT_PANEL = ImageUtils.loadImage("/images/main.png", 800000);
+    private static final Image DEFAULT_PANEL = ImageUtils.loadImage("/images/main.jpg", 800000);
     private static Image PANEL_LAMP_ON;
     private static final Image PANEL_LAMP_ONLY = ImageUtils.loadImage("/images/mainonlamp.png", 800000);
 
