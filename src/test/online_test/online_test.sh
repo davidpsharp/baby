@@ -2,6 +2,9 @@
 # Mac OS shell script to copy HTML file to target, open web browser and launch a Python3 web server to test out cheerpj serving the root of target folder 
 # Run this script from current working directory of: baby/src/test/online_test 
 
+# change current working directory to be the location of this script
+cd "$(dirname "$0")"
+
 # install the index.html in target folder
 cp index.html ../../../target/index.html
 
