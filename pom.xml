@@ -18,6 +18,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
+                    <!-- Needs to be java 8 to be supported by cheerpj for running in a browser as of January 2025 -->
                     <release>8</release>
                 </configuration>
             </plugin>
