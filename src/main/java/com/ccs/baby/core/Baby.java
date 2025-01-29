@@ -9,7 +9,7 @@ import java.awt.Container;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
-
+import java.lang.reflect.Method;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -60,10 +60,18 @@ public class Baby extends JFrame {
                 // For macOS dock icon
                 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
                     // macOS-specific dock icon setting (requires Java 9 or later)
-                    // TODO: recall cheerpj is Java 8 only so need to disable this if building for java 8
-                    // would be good to handle this in build config somehow so don't have to comment out
-                    // when building for cheerpj.
-                    // java.awt.Taskbar.getTaskbar().setIconImage(icon);
+                    // Recall cheerpj is Java 8 only so can't compile this code and still target JRE 8.
+                    // The line I want to have is...
+                    //      java.awt.Taskbar.getTaskbar().setIconImage(icon);
+                    // so I do equivalent code in reflection so can still compile for Java 8.
+                    // If running on later version of JRE will set taskbar icon, and if running on Java 8
+                    // then the exception will get trapped when reflection fails and the show goes on...
+                    Class taskbarCls = Class.forName("java.awt.Taskbar");
+                    java.lang.reflect.Method getTaskbarMethod = taskbarCls.getMethod("getTaskbar");
+                    Object taskbarObj = getTaskbarMethod.invoke(null);
+
+                    java.lang.reflect.Method setIconImageMethod=taskbarCls.getMethod("setIconImage", Image.class);
+                    setIconImageMethod.invoke(taskbarObj, icon);
                 }
             } catch (Exception e) {
                 System.err.println("Could not load application icon: " + e);
