@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import java.awt.Image;
-import java.awt.Taskbar;
+
 
 import com.ccs.baby.disassembler.*;
 import com.ccs.baby.io.LoadExample;
@@ -36,6 +36,7 @@ import com.ccs.baby.utils.PreferencesService;
 import com.ccs.baby.utils.Version;
 import com.ccs.baby.controller.*;
 import com.ccs.baby.debug.*;
+import com.ccs.baby.utils.MiscUtils;
 
 public class Baby extends JFrame {
 
@@ -45,150 +46,159 @@ public class Baby extends JFrame {
 
     public Baby() {
 
-        AppSettings settings = AppSettings.getInstance();
-
-        setTitle("Manchester Baby Simulator v" + Version.getVersion());
-
-        // In Baby constructor, after creating the window
         try {
-            // Set window icon
-            Image icon = new ImageIcon(getClass().getResource("/icons/baby.png")).getImage();
-            setIconImage(icon);
+            AppSettings settings = AppSettings.getInstance();
+
+            setTitle("Manchester Baby Simulator v" + Version.getVersion());
+
+            // In Baby constructor, after creating the window
+            try {
+                // Set window icon
+                Image icon = new ImageIcon(getClass().getResource("/icons/baby.png")).getImage();
+                setIconImage(icon);
+                
+                // For macOS dock icon
+                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                    // macOS-specific dock icon setting (requires Java 9 or later)
+                    // TODO: recall cheerpj is Java 8 only so need to disable this if building for java 8
+                    // would be good to handle this in build config somehow so don't have to comment out
+                    // when building for cheerpj.
+                    // java.awt.Taskbar.getTaskbar().setIconImage(icon);
+                }
+            } catch (Exception e) {
+                System.err.println("Could not load application icon: " + e);
+            }
+
+            try {
+                currentDir = System.getProperty("user.home");
+                System.out.println(currentDir);
+            } catch (SecurityException e) {
+                System.out.println("user.dir not accessible from applet");
+                System.out.println(e.getMessage());
+            }
+
+            // Create LampManager
+            LampManager lampManager = new LampManager();
+
+            // Create main hardware components
+            Store store = new Store();
+            Control control = new Control(store, lampManager);
+            store.setControl(control);
+
+            CrtPanel crtPanel = new CrtPanel(store, control);
+            crtPanel.setOpaque(false);
+            crtPanel.setPreferredSize(new Dimension(400, 386));
+
+            // Create Disassembler
+            Disassembler disassembler = new Disassembler(store, control, crtPanel);
+
+            // Create switch panel components
+            StaticisorPanel staticisorPanel = new StaticisorPanel();
+            TypewriterPanel typewriterPanel = new TypewriterPanel();
+            CrtControlPanel crtControlPanel = new CrtControlPanel();
+
+            // Tell control about staticisorPanel and crtControlPanel
+            control.setSwitchPanel(staticisorPanel, crtControlPanel);
+
+            // A container for all switch panel components
+            JPanel switchPanel = new JPanel();
+            switchPanel.setLayout(new BoxLayout(switchPanel, BoxLayout.Y_AXIS));
+            switchPanel.setOpaque(false);
+            switchPanel.add(typewriterPanel);
+            switchPanel.add(staticisorPanel);
+            switchPanel.add(crtControlPanel);
+
+            // Create Action Line Manager
+            ActionLineManager actionLineManager = new ActionLineManager(staticisorPanel, crtPanel, control);
+
+            // Setup a DebugPanel (aka modernControls)
+            DebugPanel debugPanel = new DebugPanel(control, staticisorPanel, crtControlPanel);
+            debugPanel.setOpaque(true);
+
+            // Get the FpsLabelService from the debugPanel
+            FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
+
+            // Initialise AnimationManager
+            AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanel, fpsLabelService, actionLineManager);
+
+            new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
+            new StaticisorPanelController(staticisorPanel, actionLineManager);
+            new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
+
+            // Create a container mainPanel that wraps crtPanel and switchPanel
+            mainPanel = new BackgroundPanel();
+            mainPanel.setLayout(new BorderLayout());
+            mainPanel.setSize(690, 905);
+            mainPanel.add(crtPanel, BorderLayout.NORTH);
+            mainPanel.add(switchPanel);
+
+            // Set up display window GUI
+            Container contentPane = getContentPane();
+            contentPane.setLayout(new BorderLayout());
+            contentPane.add(mainPanel, BorderLayout.CENTER);
+            contentPane.add(debugPanel, BorderLayout.SOUTH);
+
+            // Set up and add menu bars to the window
+            JMenuBar menuBar = new JMenuBar();
+            setJMenuBar(menuBar);
+            new MenuSetup(menuBar, store, control, crtPanel, crtControlPanel, disassembler, currentDir, this, debugPanel);
             
-            // For macOS dock icon
-            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                // macOS-specific dock icon setting (requires Java 9 or later)
-                Taskbar.getTaskbar().setIconImage(icon);
+
+            // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
+            // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
+            // by default Swing sets F10 to open the menu so have to override this and point to none first to disable it otherwise menu pops up.
+            menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
+            // Then set up F10 to do something useful...
+            KeyStroke ks_f10 = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
+            Action performStep = new AbstractAction("Step") {
+                public void actionPerformed(ActionEvent e) {
+                    control.singleStep();
+                }
+            };
+            // TODO: have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
+            mainPanel.getActionMap().put("performStep", performStep);
+            mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
+
+            // Reset the hardware to initial values
+            store.reset();
+            control.reset();
+
+            // Load an initial program
+            try {
+                
+                String defaultFile = settings.getInitialExample();
+                String uriString = LoadExample.getUriStringForResource(defaultFile);
+                store.loadLocalModernAssembly(uriString);
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception e) {
-            System.err.println("Could not load application icon: " + e);
+
+            // render and display the CRT display
+            crtPanel.setToolTipText("The monitor.");
+            crtPanel.render();
+            crtPanel.repaint();
+
+            // Open window
+            setVisible(true);
+
+            // This helps toggle the visibility of the debugPanel
+            contentPane.revalidate();
+            contentPane.repaint();
+
+
+            // quit program when close icon clicked
+            addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    PreferencesService preferences = PreferencesService.getInstance();
+                    preferences.savePreferences(); 
+                    System.exit(0);
+                }
+            });
         }
-
-        try {
-            currentDir = System.getProperty("user.home");
-            System.out.println(currentDir);
-        } catch (SecurityException e) {
-            System.out.println("user.dir not accessible from applet");
-            System.out.println(e.getMessage());
+        catch(Exception e) {
+            JOptionPane.showMessageDialog(getContentPane(), MiscUtils.getStackTrace(e), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Create LampManager
-        LampManager lampManager = new LampManager();
-
-        // Create main hardware components
-        Store store = new Store();
-        Control control = new Control(store, lampManager);
-        store.setControl(control);
-
-        CrtPanel crtPanel = new CrtPanel(store, control);
-        crtPanel.setOpaque(false);
-        crtPanel.setPreferredSize(new Dimension(400, 386));
-
-        // Create Disassembler
-        Disassembler disassembler = new Disassembler(store, control, crtPanel);
-
-        // Create switch panel components
-        StaticisorPanel staticisorPanel = new StaticisorPanel();
-        TypewriterPanel typewriterPanel = new TypewriterPanel();
-        CrtControlPanel crtControlPanel = new CrtControlPanel();
-
-        // Tell control about staticisorPanel and crtControlPanel
-        control.setSwitchPanel(staticisorPanel, crtControlPanel);
-
-        // A container for all switch panel components
-        JPanel switchPanel = new JPanel();
-        switchPanel.setLayout(new BoxLayout(switchPanel, BoxLayout.Y_AXIS));
-        switchPanel.setOpaque(false);
-        switchPanel.add(typewriterPanel);
-        switchPanel.add(staticisorPanel);
-        switchPanel.add(crtControlPanel);
-
-        // Create Action Line Manager
-        ActionLineManager actionLineManager = new ActionLineManager(staticisorPanel, crtPanel, control);
-
-        // Setup a DebugPanel (aka modernControls)
-        DebugPanel debugPanel = new DebugPanel(control, staticisorPanel, crtControlPanel);
-        debugPanel.setOpaque(true);
-
-        // Get the FpsLabelService from the debugPanel
-        FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
-
-        // Initialise AnimationManager
-        AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanel, fpsLabelService, actionLineManager);
-
-        new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
-        new StaticisorPanelController(staticisorPanel, actionLineManager);
-        new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
-
-        // Create a container mainPanel that wraps crtPanel and switchPanel
-        mainPanel = new BackgroundPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setSize(690, 905);
-        mainPanel.add(crtPanel, BorderLayout.NORTH);
-        mainPanel.add(switchPanel);
-
-        // Set up display window GUI
-        Container contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(mainPanel, BorderLayout.CENTER);
-        contentPane.add(debugPanel, BorderLayout.SOUTH);
-
-        // Set up and add menu bars to the window
-        JMenuBar menuBar = new JMenuBar();
-        new MenuSetup(menuBar, store, control, crtPanel, crtControlPanel, disassembler, currentDir, this, debugPanel);
-        setJMenuBar(menuBar);
-
-        // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
-        // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
-        // by default Swing sets F10 to open the menu so have to override this and point to none first to disable it otherwise menu pops up.
-        menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
-        // Then set up F10 to do something useful...
-        KeyStroke ks_f10 = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
-        Action performStep = new AbstractAction("Step") {
-            public void actionPerformed(ActionEvent e) {
-                control.singleStep();
-            }
-        };
-        // TODO: have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
-        mainPanel.getActionMap().put("performStep", performStep);
-        mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
-
-        // Reset the hardware to initial values
-        store.reset();
-        control.reset();
-
-        // Load an initial program
-        try {
-            
-            String defaultFile = settings.getInitialExample();
-            String uriString = LoadExample.getUriStringForResource(defaultFile);
-            store.loadLocalModernAssembly(uriString);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        // render and display the CRT display
-        crtPanel.setToolTipText("The monitor.");
-        crtPanel.render();
-        crtPanel.repaint();
-
-        // Open window
-        setVisible(true);
-
-        // This helps toggle the visibility of the debugPanel
-        contentPane.revalidate();
-        contentPane.repaint();
-
-
-        // quit program when close icon clicked
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                PreferencesService preferences = PreferencesService.getInstance();
-                preferences.savePreferences(); 
-                System.exit(0);
-            }
-        });
     }
 
     // Main method to create main window
@@ -221,6 +231,7 @@ public class Baby extends JFrame {
         }
 
         Baby baby = new Baby();
+      
         baby.setSize(700, 950);
     
 

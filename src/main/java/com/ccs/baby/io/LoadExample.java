@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 
 import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.utils.MiscUtils;
 
 
 public class LoadExample implements ActionListener {
@@ -48,7 +49,7 @@ public class LoadExample implements ActionListener {
             crtPanel.render();
             crtPanel.repaint();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame.getContentPane(), MiscUtils.getStackTrace(ex), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

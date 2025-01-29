@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ccs</groupId>
     <artifactId>baby</artifactId>
-    <version>3.0.0-alpha</version>
+    <version>3.0.0-alpha.2</version>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,7 +18,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>8</release>
                 </configuration>
             </plugin>
 
@@ -104,7 +104,7 @@
             Then build with: mvn clean package -Psign
             -->
 
-            <!--
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jarsigner-plugin</artifactId>
@@ -126,7 +126,7 @@
                     <tsa>http://timestamp.digicert.com</tsa>
                 </configuration>
             </plugin>
-            -->
+            
 
         </plugins>
 

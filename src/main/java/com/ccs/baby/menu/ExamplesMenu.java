@@ -3,8 +3,7 @@ package com.ccs.baby.menu;
 import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.ui.CrtPanel;
-
-
+import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.io.LoadExample;
 
 import javax.swing.*;
@@ -12,14 +11,18 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-
-
-import java.io.*;
-
 import java.nio.file.*;
-import java.nio.file.FileSystem;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.io.*;
+import java.util.Comparator;
+import java.util.jar.*;
+import java.util.Enumeration;
 import java.util.stream.Stream;
 
 public class ExamplesMenu {
@@ -58,8 +61,13 @@ public class ExamplesMenu {
             _frame = frame;
     
             try {
+
+                // experimental
+                //scanJarManually(EXAMPLES_FOLDER);
+
                 // Add built-in examples from resources
-                exampleMenu = createMenuFromResource(exampleMenu, EXAMPLES_FOLDER);
+                if(!MiscUtils.onCheerpj())
+                    exampleMenu = createMenuFromResource(exampleMenu, EXAMPLES_FOLDER);
     
                 // Try to add programs from external folder
                 Path jarPath = getJarPath();
@@ -67,17 +75,14 @@ public class ExamplesMenu {
                     Path externalFolder = jarPath.getParent().resolve(EXTERNAL_PROGRAMS_FOLDER);
                     Path externalZip = jarPath.getParent().resolve(EXTERNAL_PROGRAMS_ZIP);
     
-                    // Add programs from external folder if it exists
+                    // Add programs from external folder if it exists)
                     if (Files.exists(externalFolder) && Files.isDirectory(externalFolder)) {
                         createMenuFromExternalPath(exampleMenu, externalFolder);
                     }
     
                     // Add programs from zip file if it exists
                     if (Files.exists(externalZip) && !Files.isDirectory(externalZip)) {
-                        try (FileSystem zipFs = FileSystems.newFileSystem(externalZip, (ClassLoader) null)) {
-                            Path root = zipFs.getPath("/");
-                            createMenuFromExternalPath(exampleMenu, root);
-                        }
+                        createMenuFromZipFile(exampleMenu, externalZip);
                     }
                 }
             } catch (URISyntaxException | IOException exception) {
@@ -103,6 +108,28 @@ public class ExamplesMenu {
     }
   
 
+    // experimental attempt to read examples from JAR when running in cheerpj - basically works, merge in
+    // functionality from createMenuFromZipFile to sort and scan tree and setup load with getUriStringForResource
+    private static void scanJarManually(String folder) throws IOException {
+    
+        System.out.println("jarpath:" + getJarPath());
+        
+        try (java.util.jar.JarFile jarFile = new java.util.jar.JarFile(getJarPath().toString())) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                if (entry.isDirectory()) {
+                    System.out.println("dir: " + entry.getName());
+                }
+                else {
+                    InputStream input = jarFile.getInputStream(entry);
+                    System.out.println("file: " + entry.getName());
+                }
+                
+            }
+        }
+    }
+
     /**
      * Start scanning folder within the simulator's JAR/target folder for built-in example programs
      * @param rootMenu
@@ -114,14 +141,17 @@ public class ExamplesMenu {
     public static JMenu createMenuFromResource(JMenu rootMenu, String resourcePath) throws URISyntaxException, IOException {
         ClassLoader classLoader = Baby.class.getClassLoader();
         URI uri = classLoader.getResource(resourcePath).toURI();
-    
+
         Path myPath;
         if ("jar".equals(uri.getScheme())) {
+            System.out.println("createMenu uri:" + uri.toString());
             FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
             myPath = fileSystem.getPath(resourcePath);
         } else {
             myPath = Paths.get(uri);
         }
+
+        System.out.println("createMenu myPath:" + myPath);
         
         processDirectory(rootMenu, myPath);
         return rootMenu;
@@ -183,6 +213,62 @@ public class ExamplesMenu {
         }
     }
     
+
+    /**
+     * Create menu items from a zip file's contents
+     * Created as cheerpj doesn't seem to like newFileSystem() at all so scanning directly
+     * @param parentMenu The menu to add items to
+     * @param zipPath Path to the zip file
+     * @throws IOException If there's an error reading the zip file
+     */
+    private static void createMenuFromZipFile(JMenu parentMenu, Path zipPath) throws IOException {
+        try (ZipFile zipFile = new ZipFile(zipPath.toFile())) {
+            // Create a map of menus for each directory path
+            Map<String, JMenu> menuMap = new HashMap<>();
+            menuMap.put("", parentMenu);
+
+            // Sort entries to ensure directories are processed before their contents
+            List<? extends ZipEntry> entries = Collections.list(zipFile.entries());
+            entries.sort(Comparator.comparing(ZipEntry::getName));
+
+            for (ZipEntry entry : entries) {
+                String entryName = entry.getName();
+                
+                // Skip directories and non-relevant files
+                if (entry.isDirectory()) {
+                    // Create menu for this directory
+                    String dirPath = entryName.substring(0, entryName.length() - 1); // remove trailing slash
+                    String parentPath = new File(dirPath).getParent();
+                    if (parentPath == null) parentPath = "";
+                    
+                    JMenu parentPathMenu = menuMap.get(parentPath);
+                    if (parentPathMenu != null) {
+                        JMenu dirMenu = new JMenu(new File(dirPath).getName());
+                        parentPathMenu.add(dirMenu);
+                        menuMap.put(dirPath, dirMenu);
+                    }
+                } else {
+                    String fileName = new File(entryName).getName().toLowerCase();
+                    if (fileName.endsWith(".snp") || fileName.endsWith(".asm")) {
+                        // Get the parent directory path
+                        String parentPath = new File(entryName).getParent();
+                        if (parentPath == null) parentPath = "";
+                        
+                        // Get the menu for this file's directory
+                        JMenu targetMenu = menuMap.get(parentPath);
+                        if (targetMenu != null) {
+                            // Create menu item
+                            JMenuItem menuItem = new JMenuItem(fileName);
+                            String uriString = "jar:" + zipPath.toUri() + "!" + entryName;
+                            // TODO: the uriString here doesn't work with loading files when clicked on
+                            menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanel, _frame));
+                            targetMenu.add(menuItem);
+                        }
+                    }
+                }
+            }
+        } 
+    }
 
     private static JMenuItem createMenuItemForFile(Path filePath) throws URISyntaxException, IOException {
         JMenuItem menuItem = new JMenuItem(filePath.getFileName().toString());
