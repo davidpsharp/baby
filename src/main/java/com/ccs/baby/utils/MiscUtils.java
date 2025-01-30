@@ -28,6 +28,8 @@ public class MiscUtils {
 
     /** Return date/time the JAR was built, taken from the JAR manifest */
     public static String getBuildTime() {
+        // TODO: inside cheerpj this method returns null, suspect no manifests found but TBC.
+        
         String buildTime = "";
         try
         {                                   
@@ -44,9 +46,9 @@ public class MiscUtils {
             }
                 
         }
-        catch (IOException e)
+        catch (IOException ex)
         {            
-            System.out.println(e.toString());
+            System.out.println("error getting buildtime: " + MiscUtils.getStackTrace(ex));
         } 
         return buildTime;
     }
