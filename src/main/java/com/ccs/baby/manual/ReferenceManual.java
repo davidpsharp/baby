@@ -41,7 +41,7 @@ public class ReferenceManual implements ActionListener {
         ref.add(scrollPane);
         ref.setSize(505, 700);
         ref.setAlwaysOnTop(true);
-        ref.setLocation(730, 250);
+        ref.setLocation(100, 100);
         ref.setVisible(false); // Initially hidden
 
 
