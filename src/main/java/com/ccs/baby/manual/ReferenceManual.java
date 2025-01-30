@@ -3,9 +3,14 @@ package com.ccs.baby.manual;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import com.ccs.baby.io.LoadExample;
+import com.ccs.baby.utils.MiscUtils;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class ReferenceManual implements ActionListener {
 
@@ -19,9 +24,18 @@ public class ReferenceManual implements ActionListener {
 
         // Create the JFrame for the reference manual
         ref = new JFrame("Reference Manual");
-        viewer = new JEditorPane();
 
+        viewer = new JEditorPane();
         viewer.setEditable(false);
+
+        try {
+            String uri = LoadExample.getUriStringForResource("html/ssem_prm.html");
+            viewer.setPage(uri);
+        }
+        catch(IOException | URISyntaxException ex)
+        {
+            System.out.println(MiscUtils.getStackTrace(ex));
+        }
 
         JScrollPane scrollPane = new JScrollPane(viewer);
         ref.add(scrollPane);
@@ -37,7 +51,8 @@ public class ReferenceManual implements ActionListener {
             public void hyperlinkUpdate(HyperlinkEvent event) {
                 if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     try {
-                        viewer.setPage(event.getURL());
+                        java.net.URL url = event.getURL();
+                        viewer.setPage(url);
                     } catch (IOException ioe) {
                         // Some warning to user
                     }
