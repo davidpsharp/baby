@@ -8,6 +8,7 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
     </properties>
 
     <build>
@@ -76,6 +77,7 @@
                         </manifest>
                         <manifestEntries>
                             <Implementation-Title>Manchester Baby Simulator</Implementation-Title>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -127,7 +129,8 @@
                     <tsa>http://timestamp.digicert.com</tsa>
                 </configuration>
             </plugin>
-            
+
+
 
         </plugins>
 

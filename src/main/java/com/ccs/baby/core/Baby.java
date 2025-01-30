@@ -64,7 +64,7 @@ public class Baby extends JFrame {
                     // The line I want to have is...
                     //      java.awt.Taskbar.getTaskbar().setIconImage(icon);
                     // so I do equivalent code in reflection so can still compile for Java 8.
-                    // If running on later version of JRE will set taskbar icon, and if running on Java 8
+                    // If compiled/running on later version of JRE will set taskbar icon, and if running on Java 8
                     // then the exception will get trapped when reflection fails and the show goes on...
                     Class taskbarCls = Class.forName("java.awt.Taskbar");
                     java.lang.reflect.Method getTaskbarMethod = taskbarCls.getMethod("getTaskbar");

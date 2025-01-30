@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import java.awt.event.KeyEvent;
 
+import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.utils.Version;
 
 
@@ -14,12 +15,16 @@ public class HelpMenu {
     private static final String ABOUT_TITLE = "Manchester Baby";
     private static final String ABOUT_MESSAGE = String.join("\n",
             "Manchester Baby Simulator",
+            "",
             "v" + Version.getVersion(),
+            "Built " + MiscUtils.getBuildTime(),
+            "",
             "Originally by David Sharp",
             "January 2001",
             "With thanks to Chris Burton for his consultation on historical matters.",
             "The GUI was created from pictures of the Baby replica by Gulzaman Khan",
             "August 2006",
+            "",
             "https://davidsharp.com/baby"
     );
 
