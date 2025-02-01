@@ -28,7 +28,7 @@ public class Store
 	public static final int ASSEMBLY = 2;
 	
 	// Manager for tracking recently loaded files
-    private final RecentFilesManager recentFilesManager = new RecentFilesManager();
+    private RecentFilesManager recentFilesManager;
     
     public RecentFilesManager getRecentFilesManager() {
         return recentFilesManager;
@@ -45,7 +45,8 @@ public class Store
 			isLineAltered[x] = true;
 		}
 		
-		
+		// setup recent files manager
+        recentFilesManager = RecentFilesManager.getInstance();
 	}
 	
 	// set control since both objects mutually linked
