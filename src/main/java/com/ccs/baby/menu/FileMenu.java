@@ -5,6 +5,7 @@ import com.ccs.baby.io.SaveAssembly;
 import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.core.Control;
+import com.ccs.baby.ui.CrtPanel;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -23,9 +24,10 @@ public class FileMenu {
      * @param control    the control object
      * @param currentDir the current directory path
      * @param frame      the frame object
+     * @param crtPanel   the crt panel object
      * @return the File menu
      */
-    public static JMenu createFileMenu(Store store, Control control, String currentDir, JFrame frame) {
+    public static JMenu createFileMenu(Store store, Control control, String currentDir, JFrame frame, CrtPanel crtPanel) {
 
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
@@ -37,7 +39,7 @@ public class FileMenu {
         JMenuItem close = new JMenuItem("Close");
 
         // Add action listeners for each item
-        loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, frame));
+        loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, frame, crtPanel));
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
         close.addActionListener(e -> System.exit(0));

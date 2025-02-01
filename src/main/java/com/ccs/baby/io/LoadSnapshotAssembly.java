@@ -21,11 +21,10 @@ public class LoadSnapshotAssembly implements ActionListener {
     private final JFrame frame;
 
 
-    public LoadSnapshotAssembly(Store store, Control control, JFrame frame) {
+    public LoadSnapshotAssembly(Store store, Control control, JFrame frame, CrtPanel crtPanel) {
         this.store = store;
         this.control = control;
-        // TODO: BUG: this is clearly wrong, shouldn't be creating a new CrtPanel here, needs to refer to the one on the main window
-        this.crtPanel = new CrtPanel(store, control);
+        this.crtPanel = crtPanel;
         this.frame = frame;
 
         currentDir = System.getProperty("user.home");
@@ -42,39 +41,39 @@ public class LoadSnapshotAssembly implements ActionListener {
 
         fc.setDialogTitle("Load snapshot or assembly...");
 
-
-        File file;
         int returnVal = fc.showOpenDialog(frame.getContentPane());
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            file = fc.getSelectedFile();
+            File file = fc.getSelectedFile();
             fileChooserDirectory = file.getParentFile();
-            String currentFile = file.toString();
-            try {
-                // detect file type and then load appropriately if possible
-
-                switch (store.getFileType(currentFile)) {
-                    case Store.UNACCEPTABLE:
-                        JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);
-                        break;
-                    case Store.SNAPSHOT:
-                        store.loadSnapshot(currentFile);
-                        break;
-                    case Store.ASSEMBLY:
-                        store.loadModernAssembly(currentFile);
-                        break;
-                    default:
-                        JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);
-                        break;
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                System.out.println("fnf");
-            }
-
+            handleFileLoad(file);
         }
-        // update display
-        crtPanel.render();
-        frame.getContentPane().repaint();
+    }
+
+    public void handleFileLoad(File file) {
+        try {
+            String currentFile = file.toString();
+            // detect file type and then load appropriately if possible
+            switch (store.getFileType(currentFile)) {
+                case Store.UNACCEPTABLE:
+                    JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                case Store.SNAPSHOT:
+                    store.loadSnapshot(currentFile);
+                    break;
+                case Store.ASSEMBLY:
+                    store.loadModernAssembly(currentFile);
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
+            // update display
+            crtPanel.render();
+            frame.getContentPane().repaint();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("fnf");
+        }
     }
 }

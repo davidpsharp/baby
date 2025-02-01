@@ -24,8 +24,17 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.io.File;
+import java.util.List;
 
-
+import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.disassembler.*;
 import com.ccs.baby.io.LoadExample;
 import com.ccs.baby.manager.*;
@@ -43,6 +52,10 @@ public class Baby extends JFrame {
     // Get the current directory
     private static String currentDir;
     public static BackgroundPanel mainPanel;
+    private Store store;
+    private CrtPanel crtPanel;
+    private Control control;
+    private LoadSnapshotAssembly loadSnapshotAssembly;
 
     public Baby() {
 
@@ -89,13 +102,16 @@ public class Baby extends JFrame {
             LampManager lampManager = new LampManager();
 
             // Create main hardware components
-            Store store = new Store();
-            Control control = new Control(store, lampManager);
+            store = new Store();
+            control = new Control(store, lampManager);
             store.setControl(control);
 
-            CrtPanel crtPanel = new CrtPanel(store, control);
+            crtPanel = new CrtPanel(store, control);
             crtPanel.setOpaque(false);
             crtPanel.setPreferredSize(new Dimension(400, 386));
+
+            // Create LoadSnapshotAssembly instance
+            loadSnapshotAssembly = new LoadSnapshotAssembly(store, control, this, crtPanel);
 
             // Create Disassembler
             Disassembler disassembler = new Disassembler(store, control, crtPanel);
@@ -178,6 +194,8 @@ public class Baby extends JFrame {
             contentPane.revalidate();
             contentPane.repaint();
 
+            // Setup drag and drop
+            setupDragAndDrop();
 
             // quit program when close icon clicked
             addWindowListener(new WindowAdapter() {
@@ -191,6 +209,42 @@ public class Baby extends JFrame {
         catch(Exception e) {
             JOptionPane.showMessageDialog(getContentPane(), MiscUtils.getStackTrace(e), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void setupDragAndDrop() {
+        // Create the drop target listener
+        DropTargetListener dropListener = new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent event) {
+                try {
+                    event.acceptDrop(DnDConstants.ACTION_COPY);
+                    Transferable transferable = event.getTransferable();
+                    
+                    if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        @SuppressWarnings("unchecked")
+                        List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                        
+                        for (File file : files) {
+                            // Use LoadSnapshotAssembly to handle the file
+                            loadSnapshotAssembly.handleFileLoad(file);
+                            break; // Only load the first file
+                        }
+                    }
+                    
+                    event.dropComplete(true);
+                } catch (Exception e) {
+                    event.dropComplete(false);
+                    JOptionPane.showMessageDialog(getContentPane(), 
+                        "Error loading file: " + e.getMessage(), 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+
+        // Create and set the drop target for both mainPanel and crtPanel
+        new DropTarget(mainPanel, DnDConstants.ACTION_COPY, dropListener, true);
+        new DropTarget(crtPanel, DnDConstants.ACTION_COPY, dropListener, true);
     }
 
     // Main method to create main window
