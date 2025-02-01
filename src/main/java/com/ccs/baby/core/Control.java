@@ -37,14 +37,14 @@ public class Control
 	private boolean kacPressed = false;
 	
 	// function number encodings for different instructions 
-	private static final int FUNC_JMP = 0;
-	private static final int FUNC_JRP = 1;
-	private static final int FUNC_LDN = 2;
-	private static final int FUNC_STO = 3;
-	private static final int FUNC_SUB = 4;
-	private static final int FUNC_SUB5 = 5;
-	private static final int FUNC_CMP = 6;
-	private static final int FUNC_STP = 7;
+	public static final int FUNC_JMP = 0;
+	public static final int FUNC_JRP = 1;
+	public static final int FUNC_LDN = 2;
+	public static final int FUNC_STO = 3;
+	public static final int FUNC_SUB = 4;
+	public static final int FUNC_SUB5 = 5;
+	public static final int FUNC_CMP = 6;
+	public static final int FUNC_STP = 7;
 
 	
 	
@@ -463,6 +463,7 @@ public class Control
 		int funcNumber = getFunctionNumber(instructionValue);
 		return (funcNumber != FUNC_CMP) && (funcNumber != FUNC_STP);
 	}
+
 	
 	public String toString()
 	{
@@ -512,13 +513,13 @@ public class Control
 	// private methods
 	
 	// returns the line number to be acted upon by the present instruction
-	public int getLineNumber(int value)
+	public static int getLineNumber(int value)
 	{
 		return (value & 0x1F);
 	}
 	
 	// return the number in bits 13-15 of argument
-	private int getFunctionNumber(int value)
+	public static int getFunctionNumber(int value)
 	{
 		return ((value >> 13) & 0x07);
 	}

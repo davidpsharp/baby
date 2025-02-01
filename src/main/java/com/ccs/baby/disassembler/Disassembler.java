@@ -85,7 +85,7 @@ public class Disassembler extends JFrame
 		int controlInstruction = control.getControlInstruction();
 		
 		output += "; CI: " + controlInstruction + "\n";
-		output += "; PI: " + Store.disassembleModern(control.getPresentInstruction() ) + "\n";
+		output += "; PI: " + store.disassembleModern(control.getPresentInstruction() ) + "\n";
 		output += "; ACC: " + control.getAccumulator() + "\n\n";
 		// TODO: add disassembled instruction to accumulator (minus the comment and NUM stuff) so can see self modifying code getting built
 		
@@ -98,7 +98,7 @@ public class Disassembler extends JFrame
 			
 			// identify if the line being written is the next one to be executed so it can be marked, recall that CI increments
 			// immediately before executing the next instruction (hence why JMPing to line 0 executes the instriction on line 1).
-			output += lineNumberS + "  " + Store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction+1) ) + "\n";
+			output += lineNumberS + "  " + store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction+1) ) + "\n";
 		}
 		
 		textArea.setText(output);

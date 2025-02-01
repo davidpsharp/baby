@@ -41,7 +41,7 @@ public class HelpMenu {
 
         // Create menu items
         JMenuItem about = new JMenuItem("About");
-        JMenuItem refManual = new JMenuItem("Reference Manual");
+        JMenuItem refManual = new JMenuItem("Programmer's Reference Manual");
 
         // Add action listeners
         about.addActionListener(e -> JOptionPane.showMessageDialog(

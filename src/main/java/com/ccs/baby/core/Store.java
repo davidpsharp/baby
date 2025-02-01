@@ -829,14 +829,14 @@ public class Store
 		}
 	}
 	
-	public static String disassembleModern(int line)
+	public String disassembleModern(int line)
 	{
 		return disassembleModern(line, false);
 	}
 
 	// takes a line and returns the NUM value or the mdoern mnemonic
 	// marks the line's comment if it's flagged as the next instruction to make it easy to spot on the disassembler
-	public static String disassembleModern(int line, boolean isNextInstruction)
+	public String disassembleModern(int line, boolean isNextInstruction)
 	{	
 		String output = "";
 		
@@ -886,6 +886,19 @@ public class Store
 		else
 		{
 			output += lineValue;
+		}
+
+		// append value of the line being read from if an instruction that reads a line value
+		int functionNum = Control.getFunctionNumber(line);
+		switch(functionNum) {
+			case Control.FUNC_JMP :
+			case Control.FUNC_JRP :
+			case Control.FUNC_LDN :
+			case Control.FUNC_SUB :
+			case Control.FUNC_SUB5 :
+				int actionLine=Control.getLineNumber(line);
+				output += " (" + getLine(actionLine) + ")";  // drop through to here
+			default :
 		}
 		
 		return output;
