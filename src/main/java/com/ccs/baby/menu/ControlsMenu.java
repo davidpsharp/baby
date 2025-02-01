@@ -3,8 +3,6 @@ package com.ccs.baby.menu;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.manual.ReferenceManual;
 
-import javax.swing.KeyStroke;
-
 import java.awt.event.KeyEvent;
 
 import javax.swing.*;
@@ -20,16 +18,10 @@ public class ControlsMenu {
      * @param frame the frame object
      * @return the Help menu
      */
-    public static JMenu createControlsMenu(JFrame frame, Control control) {
+    public static JMenu createControlsMenu(JFrame frame, Control control, JMenuBar menuBar) {
 
         // Create the Help menu
         JMenu controlsMenu = new JMenu("Controls");  // is 'Run' or 'Start' better for first time users
-
-        // TODO: add more controls
-        // KLC clear current action line
-        // KSC clear entire store
-        // KAC clear accumulator
-
 
         // Create menu items
         JMenuItem stepItem = new JMenuItem("Single Step");
@@ -41,6 +33,11 @@ public class ControlsMenu {
         runItem.addActionListener(e -> control.startRunning());
         stopItem.addActionListener(e -> control.stopRunning());
 
+        // by default Swing sets F10 to open the menu so have to override this and point to none first to disable it otherwise menu pops up and
+        // the Controls menu accelerators we want for F10 won't fire unless we disable this...
+        menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
+
+        // set up accelerators
         controlsMenu.setMnemonic(KeyEvent.VK_C); // Alt + C
         stepItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0)); // F10
         runItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0)); // F5

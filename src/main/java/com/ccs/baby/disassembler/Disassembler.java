@@ -67,7 +67,7 @@ public class Disassembler extends JFrame
 		// add controls menu so single step hotkey works when disassembler window has focus
 		JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
-		menuBar.add(ControlsMenu.createControlsMenu(this, control));
+		menuBar.add(ControlsMenu.createControlsMenu(this, control, menuBar));
 
 	}
 
