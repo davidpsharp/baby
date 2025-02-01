@@ -84,21 +84,11 @@ public class DebugPanel extends JPanel implements ActionListener {
         if (e.getSource() == stepButton) {
             control.singleStep();
         } else if (e.getSource() == runButton) {
-            staticisorPanel.setManAuto(true);
-            // set to write
-            crtControlPanel.setWriteErase(true);
-            staticisorPanel.setLineSwitches(true);
-
-            // flick CS switch which starts the animation
-            if (!crtControlPanel.getStopRun()) {
-                crtControlPanel.simulateStopRunToggle();
-            }
+            control.startRunning();
         }
         // if stop button pressed the turn off the CS switch
         else if (e.getSource() == stopButton) {
-            if (crtControlPanel.getStopRun()) {
-                crtControlPanel.simulateStopRunToggle();
-            }
+            control.stopRunning();
         }
     }
 }

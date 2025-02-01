@@ -152,9 +152,11 @@ public class Baby extends JFrame {
             new MenuSetup(menuBar, store, control, crtPanel, crtControlPanel, disassembler, currentDir, this, debugPanel);
             
 
+            // DISABLED this section for time being as hotkeys now drive from Controls menu - still in test at time of writing...
             // Setup keypress F10 to single step the simulator (similar to Visual Studio keypress-style)
             // What follows is a perfect example of how java swing can make something simple horribly complex and verbose....
             // by default Swing sets F10 to open the menu so have to override this and point to none first to disable it otherwise menu pops up.
+            /*
             menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
             // Then set up F10 to do something useful...
             KeyStroke ks_f10 = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
@@ -163,9 +165,10 @@ public class Baby extends JFrame {
                     control.singleStep();
                 }
             };
-            // TODO: have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
+            // have to register this for a JComponent in every window otherwise won't work for example if the disassembler window has the focus.
             mainPanel.getActionMap().put("performStep", performStep);
             mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks_f10, "performStep");
+            */
 
             // Reset the hardware to initial values
             store.reset();

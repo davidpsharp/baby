@@ -27,6 +27,7 @@ public class MenuSetup {
      */
     public MenuSetup(JMenuBar menuBar, Store store, Control control, CrtPanel crtPanel, CrtControlPanel crtControlPanel, Disassembler disassembler, String currentDir, JFrame frame, DebugPanel debugPanel) {
         menuBar.add(FileMenu.createFileMenu(store, control, currentDir, frame));
+        menuBar.add(ControlsMenu.createControlsMenu(frame, control));
         menuBar.add(ViewMenu.createViewMenu(crtPanel, crtControlPanel, disassembler, debugPanel));
         menuBar.add(ExamplesMenu.createExampleMenu(store, crtPanel, frame));
         menuBar.add(HelpMenu.createHelpMenu(frame));

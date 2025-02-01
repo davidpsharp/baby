@@ -1,6 +1,5 @@
 package com.ccs.baby.core;
 
-import com.ccs.baby.ui.LampManager;
 import com.ccs.baby.ui.*;
 
 public class Control
@@ -205,6 +204,24 @@ public class Control
 		staticisorPanel.setFunctionSwitches(true);
 
 		crtControlPanel.simulateKspClick();
+	}
+
+	public void startRunning() {
+		staticisorPanel.setManAuto(true);
+		// set to write
+		crtControlPanel.setWriteErase(true);
+		staticisorPanel.setLineSwitches(true);
+
+		// flick CS switch which starts the animation
+		if (!crtControlPanel.getStopRun()) {
+			crtControlPanel.simulateStopRunToggle();
+		}
+	}
+
+	public void stopRunning() {
+		if (crtControlPanel.getStopRun()) {
+			crtControlPanel.simulateStopRunToggle();
+		}
 	}
 
 

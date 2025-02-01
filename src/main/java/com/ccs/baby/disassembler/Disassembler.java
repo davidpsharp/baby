@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.util.*;
 
 import com.ccs.baby.core.Store;
+import com.ccs.baby.menu.ControlsMenu;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.ui.CrtPanel;
 
@@ -62,6 +63,12 @@ public class Disassembler extends JFrame
 		contentPane.add(backPanel);
 
 		updateOnStep.setSelected(_updateOnStep);
+
+		// add controls menu so single step hotkey works when disassembler window has focus
+		JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+		menuBar.add(ControlsMenu.createControlsMenu(this, control));
+
 	}
 
 	public void updateDisassemblerOnStep()

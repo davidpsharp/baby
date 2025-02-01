@@ -1,6 +1,11 @@
 package com.ccs.baby.menu;
 
+import com.ccs.baby.core.Control;
 import com.ccs.baby.manual.ReferenceManual;
+
+import javax.swing.KeyStroke;
+
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
@@ -15,7 +20,7 @@ public class ControlsMenu {
      * @param frame the frame object
      * @return the Help menu
      */
-    public static JMenu createControlsMenu(JFrame frame) {
+    public static JMenu createControlsMenu(JFrame frame, Control control) {
 
         // Create the Help menu
         JMenu controlsMenu = new JMenu("Controls");  // is 'Run' or 'Start' better for first time users
@@ -27,19 +32,19 @@ public class ControlsMenu {
 
 
         // Create menu items
-        JMenuItem stepItem = new JMenuItem("Step");
+        JMenuItem stepItem = new JMenuItem("Single Step");
         JMenuItem runItem = new JMenuItem("Run");
         JMenuItem stopItem = new JMenuItem("Stop");
 
         // Add action listeners
-        stepItem.addActionListener(new ReferenceManual());
-        runItem.addActionListener(new ReferenceManual());
-        stopItem.addActionListener(new ReferenceManual());
+        stepItem.addActionListener(e -> control.singleStep());
+        runItem.addActionListener(e -> control.startRunning());
+        stopItem.addActionListener(e -> control.stopRunning());
 
-        // TODO: Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
-        //stepItem.setMnemonic(KeyEvent.VK_H); // Alt + H
-        //runItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK )); // Ctrl + Alt + A
-        //stopItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)); // Ctrl + Alt + R
+        controlsMenu.setMnemonic(KeyEvent.VK_C); // Alt + C
+        stepItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0)); // F10
+        runItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0)); // F5
+        stopItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, KeyEvent.SHIFT_DOWN_MASK)); // Shift + F5
 
         // Add items to the menu
         controlsMenu.add(stepItem);
