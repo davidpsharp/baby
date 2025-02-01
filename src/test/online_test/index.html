@@ -1,21 +1,19 @@
-
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    <meta charset="utf-8"/>
     <title>Baby Simulator - v3.0 Alpha Test Version</title>
     <script src="https://cjrtnc.leaningtech.com/3.0/cj3loader.js"></script>
     <link rel="icon" href="/classes/icons/baby.png">
-  </head>
-  <body>
-    <script>
-      (async function () {
-        await cheerpjInit({ logCanvasUpdates:true, clipboardMode:"system" });
+</head>
+<body>
+<script>
+    (async function () {
+        await cheerpjInit({logCanvasUpdates: true, clipboardMode: "system"});
         // set cheerpj size to be the same size as the window in Baby.java
         cheerpjCreateDisplay(700, 950);
         await cheerpjRunJar("/app/baby-3.0.0-alpha.3.jar");
-      })();
-    </script>
-  </body>
+    })();
+</script>
+</body>
 </html>

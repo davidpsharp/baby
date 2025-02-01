@@ -1,49 +1,123 @@
 # Manchester Baby Simulator
 
-A Java-based simulator for the Manchester Baby computer.
+The Manchester Baby Simulator is a Java-based simulator that emulates the Manchester Baby computer—the world’s first stored-program computer. This project offers an interactive way to explore one of computing history’s most significant machines.
 
-See https://davidsharp.com/baby for more details, user documentation etc.
+For more details, background information, and user documentation, please visit [davidsharp.com/baby](https://davidsharp.com/baby).
 
 ![Photo of this simulator running next to the replica machine at the Science and Industry Museum, Manchester, England](https://davidsharp.com/baby/makerfaire.jpg)
 
-## Quick Start
+## Table of Contents
 
-### Prerequisites
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Build](#build)
+- [Run](#run)
+- [Contributing](#contributing)
+- [License](#license)
 
-1. Make sure you have JDK 17 or higher installed. You can install it using brew on macOS:
+
+## Prerequisites
+
+To build and run the Manchester Baby Simulator, you will need the following:
+
+- [Open Java Development Kit (JDK) 17](https://openjdk.org/projects/jdk/17/) or higher
+- [Apache Maven](https://maven.apache.org/download.cgi)
+- [Caddy](https://caddyserver.com/download) (for serving CheerpJ files)
+
+On macOS, you can install these dependencies using [Homebrew](https://brew.sh/):
 
 ```bash
-brew install openjdk@17
+brew install openjdk@17 maven caddy
 ```
 
-2. Ensure Maven is installed. You can install it using brew on macOS:
+On Windows, you can install these dependencies using [Chocolatey](https://chocolatey.org/):
 
 ```bash
-brew install maven
+choco install openjdk maven caddy
 ```
 
-### Setup
+## Setup
 
-1. Clone the repository.
-2. Ensure all dependencies are installed by running:
+1.	**Clone the Repository**: Clone the project to your local machine
+```bash
+git clone https://github.com/davidpsharp/baby.git
+cd baby
+```
+
+2. **Resolve Maven Dependencies**: Ensure all dependencies are installed.
 ```bash
 mvn dependency:resolve
 ```
 
-### Build
-
-To compile and build the project into a runnable JAR file, execute:
-
+3. **Create a Keystore**: Generate a keystore file used by CheerpJ for signing, follow the prompts and remember your chosen password.
 ```bash
-mvn clean package
+keytool -genkeypair -alias baby -keystore baby.keystore -keyalg RSA -keysize 2048 -validity 3650 -storetype PKCS12
 ```
 
-The output JAR file will be located in the target directory.
 
-### Run
+4. **Configure Maven for Signing**: Create (or update) the Maven settings file at ~/.m2/settings.xml with your keystore password. If the file does not exist, create it.
+```bash
+touch ~/.m2/settings.xml
+```
 
-Run the application using the java command:
+Then add the following XML content, replacing YOUR_KEYSTORE_PASSWORD with your actual password.
+```xml
+<settings>
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <properties>
+                <jarsigner.keystore.password>YOUR_KEYSTORE_PASSWORD</jarsigner.keystore.password>
+                <jarsigner.key.password>YOUR_KEYSTORE_PASSWORD</jarsigner.key.password>
+            </properties>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>sign</activeProfile>
+    </activeProfiles>
+</settings>
+```
+
+
+## Build
+
+To compile and package the project into a runnable JAR file, execute:
 
 ```bash
-java -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
+mvn clean package -Psign 
 ```
+
+After a successful build, the JAR file (with all dependencies bundled) will be available in the target directory.
+
+## Run
+
+### Standalone Java Application
+
+Start the simulator with the following command:
+```bash
+java -jar target/baby-3.0.0-alpha.3-jar-with-dependencies.jar
+```
+
+### CheerpJ Web Application
+
+To run the web version (which uses CheerpJ), execute the provided shell script:
+
+```bash
+./src/test/online_test/online_test.sh
+```
+
+This script launches a local Caddy server to serve the CheerpJ files and automatically opens your default web browser.
+
+## Contributing
+
+Contributions are welcome! If you’d like to improve the simulator:
+
+1.	Fork the repository.
+2.	Create a new branch for your changes.
+3.	Submit a pull request detailing your improvements.
+
+For significant changes, please open an issue first to discuss your ideas.
+
+## License
+
+This project is licensed under the terms of the [GNU General Public License v3](LICENSE).

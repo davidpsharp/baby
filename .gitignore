@@ -2,6 +2,15 @@
 .idea/
 target/
 
+# VSCode folder
+.vscode/
+
+# keystore
+*.keystore
+
+# Temp caddy_storage
+src/test/online_test/caddy_storage/
+
 
 ### JAVA ###
 
@@ -104,9 +113,3 @@ $RECYCLE.BIN/
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
-
-# VSCode folder
-.vscode/
-
-# keystore
-*.keystore

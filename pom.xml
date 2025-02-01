@@ -5,7 +5,7 @@
     <groupId>com.ccs</groupId>
     <artifactId>baby</artifactId>
     <version>3.0.0-alpha.3</version>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -19,8 +19,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <!-- Needs to be java 8 to be supported by cheerpj for running in a browser as of January 2025 -->
-                    <release>8</release>
+                    <!-- Must use Java 8 for CheerPJ compatibility when running in a browser, as of January 2025. -->
+                    <!-- Note: The <release> flag is not available in Java 8. Use <source>1.8</source> and <target>1.8</target> instead. -->
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -107,7 +109,7 @@
             Then build with: mvn clean package -Psign
             -->
 
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jarsigner-plugin</artifactId>
@@ -129,7 +131,6 @@
                     <tsa>http://timestamp.digicert.com</tsa>
                 </configuration>
             </plugin>
-
 
 
         </plugins>
