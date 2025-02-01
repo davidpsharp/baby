@@ -183,7 +183,6 @@ public class Baby extends JFrame {
             }
 
             // render and display the CRT display
-            crtPanel.setToolTipText("The monitor.");
             crtPanel.render();
             crtPanel.repaint();
 
