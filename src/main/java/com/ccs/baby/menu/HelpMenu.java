@@ -9,10 +9,13 @@ import java.awt.event.KeyEvent;
 import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.utils.Version;
 
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 
 public class HelpMenu {
 
-    private static final String ABOUT_TITLE = "Manchester Baby";
+    private static final String ABOUT_TITLE = "Manchester Baby Simulator";
     private static final String ABOUT_MESSAGE = String.join("\n",
             "Manchester Baby Simulator",
             "",
@@ -27,6 +30,8 @@ public class HelpMenu {
             "",
             "https://davidsharp.com/baby"
     );
+
+    private static ImageIcon icon = new ImageIcon(HelpMenu.class.getResource("/icons/baby.png"));//.getImage();
 
     /**
      * Creates the Help menu.
@@ -48,7 +53,8 @@ public class HelpMenu {
                 frame.getContentPane(),
                 ABOUT_MESSAGE,
                 ABOUT_TITLE,
-                JOptionPane.INFORMATION_MESSAGE
+                JOptionPane.INFORMATION_MESSAGE,
+                icon
         ));
         refManual.addActionListener(new ReferenceManual());
 
