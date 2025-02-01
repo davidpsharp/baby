@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import com.ccs.baby.utils.RecentFilesManager;
 
 public class Store
 {
@@ -25,6 +26,13 @@ public class Store
 	public static final int UNACCEPTABLE = 0;
 	public static final int SNAPSHOT = 1;
 	public static final int ASSEMBLY = 2;
+	
+	// Manager for tracking recently loaded files
+    private final RecentFilesManager recentFilesManager = new RecentFilesManager();
+    
+    public RecentFilesManager getRecentFilesManager() {
+        return recentFilesManager;
+    }
 	
 	public Store()
 	{
@@ -173,7 +181,7 @@ public class Store
 	// UNACCEPTABLE - no number on first uncommented line
 	// SNAPSHOT - colon on the first uncommented line after the initial number
 	// ASSEMBLY - otherwise
-	public int getFileType(String fileName) throws IOException, SnapshotException {
+	public int getFileType(String fileName) throws IOException {
 		File snapshotFile = new File(fileName);
 		
 		try (FileReader snapshotReader = new FileReader(snapshotFile);
@@ -208,11 +216,11 @@ public class Store
 			else
 				return SNAPSHOT;
 		} catch (FileNotFoundException e) {
-			throw new SnapshotException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
 	}
 	
-	public void loadLocalSnapshot(String fileName) throws SnapshotException, IOException
+	public void loadLocalSnapshot(String fileName) throws IOException
 	{
 		// setup file
 		// snapshot reader
@@ -226,7 +234,7 @@ public class Store
 		}
 		catch(FileNotFoundException e)
 		{
-			throw new SnapshotException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
       
 		// create buffered reader from input stream
@@ -240,13 +248,16 @@ public class Store
 		}
 		catch(NumberFormatException e)
 		{
-			throw new SnapshotException("File " + fileName + " is of an unrecognised format");
+			throw new IOException("File " + fileName + " is of an unrecognised format");
 		}
 		
 		// reset the store to empty
 		reset();
 		control.reset();
 		
+		// Add to recent files
+        recentFilesManager.addRecentFile(new File(fileName), "loadLocalSnapshot");
+        
 		int lineCounter = 0;
 		
 		
@@ -281,12 +292,12 @@ public class Store
 					}
 					catch(NumberFormatException e)
 					{
-						throw new SnapshotException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
+						throw new IOException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
 					}
 				}
 				else
 				{
-					throw new SnapshotException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
 				}
 				
 				// get binary information for store line
@@ -307,13 +318,13 @@ public class Store
 					}
 					catch(NumberFormatException e)
 					{
-						throw new SnapshotException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
+						throw new IOException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
 					}					
 					
 				}
 				else
 				{
-					throw new SnapshotException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
 				}
 								
 				// put data for this line into the store
@@ -324,7 +335,7 @@ public class Store
 	}
 	
 	// load a snapshot format image into the store
-	public void loadSnapshot(String fileName) throws SnapshotException, IOException
+	public void loadSnapshot(String fileName) throws IOException
 	{
 		// setup file
 		File snapshotFile = new File(fileName);
@@ -338,7 +349,7 @@ public class Store
 		}
 		catch(FileNotFoundException e)
 		{
-			throw new SnapshotException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
       
 		// create buffered reader from input stream
@@ -352,13 +363,16 @@ public class Store
 		}
 		catch(NumberFormatException e)
 		{
-			throw new SnapshotException("File " + fileName + " is of an unrecognised format");
+			throw new IOException("File " + fileName + " is of an unrecognised format");
 		}
 		
 		// reset the store to empty
 		reset();
 		control.reset();
 		
+		// Add to recent files
+        recentFilesManager.addRecentFile(snapshotFile, "loadSnapshot");
+        
 		int lineCounter = 0;
 		
 		
@@ -393,12 +407,12 @@ public class Store
 					}
 					catch(NumberFormatException e)
 					{
-						throw new SnapshotException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
+						throw new IOException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
 					}
 				}
 				else
 				{
-					throw new SnapshotException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
 				}
 				
 				// get binary information for store line
@@ -419,13 +433,13 @@ public class Store
 					}
 					catch(NumberFormatException e)
 					{
-						throw new SnapshotException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
+						throw new IOException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
 					}					
 					
 				}
 				else
 				{
-					throw new SnapshotException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
 				}
 								
 				// put data for this line into the store
@@ -526,7 +540,7 @@ public class Store
 
 
 	// load a modern assembly file into the store, mainly file input issues
-	public void loadModernAssembly(String fileName) throws AssemblyException, IOException
+	public void loadModernAssembly(String fileName) throws IOException
 	{
 		
 		// setup file
@@ -542,7 +556,7 @@ public class Store
 		}
 		catch(FileNotFoundException e)
 		{
-			throw new AssemblyException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
       
 		// create buffered reader from input stream
@@ -569,7 +583,7 @@ public class Store
 					}
 					catch(NumberFormatException e)
 					{
-						throw new AssemblyException("File " + fileName + " is of an unrecognised format");
+						throw new IOException("File " + fileName + " is of an unrecognised format");
 					}
 				}
 			}
@@ -579,6 +593,9 @@ public class Store
 		reset();
 		control.reset();
 		
+		// Add to recent files
+        recentFilesManager.addRecentFile(assemblyFile, "loadModernAssembly");
+        
 		int lineCounter = 1;
 				
 		// while more lines to read
@@ -601,7 +618,7 @@ public class Store
 
 	// TODO: de-duplicate the logic that was copied here when put into a JAR
 
-	public void loadLocalModernAssembly(String fileName) throws AssemblyException, IOException
+	public void loadLocalModernAssembly(String fileName) throws IOException
 	{
 
 		// setup file
@@ -617,7 +634,7 @@ public class Store
 		}
 		catch(FileNotFoundException e)
 		{
-			throw new AssemblyException(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
       
 		// create buffered reader from input stream
@@ -644,7 +661,7 @@ public class Store
 					}
 					catch(NumberFormatException e)
 					{
-						throw new AssemblyException("File " + fileName + " is of an unrecognised format");
+						throw new IOException("File " + fileName + " is of an unrecognised format");
 					}
 				}
 			}
@@ -654,6 +671,9 @@ public class Store
 		reset();
 		control.reset();
 		
+		// Add to recent files
+        recentFilesManager.addRecentFile(new File(fileName), "loadLocalModernAssembly");
+        
 		int lineCounter = 1;
 				
 		// while more lines to read
@@ -673,7 +693,7 @@ public class Store
 	
 	
 	// actually assemble an individual line of text
-	public void assembleModernToStore(String fileLine, int lineCounter) throws AssemblyException
+	public void assembleModernToStore(String fileLine, int lineCounter) throws IOException
 	{
 		int lineNumber = 0;
 			
@@ -696,12 +716,12 @@ public class Store
 				}
 				catch(NumberFormatException e)
 				{
-					throw new AssemblyException("Bad store line number at line " + lineCounter);
+					throw new IOException("Bad store line number at line " + lineCounter);
 				}
 			}
 			else
 			{
-				throw new AssemblyException("Unrecognised format at line " + lineCounter);
+				throw new IOException("Unrecognised format at line " + lineCounter);
 			}
 		
 			boolean recognised = false;
@@ -788,12 +808,12 @@ public class Store
 						}
 						catch(NumberFormatException e)
 						{
-							throw new AssemblyException("Bad operand at line " + lineCounter);
+							throw new IOException("Bad operand at line " + lineCounter);
 						}
 					}
 					else
 					{
-						throw new AssemblyException("Unrecognised format at line " + lineCounter);
+						throw new IOException("Unrecognised format at line " + lineCounter);
 					}
 				}
 				
@@ -809,7 +829,7 @@ public class Store
 					// all other 'real' instructions
 					if(operandValue > 31)
 					{
-						throw new AssemblyException("Bad store line number at line " + lineCounter);
+						throw new IOException("Bad store line number at line " + lineCounter);
 					}
 					
 					lineData = operandValue;
@@ -822,7 +842,7 @@ public class Store
 			}
 			else
 			{
-				throw new AssemblyException("Unrecognised format at line " + lineCounter);
+				throw new IOException("Unrecognised format at line " + lineCounter);
 			}
 		
 		
@@ -1010,7 +1030,7 @@ public class Store
 }
 
 
-class SnapshotException extends Exception
+class SnapshotException extends IOException
 {
 	public SnapshotException()
 	{
@@ -1023,7 +1043,7 @@ class SnapshotException extends Exception
 	}
 }
 
-class AssemblyException extends Exception
+class AssemblyException extends IOException
 {
 	public AssemblyException()
 	{

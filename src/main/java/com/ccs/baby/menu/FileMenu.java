@@ -6,16 +6,26 @@ import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.utils.RecentFilesManager.RecentFileEntry;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.JOptionPane;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
-
+/**
+ * Creates the File menu.
+ *
+ * @author [Your Name]
+ */
 public class FileMenu {
+    private static JMenu recentFilesMenu;
 
     /**
      * Creates the File menu.
@@ -27,19 +37,20 @@ public class FileMenu {
      * @param crtPanel   the crt panel object
      * @return the File menu
      */
-    public static JMenu createFileMenu(Store store, Control control, String currentDir, JFrame frame, CrtPanel crtPanel) {
-
+    public static JMenu createFileMenu(Store store, String currentDir, JFrame frame, CrtPanel crtPanel) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
+        recentFilesMenu = new JMenu("Open Recent");
+        updateRecentFilesMenu(store, frame, crtPanel);
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
         JMenuItem close = new JMenuItem("Close");
 
         // Add action listeners for each item
-        loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, control, frame, crtPanel));
+        loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanel));
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
         close.addActionListener(e -> System.exit(0));
@@ -62,10 +73,58 @@ public class FileMenu {
 
         // Add items to the file menu
         fileMenu.add(loadSnapshotAssembly);
+        fileMenu.add(recentFilesMenu);
+        fileMenu.addSeparator();
         fileMenu.add(saveSnapshot);
         fileMenu.add(saveAssembly);
+        fileMenu.addSeparator();
         fileMenu.add(close);
 
         return fileMenu;
+    }
+
+    public static void updateRecentFilesMenu(Store store, JFrame frame, CrtPanel crtPanel) {
+        if (recentFilesMenu == null) {
+            return;
+        }
+        recentFilesMenu.removeAll();
+        List<RecentFileEntry> recentFiles = store.getRecentFilesManager().getRecentFiles();
+
+        if (recentFiles.isEmpty()) {
+            JMenuItem noRecentFiles = new JMenuItem("No Recent Files");
+            noRecentFiles.setEnabled(false);
+            recentFilesMenu.add(noRecentFiles);
+            return;
+        }
+
+        for (RecentFileEntry entry : recentFiles) {
+            JMenuItem menuItem = new JMenuItem(entry.getFile().getName());
+            menuItem.addActionListener(e -> {
+                try {
+                    switch (entry.getLoadMethod()) {
+                        case "loadModernAssembly":
+                            store.loadModernAssembly(entry.getFile().getPath());
+                            break;
+                        case "loadLocalModernAssembly":
+                            store.loadLocalModernAssembly(entry.getFile().getPath());
+                            break;
+                        case "loadSnapshot":
+                            store.loadSnapshot(entry.getFile().getPath());
+                            break;
+                        case "loadLocalSnapshot":
+                            store.loadLocalSnapshot(entry.getFile().getPath());
+                            break;
+                    }
+                    crtPanel.render();
+                    frame.getContentPane().repaint();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(frame,
+                        "Error loading file: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            recentFilesMenu.add(menuItem);
+        }
     }
 }

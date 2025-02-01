@@ -111,7 +111,7 @@ public class Baby extends JFrame {
             crtPanel.setPreferredSize(new Dimension(400, 386));
 
             // Create LoadSnapshotAssembly instance
-            loadSnapshotAssembly = new LoadSnapshotAssembly(store, control, this, crtPanel);
+            loadSnapshotAssembly = new LoadSnapshotAssembly(store, this, crtPanel);
 
             // Create Disassembler
             Disassembler disassembler = new Disassembler(store, control, crtPanel);

@@ -2,6 +2,7 @@ package com.ccs.baby.io;
 
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Store;
+import com.ccs.baby.menu.FileMenu;
 import com.ccs.baby.ui.CrtPanel;
 
 import javax.swing.*;
@@ -16,14 +17,12 @@ public class LoadSnapshotAssembly implements ActionListener {
     private File fileChooserDirectory;
     private static String currentDir;
     private final Store store;
-    private final Control control;
     private final CrtPanel crtPanel;
     private final JFrame frame;
 
 
-    public LoadSnapshotAssembly(Store store, Control control, JFrame frame, CrtPanel crtPanel) {
+    public LoadSnapshotAssembly(Store store, JFrame frame, CrtPanel crtPanel) {
         this.store = store;
-        this.control = control;
         this.crtPanel = crtPanel;
         this.frame = frame;
 
@@ -71,6 +70,9 @@ public class LoadSnapshotAssembly implements ActionListener {
             // update display
             crtPanel.render();
             frame.getContentPane().repaint();
+            
+            // Update recent files menu
+            FileMenu.updateRecentFilesMenu(store, frame, crtPanel);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println("fnf");
