@@ -1,0 +1,15 @@
+{
+  admin off
+  auto_https off
+  servers {
+    protocols h1
+  }
+  storage file_system {
+    root ./caddy_storage
+  }
+}
+
+http://localhost:{PORT} {
+  root * ../../../target
+  file_server
+}
