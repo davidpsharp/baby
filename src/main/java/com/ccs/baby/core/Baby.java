@@ -224,9 +224,16 @@ public class Baby extends JFrame {
                         List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         
                         for (File file : files) {
-                            // Use LoadSnapshotAssembly to handle the file
-                            loadSnapshotAssembly.handleFileLoad(file);
-                            break; // Only load the first file
+                            try {
+                                // Use LoadSnapshotAssembly to handle each file
+                                loadSnapshotAssembly.handleFileLoad(file);
+                            } catch (Exception e) {
+                                // Show error but continue processing other files
+                                JOptionPane.showMessageDialog(getContentPane(), 
+                                    "Error loading file " + file.getName() + ": " + e.getMessage(), 
+                                    "Error", 
+                                    JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
                     
@@ -234,7 +241,7 @@ public class Baby extends JFrame {
                 } catch (Exception e) {
                     event.dropComplete(false);
                     JOptionPane.showMessageDialog(getContentPane(), 
-                        "Error loading file: " + e.getMessage(), 
+                        "Error handling dropped files: " + e.getMessage(), 
                         "Error", 
                         JOptionPane.ERROR_MESSAGE);
                 }
