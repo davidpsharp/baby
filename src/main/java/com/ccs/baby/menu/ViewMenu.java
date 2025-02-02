@@ -20,8 +20,7 @@ public class ViewMenu {
     /**
      * Create the View menu
      *
-     * @param crtPanel        the CRT panel to display the store, control, and accumulator
-     * @param crtControlPanelController the CRT control panel to control the CRT panel
+     * @param crtPanelController the CRT control panel to control the CRT panel
      * @param disassembler    the disassembler to display the disassembled code
      * @param debugPanel      the debug panel to display the debug information
      * @return the View menu

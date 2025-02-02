@@ -46,7 +46,7 @@ public class ExamplesMenu {
      * editing the code/JAR content.
      *
      * @param store    the store to load the example program into
-     * @param crtPanel the CRT panel to display the store
+     * @param crtPanelController the CRT panel to display the store
      * @param frame    the frame to display the example program in
      * @return the Examples menu
      */

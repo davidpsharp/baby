@@ -31,10 +31,9 @@ public class FileMenu {
      * Creates the File menu.
      *
      * @param store      the store object
-     * @param control    the control object
      * @param currentDir the current directory path
      * @param frame      the frame object
-     * @param crtPanel   the crt panel object
+     * @param crtPanelController   the crt panel controller
      * @return the File menu
      */
     public static JMenu createFileMenu(Store store, String currentDir, JFrame frame, CrtPanelController crtPanelController) {

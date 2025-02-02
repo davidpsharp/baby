@@ -23,9 +23,9 @@ public class Animator extends Thread {
     /**
      * Constructs an Animator with the specified CrtPanel, Control, and staticisorPanel.
      *
-     * @param crtPanel        the CrtPanel instance used for rendering the display
      * @param control         the Control instance used for executing instructions
-     * @param staticisorPanel the StaticisorPanel instance used for managing the manual/automatic mode
+     * @param crtPanelController        the CrtPanel instance used for rendering the display
+     * @param staticisorPanelController the StaticisorPanel instance used for managing the manual/automatic mode
      */
     public Animator(
             Control control,
