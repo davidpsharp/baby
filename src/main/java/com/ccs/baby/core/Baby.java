@@ -10,12 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -24,22 +18,29 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+
 import java.io.File;
+
 import java.util.List;
 import java.util.ArrayList;
 
-import com.ccs.baby.io.LoadSnapshotAssembly;
+import com.ccs.baby.controller.*;
+import com.ccs.baby.debug.*;
 import com.ccs.baby.disassembler.*;
-import com.ccs.baby.io.LoadExample;
+import com.ccs.baby.io.*;
+import com.ccs.baby.controller.listener.CrtPanelActionLineListener;
 import com.ccs.baby.manager.*;
 import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
-import com.ccs.baby.utils.AppSettings;
-import com.ccs.baby.utils.PreferencesService;
-import com.ccs.baby.utils.Version;
-import com.ccs.baby.controller.*;
-import com.ccs.baby.debug.*;
-import com.ccs.baby.utils.MiscUtils;
+import com.ccs.baby.utils.*;
+
 
 public class Baby extends JFrame {
 
@@ -115,9 +116,6 @@ public class Baby extends JFrame {
             TypewriterPanel typewriterPanel = new TypewriterPanel();
             CrtControlPanel crtControlPanel = new CrtControlPanel();
 
-            // Tell control about staticisorPanel and crtControlPanel
-            control.setSwitchPanel(staticisorPanel, crtControlPanel);
-
             // A container for all switch panel components
             JPanel switchPanel = new JPanel();
             switchPanel.setLayout(new BoxLayout(switchPanel, BoxLayout.Y_AXIS));
@@ -126,22 +124,28 @@ public class Baby extends JFrame {
             switchPanel.add(staticisorPanel);
             switchPanel.add(crtControlPanel);
 
-            // Create Action Line Manager
-            ActionLineManager actionLineManager = new ActionLineManager(staticisorPanel, crtPanel, control);
-
             // Setup a DebugPanel (aka modernControls)
-            DebugPanel debugPanel = new DebugPanel(control, staticisorPanel, crtControlPanel);
+            DebugPanel debugPanel = new DebugPanel(control);
             debugPanel.setOpaque(true);
 
             // Get the FpsLabelService from the debugPanel
             FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
 
-            // Initialise AnimationManager
-            AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanel, fpsLabelService, actionLineManager);
+            // Create CrtPanelActionLineListener
+            CrtPanelActionLineListener crtPanelActionLineListener = new CrtPanelActionLineListener(control, crtPanel);
 
-            new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
-            new StaticisorPanelController(staticisorPanel, actionLineManager);
-            new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
+            // Create StaticisorPanelController and register crtPanelActionLineListener as a listener
+            StaticisorPanelController staticisorPanelController = new StaticisorPanelController(staticisorPanel);
+            staticisorPanelController.addActionLineListener(crtPanelActionLineListener);
+
+            // Initialise AnimationManager
+            AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanelController, fpsLabelService);
+
+            CrtControlPanelController crtControlPanelController = new CrtControlPanelController(animationManager, crtControlPanel, store, control, crtPanel, staticisorPanelController, disassembler);
+            TypewriterPanelController typewriterPanelController = new TypewriterPanelController(store, control, crtPanel, typewriterPanel, crtControlPanel, staticisorPanelController);
+
+            // Tell control about staticisorPanel and crtControlPanel
+            control.setSwitchPanel(crtControlPanel, staticisorPanelController);
 
             // Create a container mainPanel that wraps crtPanel and switchPanel
             mainPanel = new BackgroundPanel();

@@ -7,15 +7,14 @@ import com.ccs.baby.core.Animator;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.StaticisorPanel;
+import com.ccs.baby.controller.StaticisorPanelController;
 
 
 public class AnimationManager {
 
     private final Control control;
     private final CrtPanel crtPanel;
-    private final StaticisorPanel staticisorPanel;
-    private final ActionLineManager actionLineManger;
+    private final StaticisorPanelController staticisorPanelController;
 
     // timer for counting number of instructions executed each second to give speed
     private final Timer fpsTimer;
@@ -27,12 +26,11 @@ public class AnimationManager {
 
     public static volatile boolean animationRunning = false;
 
-    public AnimationManager(Control control, CrtPanel crtPanel, StaticisorPanel staticisorPanel, FpsLabelService fpsLabelService, ActionLineManager actionLineManger) {
+    public AnimationManager(Control control, CrtPanel crtPanel, StaticisorPanelController staticisorPanelController, FpsLabelService fpsLabelService) {
         this.control = control;
         this.crtPanel = crtPanel;
-        this.staticisorPanel = staticisorPanel;
+        this.staticisorPanelController = staticisorPanelController;
         this.fpsLabelService = fpsLabelService;
-        this.actionLineManger = actionLineManger;
 
         // create timer to calculate speed to tick once a second
         fpsTimer = new Timer(1000, this::handleFpsTimer);
@@ -44,7 +42,7 @@ public class AnimationManager {
 
         if (!animationRunning) {
             // create new thread for animation (create a new one as recall a thread can only be started once)
-            animator = new Animator(crtPanel, control, staticisorPanel);
+            animator = new Animator(crtPanel, control, staticisorPanelController);
             animator.startAnimating();
         }
 
@@ -60,7 +58,7 @@ public class AnimationManager {
             animator.stopAnimating();
         }
 
-        actionLineManger.updateActionLine();
+        staticisorPanelController.updateActionLineListeners();
 
         // repaint so that control with the PI can be drawn if necessary
         crtPanel.render();

@@ -1,7 +1,9 @@
 package com.ccs.baby.core;
 
+import com.ccs.baby.controller.CrtControlPanelController;
 import com.ccs.baby.manager.LampManager;
-import com.ccs.baby.ui.*;
+import com.ccs.baby.ui.CrtControlPanel;
+import com.ccs.baby.controller.StaticisorPanelController;
 
 public class Control
 {
@@ -12,22 +14,22 @@ public class Control
 	private int accumulator;
 
 	private int controlInstruction;
-	
+
 	private int presentInstruction;
-	
+
 	// used for special cases where old value affects new value
 	private int oldPresentInstruction = 0;
 
 	private final LampManager lampManager;
 	private boolean stopFlag = false;
-	
+
 	// speed details here so can be synchronized with a get set method
 	private int cycleCount = 0;
 	private int instructionsPerRefresh = 2;
-	
-	public StaticisorPanel staticisorPanel;
+
+	public StaticisorPanelController staticisorPanelController;
 	public CrtControlPanel crtControlPanel;
-	
+
 	// values as to various keys on the switchpanel which may be held down
 	// and will affect execution
 	private boolean keyPressed = false;
@@ -36,8 +38,8 @@ public class Control
 	private boolean kccPressed = false;
 	private boolean klcPressed = false;
 	private boolean kacPressed = false;
-	
-	// function number encodings for different instructions 
+
+	// function number encodings for different instructions
 	public static final int FUNC_JMP = 0;
 	public static final int FUNC_JRP = 1;
 	public static final int FUNC_LDN = 2;
@@ -47,15 +49,15 @@ public class Control
 	public static final int FUNC_CMP = 6;
 	public static final int FUNC_STP = 7;
 
-	
-	
+
+
 
 	public Control(Store aStore, LampManager lampManager)
 	{
 		store = aStore;
 		this.lampManager = lampManager;
 	}
-	
+
 	// reset to default values
 	public void reset()
 	{
@@ -64,54 +66,54 @@ public class Control
 		presentInstruction = 0;
 		accumulator = 0;
 	}
-	
+
 	// 2-stage construction to set up the switchpanel which is mutually dependent on the control
-	public void setSwitchPanel(StaticisorPanel staticisorPanel, CrtControlPanel crtControlPanel)
+	public void setSwitchPanel(CrtControlPanel crtControlPanel, StaticisorPanelController staticisorPanelController)
 	{
-		this.staticisorPanel = staticisorPanel;
 		this.crtControlPanel = crtControlPanel;
+		this.staticisorPanelController = staticisorPanelController;
 	}
-	
+
 	// get and set functions for....
-		
-	// control instruction	
+
+	// control instruction
 	public int getControlInstruction()
 	{
 		return controlInstruction;
 	}
-	
+
 	public void setControlInstruction(int value)
 	{
 		controlInstruction = value;
 	}
-	
+
 	// get number of cycles of X instructions executed
 	public synchronized int getCycleCount()
 	{
 		return cycleCount;
 	}
-	
+
 	public synchronized void setCycleCount(int value)
 	{
 		cycleCount = value;
 	}
-	
+
 	public synchronized void incCycleCount()
 	{
 		cycleCount++;
 	}
-	
+
 	// get the number of instructions to execute before updating the CRT
 	public synchronized int getInstructionsPerRefresh()
 	{
 		return instructionsPerRefresh;
 	}
-	
+
 	public synchronized void setInstructionsPerRefresh(int value)
 	{
 		instructionsPerRefresh = value;
 	}
-	
+
 	// if the CI incremented past 31 then the SSEM still functions as only bits 0-4
 	// are read by the decode hardware
 	public void incrementControlInstruction()
@@ -124,29 +126,29 @@ public class Control
 	{
 		return presentInstruction;
 	}
-	
+
 	public void setPresentInstruction(int value)
 	{
 		presentInstruction = value;
 	}
-	
+
 	// accumulator
 	public int getAccumulator()
 	{
 		return accumulator;
 	}
-	
+
 	public void setAccumulator(int value)
 	{
 		accumulator = value;
 	}
-	
+
 	// stop flag
 	public synchronized boolean getStopFlag()
 	{
 		return stopFlag;
 	}
-	
+
 	public void setStopFlag(boolean value)
 	{
 		stopFlag = value;
@@ -166,9 +168,9 @@ public class Control
 		int localStore[] = new int[32];
 		for(int line = 0; line<32; line++)
 			localStore[line] = store.getLine(line);
-		
+
 		int storeChanges = 0;
-		
+
 		for(int instructionCount = 0; instructionCount<700; instructionCount++)
 		{
 			localControlInstruction++;
@@ -190,28 +192,28 @@ public class Control
 		// if stops in first second then execute it slowly
 		if(localStopFlag)
 			storeChanges = 0;
-		
+
 		return storeChanges;
 	}
 
 
 	public void singleStep() {
-		staticisorPanel.setManAuto(true);
+		staticisorPanelController.setManAuto(true);
 		// set to write
 		crtControlPanel.setWriteErase(true);
 		// set L stat switches to all be on
-		staticisorPanel.setLineSwitches(true);
+		staticisorPanelController.toggleAllLineSwitches(true);
 		// likewise F stat switches
-		staticisorPanel.setFunctionSwitches(true);
+		staticisorPanelController.toggleAllFunctionSwitches(true);
 
 		crtControlPanel.simulateKspClick();
 	}
 
 	public void startRunning() {
-		staticisorPanel.setManAuto(true);
+		staticisorPanelController.setManAuto(true);
 		// set to write
 		crtControlPanel.setWriteErase(true);
-		staticisorPanel.setLineSwitches(true);
+		staticisorPanelController.toggleAllLineSwitches(true);
 
 		// flick CS switch which starts the animation
 		if (!crtControlPanel.getStopRun()) {
@@ -229,29 +231,29 @@ public class Control
 	// execute a single instruction from store
 	public synchronized void executeAutomatic()
 	{
-		
+
 		oldPresentInstruction = presentInstruction;
-		
+
 		// increment control instruction
 		incrementControlInstruction();
-		
+
 		// if any of the F and L stat switches are set to off (0) then the bit can't
 		// get from the C tube to the staticisors so clear any bits not set to 1 in the staticisor
 		// in the CI to be used
 		int switchValue = getLineAndFunctionValue();
 		int controlInstructionValue = getControlInstruction() & switchValue;
-		
+
 		// fetch instruction into present instruction
 		// only read bits 0-4 in the decoding
 		presentInstruction = store.getLine( getLineNumber( controlInstructionValue ) );
-				
+
 		// if key on typewriter held down while running then affects every action line
 		// An action line is one that is accessed, either to get the instruction or as an
 		// operand, either reading or writing. Every line that is accessed while the button
 		// is pressed will be affected, either a one or a zero written into that place,
 		// depending on the position of the write/erase switch.
 		if(keyPressed)
-		{	
+		{
 			// if write selected
 			if( crtControlPanel.getWriteErase())
 			{
@@ -272,19 +274,19 @@ public class Control
 				int actionLine = getLineNumber(presentInstruction);
 				// corrupt operand
 				store.setLine(actionLine, store.getLine(actionLine) & (~(1<<keyNumberPressed)) );
-			}	
+			}
 		}
-		
+
 		// if KLC pressed then blank every action line as it's read
 		if(klcPressed)
 		{
 			// the present instruction is blanked also as it's read
 			presentInstruction = 0;
-			
+
 			// action line number taken from the present instruction is going to be 0
 			store.setLine(0, 0 );
 		}
-		
+
 		// note
 		// according to the PRM in section A3.3.3 Erase/Write set to erase should erase
 		// every action line as it's accessed (in the same way as holding KLC). Having
@@ -292,25 +294,25 @@ public class Control
 		// but reasoned that it must have been in the PRM for a reason, for the moment
 		// this feature is left out and the erase/write switch only affects the store if
 		// a typewriter button is pressed.
-		
+
 		// if kac button held down then set accumulator to 0
 		if(kacPressed)
 			setAccumulator( 0 );
-			
+
 		// if kac button held down then set accumulator to 0
 		if(kacPressed)
 			setAccumulator( 0 );
-		
+
 		if(kscPressed)
 			store.reset();
-			
+
 		if(kccPressed)
 		{
 			setControlInstruction(0);
 			setPresentInstruction(0);
 			setAccumulator(0);
 		}
-				
+
 		// since fetch of PI from store uses same hardware as the fetch of CI from
 		// the store then if bits 13-15 (the function number) of the CI are non-zero
 		// then they will corrupt the PI being fetched and crash the SSEM when it's
@@ -326,62 +328,62 @@ public class Control
 			}
 			else
 			{
-				
+
 				// some kind of crash or incorrect execution should be simulated,
 				// it is not clear exactly what so has not been handled
-				
+
 			}
 		}
-		
+
 		// if any of the F and L stat switches are set to off (0) then the bit can't
 		// get from the C tube to the staticisors so clear any bits not set to 1 in the staticisor
 		// in the PI to be used
 		// note, this effect does not corrupt lines fetched from the store
 		int presentInstructionValue = presentInstruction & switchValue;
-				
+
 		// get function number from present instruction and perform
 		performInstruction( presentInstructionValue );
-		
+
 	}
 
 
 	// return executable value of the line and function switches
 	// (as would be represented if taken from store)
 	public synchronized int getLineAndFunctionValue() {
-		return staticisorPanel.getLineValue() | (staticisorPanel.getFunctionValue() << 13);
+		return staticisorPanelController.getSelectedLineSwitchesValue() | (staticisorPanelController.getSelectedFunctionSwitchesValue() << 13);
 	}
-	
+
 	// note,
 	// Chris Burton suggests that he recalls something about:
 	// the CI does not change, i.e. you can do a manual instruction
 	// without losing your place in a program, on Single Shot, but it counts up
-	// on Run. 
+	// on Run.
 	// this has not been implemented since the details are not clear
-	
+
 	// execute the instruction encoded on the staticisor switches
 	public void executeManual()
 	{
-		
+
 		// get instruction from switches
 		int instructionValue = getLineAndFunctionValue();
-		
+
 		// if kac button held down then set accumulator to 0
 		if(kacPressed)
 			setAccumulator( 0 );
-		
+
 		if(kscPressed)
 			store.reset();
-			
+
 		if(klcPressed)
-			store.setLine( staticisorPanel.getLineValue(), 0 );
-			
+			store.setLine( staticisorPanelController.getSelectedLineSwitchesValue(), 0 );
+
 		if(kccPressed)
 		{
 			setControlInstruction(0);
 			setPresentInstruction(0);
 			setAccumulator(0);
 		}
-		
+
 		// if typewriter button pressed corrupt action lines
 		// present instruction is NOT corrupted since it's encoded on the switches!
 		if(keyPressed)
@@ -404,24 +406,24 @@ public class Control
 				store.setLine(actionLine, store.getLine(actionLine) & (~(1<<keyNumberPressed)) );
 			}
 		}
-				
+
 		performInstruction( instructionValue );
-		
+
 		// when executing a manual instruction the instruction displayed in the PI
 		// is that which is in the store line pointed to by the CI
 		// the line executed is the one encoded on the L and F stat switches
 		// hence set the present instruction displayed to that pointed to by the CI
 		setPresentInstruction( store.getLine( getControlInstruction() ) );
 	}
-	
+
 	// the performance of the instruction is separate to the associated fetching and CI incrementing
 	// as manual instructions can be selected on the switch panel and executed also
 	public synchronized void performInstruction(int instructionValue)
 	{
-		
+
 		switch( getFunctionNumber(instructionValue) )
 		{
-			case FUNC_JMP : 
+			case FUNC_JMP :
 					// jmp	(s, C)
 					controlInstruction = store.getLine( getLineNumber(instructionValue) );
 					break;
@@ -453,7 +455,7 @@ public class Control
 					break;
 		}
 	}
-		
+
 
 	// return true if the function from the line will make use of the action number
 	// used to check if the action line is used so it can be corrupted if necessary
@@ -465,42 +467,42 @@ public class Control
 		return (funcNumber != FUNC_CMP) && (funcNumber != FUNC_STP);
 	}
 
-	
+
 	public String toString()
 	{
 		String output = "";
-		
+
 		output += "Control Instruction: " + controlInstruction + "\n";
 		output += "Present Instruction: " + presentInstruction + "\n";
 		output += "Accumulator: " + accumulator + "\n";
-		
+
 		output += "Stopped: ";
 		if(getStopFlag() )
 			output += "true";
 		else
 			output += "false";
-		
+
 		return output;
 	}
-	
+
 	// indicate that a key on the keypad is pressed and to affect every action line
 	public void setKeyPressed(boolean set, int keyNumber)
 	{
 		keyPressed = set;
 		keyNumberPressed = keyNumber;
 	}
-	
+
 	// indicate that KLC switch is being held down (clear all action lines)
 	public void setKlcPressed(boolean value)
 	{
 		klcPressed = value;
 	}
-	
+
 	public void setKacPressed(boolean value)
 	{
 		kacPressed = value;
 	}
-	
+
 	public void setKscPressed(boolean value)
 	{
 		kscPressed = value;
@@ -509,16 +511,16 @@ public class Control
 	public void setKccPressed(boolean value)
 	{
 		kccPressed = value;
-	}	
-	
+	}
+
 	// private methods
-	
+
 	// returns the line number to be acted upon by the present instruction
 	public static int getLineNumber(int value)
 	{
 		return (value & 0x1F);
 	}
-	
+
 	// return the number in bits 13-15 of argument
 	public static int getFunctionNumber(int value)
 	{

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import com.ccs.baby.ui.components.ToggleSwitch;
+
 import static com.ccs.baby.utils.CallbackUtils.runCallback;
 
 
@@ -16,7 +17,6 @@ public class StaticisorPanel extends JPanel {
     private final ToggleSwitch[] functionSwitch = new ToggleSwitch[8];
 
     public StaticisorPanel() {
-
         setLayout(new GridBagLayout());
         setOpaque(false);
         setPreferredSize(new Dimension(300, 135));
@@ -28,12 +28,12 @@ public class StaticisorPanel extends JPanel {
         gridBagConstraints.gridy = 0;
 
         ToggleSwitch dud = new ToggleSwitch("Left unconnected.");
+        dud.setSelected(true); // Ensures it starts in the correct default state
         add(dud); // Needed to align ManAuto switch with the L stat switches
 
         initialiseLineSwitches(gridBagConstraints);  // L stat switches
 
         gridBagConstraints.anchor = GridBagConstraints.LINE_END;
-
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.insets = new Insets(0, 0, 0, 0);
@@ -45,17 +45,6 @@ public class StaticisorPanel extends JPanel {
         manAuto.addActionListener(e -> runCallback(onManAutoChange));
         gridBagConstraints.gridx = 10;
         add(manAuto, gridBagConstraints);
-
-        setManAuto(true); // Default to auto
-        setLineSwitches(true); // set L stat switches to all be on
-        setFunctionSwitches(true); // likewise F stat switches
-
-        //  set all unconnected L & F switches to all be down per Bob's comment that's what they do on the replica
-        dud.setSelected(true);
-        lineSwitch[5].setSelected(true);
-        lineSwitch[6].setSelected(true);
-        lineSwitch[12].setSelected(true);
-        functionSwitch[3].setSelected(true);
     }
 
 
@@ -68,13 +57,46 @@ public class StaticisorPanel extends JPanel {
     }
 
 
+    public ToggleSwitch getLineSwitch(int index) {
+        if (index < 0 || index >= lineSwitch.length) {
+            throw new IndexOutOfBoundsException("Invalid line switch index: " + index);
+        }
+        return lineSwitch[index];
+    }
+
+    public void setLineSwitch(int index, boolean selected) {
+        if (index >= 0 && index < lineSwitch.length) {
+            lineSwitch[index].setSelected(selected);
+        }
+    }
+
+
+    public ToggleSwitch getFunctionSwitch(int index) {
+        if (index < 0 || index >= functionSwitch.length) {
+            throw new IndexOutOfBoundsException("Invalid function switch index: " + index);
+        }
+        return functionSwitch[index];
+    }
+
+    public void setFunctionSwitch(int index, boolean selected) {
+        if (index >= 0 && index < functionSwitch.length) {
+            functionSwitch[index].setSelected(selected);
+        }
+    }
+
+
+    public boolean getManAuto() {
+        return manAuto.isSelected();
+    }
+
+    public void setManAuto(boolean value) {
+        manAuto.setSelected(value);
+    }
+
 
     private void initialiseLineSwitches(GridBagConstraints gridBagConstraints) {
-
-        // SwitchLin Panel
         JPanel linePanel = new JPanel();
         linePanel.setOpaque(false);
-
 
         for (int i = 0; i < 13; i++) {
             if (i < 5) {
@@ -102,9 +124,9 @@ public class StaticisorPanel extends JPanel {
 
 
     private void initialiseFunctionSwitches(GridBagConstraints gridBagConstraints) {
-        // Function Panel
-                JPanel functionPanel = new JPanel();
-                functionPanel.setOpaque(false);
+        JPanel functionPanel = new JPanel();
+        functionPanel.setOpaque(false);
+
         for (int i = 0; i < 7; i++) {
 
             if (i < 3) {
@@ -117,7 +139,7 @@ public class StaticisorPanel extends JPanel {
             }
 
             if (i > 3) {
-                functionSwitch[i] = new ToggleSwitch("Blah");
+                functionSwitch[i] = new ToggleSwitch("");
                 functionSwitch[i].setEnabled(false);
                 functionSwitch[i].setVisible(false);
             }
@@ -129,66 +151,5 @@ public class StaticisorPanel extends JPanel {
         }
     }
 
-    // set L stat switches to all be on
-    public void setLineSwitches(boolean value) {
-        for (int i = 0; i < 5; i++) {
-            lineSwitch[i].setSelected(value);
-        }
-    }
-
-    // likewise F stat switches
-    public void setFunctionSwitches(boolean value) {
-        for (int i = 0; i < 5; i++) {
-            functionSwitch[i].setSelected(value);
-        }
-    }
-
-    /**
-     * Get the value of the manAuto switch
-     * TRUE = AUTO
-     * FALSE = MANUAL
-     *
-     * @return boolean value of the manAuto switch
-     */
-    public boolean getManAuto() {
-        return manAuto.isSelected();
-    }
-
-    /**
-     * Set the value of the manAuto switch
-     * TRUE = AUTO
-     * FALSE = MANUAL
-     *
-     * @param value boolean value of the manAuto switch
-     */
-    public void setManAuto(boolean value) {
-        manAuto.setSelected(value);
-    }
-
-    /**
-     * Iterate through all line switches and return the value of the line selected
-     *
-     * @return int value of line selected
-     */
-    public int getLineValue() {
-        int result = 0;
-        for (int i = 0; i < 5; i++) {
-            if (lineSwitch[i].isSelected()) result += (1 << i);
-        }
-        return result;
-    }
-
-    /**
-     * Iterate through all function switches and return the value of the function selected
-     *
-     * @return int value of function selected
-     */
-    public int getFunctionValue() {
-        int result = 0;
-        for (int i = 0; i < 3; i++) {
-            if (functionSwitch[i].isSelected()) result += (1 << i);
-        }
-        return result;
-    }
 
 }

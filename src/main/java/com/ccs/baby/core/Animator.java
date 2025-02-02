@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ccs.baby.manager.AnimationManager;
 import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.StaticisorPanel;
+import com.ccs.baby.controller.StaticisorPanelController;
 
 /**
  * The Animator class is responsible for managing and executing an animation loop
@@ -18,7 +18,7 @@ public class Animator extends Thread {
 
     private final CrtPanel crtPanel;
     private final Control control;
-    private final StaticisorPanel staticisorPanel;
+    private final StaticisorPanelController staticisorPanelController;
 
     /**
      * Constructs an Animator with the specified CrtPanel, Control, and staticisorPanel.
@@ -27,10 +27,10 @@ public class Animator extends Thread {
      * @param control     the Control instance used for executing instructions
      * @param staticisorPanel the StaticisorPanel instance used for managing the manual/automatic mode
      */
-    public Animator(CrtPanel crtPanel, Control control, StaticisorPanel staticisorPanel) {
+    public Animator(CrtPanel crtPanel, Control control, StaticisorPanelController staticisorPanelController) {
         this.crtPanel = crtPanel;
         this.control = control;
-        this.staticisorPanel = staticisorPanel;
+        this.staticisorPanelController = staticisorPanelController;
 
         setDaemon(true); // If the main thread quits, so will this one
     }
@@ -114,7 +114,7 @@ public class Animator extends Thread {
      */
     private void executeInstructions() {
         for (int x = 0; x < control.getInstructionsPerRefresh() && !control.getStopFlag(); x++) {
-            if (staticisorPanel.getManAuto()) {
+            if (staticisorPanelController.isManAuto()) {
                 control.executeAutomatic(); // Use store for instructions
             } else {
                 control.executeManual(); // Use line and functions switches from the SwitchPanel

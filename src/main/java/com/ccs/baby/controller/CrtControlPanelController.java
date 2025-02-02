@@ -5,30 +5,27 @@ import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.disassembler.Disassembler;
 
-import com.ccs.baby.manager.ActionLineManager;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.ui.CrtControlPanel;
-import com.ccs.baby.ui.StaticisorPanel;
+import com.ccs.baby.controller.StaticisorPanelController;
 
 
-public class CrtControlPanelController {
-    private final ActionLineManager actionLineManager;
+public class CrtControlPanelController { ;
     private final CrtControlPanel crtControlPanel;
     private final AnimationManager animationManager;
     private final Store store;
     private final Control control;
     private final CrtPanel crtPanel;
-    private final StaticisorPanel staticisorPanel;
+    private final StaticisorPanelController staticisorPanelController;
     private final Disassembler disassembler;
 
-    public CrtControlPanelController(ActionLineManager actionLineManager, AnimationManager animationManager, CrtControlPanel crtControlPanel, Store store, Control control, CrtPanel crtPanel, StaticisorPanel staticisorPanel, Disassembler disassembler) {
-        this.actionLineManager = actionLineManager;
+    public CrtControlPanelController(AnimationManager animationManager, CrtControlPanel crtControlPanel, Store store, Control control, CrtPanel crtPanel, StaticisorPanelController staticisorPanelController, Disassembler disassembler) {
         this.animationManager = animationManager;
         this.crtControlPanel = crtControlPanel;
         this.store = store;
         this.control = control;
         this.crtPanel = crtPanel;
-        this.staticisorPanel = staticisorPanel;
+        this.staticisorPanelController = staticisorPanelController;
         this.disassembler = disassembler;
 
 
@@ -76,7 +73,7 @@ public class CrtControlPanelController {
         // on pre
         else {
             animationManager.stopAnimation();
-            actionLineManager.updateActionLine();
+            staticisorPanelController.updateActionLineListeners();
         }
     }
 
@@ -87,10 +84,10 @@ public class CrtControlPanelController {
             control.setStopFlag(false);
 
         // true is Auto, false is Man
-        if (staticisorPanel.getManAuto()) {
+        if (staticisorPanelController.isManAuto()) {
             // perform single instruction from store
             control.executeAutomatic();
-            actionLineManager.updateActionLine();
+            staticisorPanelController.updateActionLineListeners();
             crtPanel.render();
             crtPanel.repaint();
 
@@ -98,7 +95,7 @@ public class CrtControlPanelController {
         } else {
             // perform single instruction from line and function switches
             control.executeManual();
-            actionLineManager.updateActionLine();
+            staticisorPanelController.updateActionLineListeners();
             crtPanel.render();
             crtPanel.repaint();
         }
@@ -108,7 +105,7 @@ public class CrtControlPanelController {
         if (AnimationManager.animationRunning) {
             control.setKlcPressed(true);
         } else {
-            store.setLine(staticisorPanel.getLineValue(), 0);
+            store.setLine(staticisorPanelController.getSelectedLineSwitchesValue(), 0);
             crtPanel.render();
             crtPanel.repaint();
         }
@@ -142,7 +139,7 @@ public class CrtControlPanelController {
             control.setControlInstruction(0);
             control.setPresentInstruction(0);
             control.setAccumulator(0);
-            actionLineManager.updateActionLine();
+            staticisorPanelController.updateActionLineListeners();
             crtPanel.redrawCrtPanel();
         }
     }
