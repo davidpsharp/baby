@@ -43,7 +43,7 @@ public class FileMenu {
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
-        recentFilesMenu = new JMenu("Open Recent");
+        recentFilesMenu = new JMenu("Load Recent");
         updateRecentFilesMenu(store, frame, crtPanel);
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
@@ -94,37 +94,45 @@ public class FileMenu {
             JMenuItem noRecentFiles = new JMenuItem("No Recent Files");
             noRecentFiles.setEnabled(false);
             recentFilesMenu.add(noRecentFiles);
-            return;
+        } else {
+            for (RecentFileEntry entry : recentFiles) {
+                JMenuItem menuItem = new JMenuItem(entry.getFile().getName());
+                menuItem.addActionListener(e -> {
+                    try {
+                        switch (entry.getLoadMethod()) {
+                            case "loadModernAssembly":
+                                store.loadModernAssembly(entry.getFile().getPath());
+                                break;
+                            case "loadLocalModernAssembly":
+                                store.loadLocalModernAssembly(entry.getFile().getPath());
+                                break;
+                            case "loadSnapshot":
+                                store.loadSnapshot(entry.getFile().getPath());
+                                break;
+                            default:
+                                throw new IllegalStateException("Unknown load method: " + entry.getLoadMethod());
+                        }
+                        crtPanel.render();
+                        crtPanel.repaint();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frame,
+                                "Error loading file: " + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+                menuItem.setToolTipText(entry.getFile().getAbsolutePath());
+                recentFilesMenu.add(menuItem);
+            }
         }
 
-        for (RecentFileEntry entry : recentFiles) {
-            JMenuItem menuItem = new JMenuItem(entry.getFile().getName());
-            menuItem.addActionListener(e -> {
-                try {
-                    switch (entry.getLoadMethod()) {
-                        case "loadModernAssembly":
-                            store.loadModernAssembly(entry.getFile().getPath());
-                            break;
-                        case "loadLocalModernAssembly":
-                            store.loadLocalModernAssembly(entry.getFile().getPath());
-                            break;
-                        case "loadSnapshot":
-                            store.loadSnapshot(entry.getFile().getPath());
-                            break;
-                        case "loadLocalSnapshot":
-                            store.loadLocalSnapshot(entry.getFile().getPath());
-                            break;
-                    }
-                    crtPanel.render();
-                    frame.getContentPane().repaint();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(frame,
-                        "Error loading file: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-            });
-            recentFilesMenu.add(menuItem);
-        }
+        // Add separator and Clear List option
+        recentFilesMenu.addSeparator();
+        JMenuItem clearList = new JMenuItem("Clear List");
+        clearList.addActionListener(e -> {
+            store.getRecentFilesManager().clearRecentFiles();
+            updateRecentFilesMenu(store, frame, crtPanel);
+        });
+        recentFilesMenu.add(clearList);
     }
 }

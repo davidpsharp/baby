@@ -79,6 +79,11 @@ public class RecentFilesManager {
         return new ArrayList<>(recentFiles);
     }
 
+    public synchronized void clearRecentFiles() {
+        recentFiles.clear();
+        saveRecentFiles();
+    }
+
     private void loadRecentFiles() {
         if (!recentFilesFile.exists()) {
             return;
