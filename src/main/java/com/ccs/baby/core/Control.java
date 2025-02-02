@@ -1,5 +1,6 @@
 package com.ccs.baby.core;
 
+import com.ccs.baby.manager.LampManager;
 import com.ccs.baby.ui.*;
 
 public class Control

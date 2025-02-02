@@ -1,4 +1,4 @@
-package com.ccs.baby.ui;
+package com.ccs.baby.manager;
 
 import com.ccs.baby.core.Baby;
 
