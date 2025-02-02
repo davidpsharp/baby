@@ -9,6 +9,7 @@ import com.ccs.baby.ui.display.DisplayAccumulator;
 import com.ccs.baby.ui.display.DisplayDisassemblerWindow;
 import com.ccs.baby.ui.display.DisplayDebugPanel;
 import com.ccs.baby.ui.CrtControlPanel;
+import com.ccs.baby.utils.AppSettings;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -61,6 +62,8 @@ public class ViewMenu {
         viewMenu.add(viewAccumulator);
         viewMenu.add(viewDisassembler);
         viewMenu.add(viewDebugPanel);
+
+        viewDebugPanel.setSelected(AppSettings.getInstance().isShowDebugPanel());
 
         return viewMenu;
     }

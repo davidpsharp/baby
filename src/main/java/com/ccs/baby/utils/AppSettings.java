@@ -10,12 +10,14 @@ public class AppSettings {
     public static final String KEY_MAX_FRAME_RATE = "max_frame_rate";
     public static final String KEY_DEBUG_MODE = "debug_mode";
     public static final String KEY_INITIAL_EXAMPLE = "initial_example";
+    public static final String KEY_SHOW_DEBUG_PANEL = "show_debug_panel";
     
     // Default values
     public static final boolean DEFAULT_SHOW_FPS = true;
     public static final int DEFAULT_MAX_FRAME_RATE = 60;
     public static final boolean DEFAULT_DEBUG_MODE = false;
     public static final String DEFAULT_INITIAL_EXAMPLE = "demos/diffeqt.asm";
+    public static final boolean DEFAULT_SHOW_DEBUG_PANEL = false;
 
     private static AppSettings instance;
     private final PreferencesService prefs;
@@ -49,7 +51,11 @@ public class AppSettings {
     public String getInitialExample() {
         return prefs.getPreference(KEY_INITIAL_EXAMPLE, DEFAULT_INITIAL_EXAMPLE);
     }
-    
+
+    public boolean isShowDebugPanel() {
+        return prefs.getBooleanPreference(KEY_SHOW_DEBUG_PANEL, DEFAULT_SHOW_DEBUG_PANEL);
+    }
+
 
 
     // Setter methods
@@ -67,6 +73,10 @@ public class AppSettings {
 
     public void setInitialExample(String value) {
         prefs.setPreference(KEY_INITIAL_EXAMPLE, value);
+    }
+
+    public void setShowDebugPanel(boolean value) {
+        prefs.setBooleanPreference(KEY_SHOW_DEBUG_PANEL, value);
     }
     
 }

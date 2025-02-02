@@ -5,6 +5,7 @@ import com.ccs.baby.ui.CrtControlPanel;
 import com.ccs.baby.ui.FpsLabelPushed;
 import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.ui.StaticisorPanel;
+import com.ccs.baby.utils.AppSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,8 +35,8 @@ public class DebugPanel extends JPanel implements ActionListener {
 
         setLayout(new BorderLayout(0, 0)); // Ensure no gaps
         setBackground(backgroundColor);
-        setVisible(false);
 
+        setVisible(AppSettings.getInstance().isShowDebugPanel());
 
         JPanel toolPanel = new JPanel();
         toolPanel.setBackground(backgroundColor);

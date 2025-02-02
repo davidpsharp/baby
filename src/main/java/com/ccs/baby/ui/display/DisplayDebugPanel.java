@@ -1,6 +1,7 @@
 package com.ccs.baby.ui.display;
 
 import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.utils.AppSettings;
 
 import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
@@ -23,5 +24,6 @@ public class DisplayDebugPanel implements ActionListener {
         debugPanel.setVisible(isVisible);
         JMenuItem source = (JMenuItem) e.getSource();
         source.setSelected(isVisible); // Update the menu item's checkmark
+        AppSettings.getInstance().setShowDebugPanel(isVisible);
     }
 }
