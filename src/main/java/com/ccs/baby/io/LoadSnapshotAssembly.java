@@ -50,32 +50,39 @@ public class LoadSnapshotAssembly implements ActionListener {
     }
 
     public void handleFileLoad(File file) {
+        handleFileLoad(file, false);
+    }
+
+    public void handleFileLoad(File file, boolean skipRender) {
         try {
-            String currentFile = file.toString();
-            // detect file type and then load appropriately if possible
-            switch (store.getFileType(currentFile)) {
-                case Store.UNACCEPTABLE:
-                    JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);
-                    break;
-                case Store.SNAPSHOT:
-                    store.loadSnapshot(currentFile);
-                    break;
-                case Store.ASSEMBLY:
-                    store.loadModernAssembly(currentFile);
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(frame.getContentPane(), "Unrecognised file type", "Error", JOptionPane.ERROR_MESSAGE);
-                    break;
+            String name = file.getName().toLowerCase();
+            String loadMethod;
+
+            if (name.endsWith(".snp")) {
+                store.loadSnapshot(file.getPath());
+                loadMethod = "loadSnapshot";
+            } else if (name.endsWith(".asm")) {
+                store.loadModernAssembly(file.getPath());
+                loadMethod = "loadModernAssembly";
+            } else {
+                throw new IllegalArgumentException("Unknown file type. Must be .snp or .asm");
             }
-            // update display
-            crtPanel.render();
-            frame.getContentPane().repaint();
-            
-            // Update recent files menu
+
+            // Add to recent files
+            store.getRecentFilesManager().addRecentFile(file, loadMethod);
             FileMenu.updateRecentFilesMenu(store, frame, crtPanel);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("fnf");
+
+            // Only render if not skipped
+            if (!skipRender) {
+                crtPanel.render();
+                crtPanel.repaint();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame.getContentPane(),
+                    "Error loading file: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
         }
     }
 }

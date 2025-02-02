@@ -33,6 +33,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.disassembler.*;
@@ -223,10 +224,23 @@ public class Baby extends JFrame {
                         @SuppressWarnings("unchecked")
                         List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         
+                        List<File> allFiles = new ArrayList<>();
+                        // Process all dropped files/folders
                         for (File file : files) {
+                            if (file.isDirectory()) {
+                                processDirectory(file, allFiles);
+                            } else if (isValidFileType(file)) {
+                                allFiles.add(file);
+                            }
+                        }
+                        
+                        // Process all collected files
+                        for (int i = 0; i < allFiles.size(); i++) {
+                            File file = allFiles.get(i);
                             try {
-                                // Use LoadSnapshotAssembly to handle each file
-                                loadSnapshotAssembly.handleFileLoad(file);
+                                // Only render and repaint on the last file
+                                boolean isLastFile = (i == allFiles.size() - 1);
+                                loadSnapshotAssembly.handleFileLoad(file, !isLastFile);
                             } catch (Exception e) {
                                 // Show error but continue processing other files
                                 JOptionPane.showMessageDialog(getContentPane(), 
@@ -235,6 +249,10 @@ public class Baby extends JFrame {
                                     JOptionPane.ERROR_MESSAGE);
                             }
                         }
+
+                        // Request focus after processing files
+                        requestFocus();
+                        toFront();
                     }
                     
                     event.dropComplete(true);
@@ -251,6 +269,24 @@ public class Baby extends JFrame {
         // Create and set the drop target for both mainPanel and crtPanel
         new DropTarget(mainPanel, DnDConstants.ACTION_COPY, dropListener, true);
         new DropTarget(crtPanel, DnDConstants.ACTION_COPY, dropListener, true);
+    }
+
+    private void processDirectory(File directory, List<File> fileList) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    processDirectory(file, fileList);
+                } else if (isValidFileType(file)) {
+                    fileList.add(file);
+                }
+            }
+        }
+    }
+
+    private boolean isValidFileType(File file) {
+        String name = file.getName().toLowerCase();
+        return name.endsWith(".snp") || name.endsWith(".asm");
     }
 
     // Main method to create main window
