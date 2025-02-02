@@ -2,7 +2,7 @@ package com.ccs.baby.core;
 
 import com.ccs.baby.controller.CrtControlPanelController;
 import com.ccs.baby.manager.LampManager;
-import com.ccs.baby.ui.CrtControlPanel;
+import com.ccs.baby.controller.CrtControlPanelController;
 import com.ccs.baby.controller.StaticisorPanelController;
 
 public class Control
@@ -28,7 +28,7 @@ public class Control
 	private int instructionsPerRefresh = 2;
 
 	public StaticisorPanelController staticisorPanelController;
-	public CrtControlPanel crtControlPanel;
+	public CrtControlPanelController crtControlPanelController;
 
 	// values as to various keys on the switchpanel which may be held down
 	// and will affect execution
@@ -68,9 +68,9 @@ public class Control
 	}
 
 	// 2-stage construction to set up the switchpanel which is mutually dependent on the control
-	public void setSwitchPanel(CrtControlPanel crtControlPanel, StaticisorPanelController staticisorPanelController)
+	public void setSwitchPanel(StaticisorPanelController staticisorPanelController, CrtControlPanelController crtControlPanelController)
 	{
-		this.crtControlPanel = crtControlPanel;
+		this.crtControlPanelController = crtControlPanelController;
 		this.staticisorPanelController = staticisorPanelController;
 	}
 
@@ -200,30 +200,30 @@ public class Control
 	public void singleStep() {
 		staticisorPanelController.setManAuto(true);
 		// set to write
-		crtControlPanel.setWriteErase(true);
+		crtControlPanelController.setWriteErase(true);
 		// set L stat switches to all be on
 		staticisorPanelController.toggleAllLineSwitches(true);
 		// likewise F stat switches
 		staticisorPanelController.toggleAllFunctionSwitches(true);
 
-		crtControlPanel.simulateKspClick();
+		crtControlPanelController.simulateKspClick();
 	}
 
 	public void startRunning() {
 		staticisorPanelController.setManAuto(true);
 		// set to write
-		crtControlPanel.setWriteErase(true);
+		crtControlPanelController.setWriteErase(true);
 		staticisorPanelController.toggleAllLineSwitches(true);
 
 		// flick CS switch which starts the animation
-		if (!crtControlPanel.getStopRun()) {
-			crtControlPanel.simulateStopRunToggle();
+		if (!crtControlPanelController.isStopRun()) {
+			crtControlPanelController.simulateStopRunToggle();
 		}
 	}
 
 	public void stopRunning() {
-		if (crtControlPanel.getStopRun()) {
-			crtControlPanel.simulateStopRunToggle();
+		if (crtControlPanelController.isStopRun()) {
+			crtControlPanelController.simulateStopRunToggle();
 		}
 	}
 
@@ -255,7 +255,7 @@ public class Control
 		if(keyPressed)
 		{
 			// if write selected
-			if( crtControlPanel.getWriteErase())
+			if( crtControlPanelController.isWriteErase())
 			{
 				// so corrupt present instruction
 				presentInstruction |= (1<<keyNumberPressed);
@@ -389,7 +389,7 @@ public class Control
 		if(keyPressed)
 		{
 			// if write selected
-			if( crtControlPanel.getWriteErase())
+			if( crtControlPanelController.isWriteErase())
 			{
 				// note the operand line DOES get corrupted even if it's not actually used e.g. in CMP and STP
 				// get action line

@@ -8,26 +8,26 @@ import java.util.*;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.menu.ControlsMenu;
 import com.ccs.baby.core.Control;
-import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.controller.CrtPanelController;
 
 public class Disassembler extends JFrame
 {
 	
 	Store store;
 	Control control;
-	CrtPanel crtPanel;
+	CrtPanelController crtPanelController;
 
 	JTextArea textArea;
 
 	boolean _updateOnStep = true;
 
 
-	public Disassembler(Store aStore, Control aControl, CrtPanel aCrtPanel)
+	public Disassembler(Store store, Control control, CrtPanelController crtPanelController)
 	{
-		store = aStore;
-		control = aControl;
-		crtPanel = aCrtPanel;
-		
+		this.store = store;
+		this.control = control;
+		this.crtPanelController = crtPanelController;
+
 		// create frame
 		setTitle("Disassembler");
 		setSize(400, 700); // height 630 was fine on Mac, closer to 700 on Windows 10 to fit all text
@@ -138,8 +138,7 @@ public class Disassembler extends JFrame
 				JOptionPane.showMessageDialog(getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			
-			crtPanel.render();
-			crtPanel.repaint();
+			crtPanelController.redrawCrtPanel();
 		}
 	}
 

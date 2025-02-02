@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 
 import com.ccs.baby.core.Animator;
 import com.ccs.baby.core.Control;
-import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.ui.FpsLabelService;
 import com.ccs.baby.controller.StaticisorPanelController;
 
@@ -13,7 +13,7 @@ import com.ccs.baby.controller.StaticisorPanelController;
 public class AnimationManager {
 
     private final Control control;
-    private final CrtPanel crtPanel;
+    private final CrtPanelController crtPanelController;
     private final StaticisorPanelController staticisorPanelController;
 
     // timer for counting number of instructions executed each second to give speed
@@ -26,9 +26,14 @@ public class AnimationManager {
 
     public static volatile boolean animationRunning = false;
 
-    public AnimationManager(Control control, CrtPanel crtPanel, StaticisorPanelController staticisorPanelController, FpsLabelService fpsLabelService) {
+    public AnimationManager(
+            Control control,
+            CrtPanelController crtPanelController,
+            StaticisorPanelController staticisorPanelController,
+            FpsLabelService fpsLabelService
+    ) {
         this.control = control;
-        this.crtPanel = crtPanel;
+        this.crtPanelController = crtPanelController;
         this.staticisorPanelController = staticisorPanelController;
         this.fpsLabelService = fpsLabelService;
 
@@ -42,7 +47,7 @@ public class AnimationManager {
 
         if (!animationRunning) {
             // create new thread for animation (create a new one as recall a thread can only be started once)
-            animator = new Animator(crtPanel, control, staticisorPanelController);
+            animator = new Animator(control, crtPanelController, staticisorPanelController);
             animator.startAnimating();
         }
 
@@ -61,8 +66,7 @@ public class AnimationManager {
         staticisorPanelController.updateActionLineListeners();
 
         // repaint so that control with the PI can be drawn if necessary
-        crtPanel.render();
-        crtPanel.repaint();
+        crtPanelController.redrawCrtPanel();
     }
 
 

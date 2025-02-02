@@ -2,7 +2,7 @@ package com.ccs.baby.menu;
 
 import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Store;
-import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.io.LoadExample;
 
@@ -37,7 +37,7 @@ public class ExamplesMenu {
     private static final String EXTERNAL_PROGRAMS_ZIP = "baby_programs.zip";
 
     private static Store _store;
-    private static CrtPanel _crtPanel;
+    private static CrtPanelController _crtPanelController;
     private static JFrame _frame;
 
     /**
@@ -50,14 +50,14 @@ public class ExamplesMenu {
      * @param frame    the frame to display the example program in
      * @return the Examples menu
      */
-    public static JMenu createExampleMenu(Store store, CrtPanel crtPanel, JFrame frame) {
+    public static JMenu createExampleMenu(Store store, CrtPanelController crtPanelController, JFrame frame) {
         JMenu exampleMenu = new JMenu("Examples");
     
         if (DYNAMIC_EXAMPLES) {
 
             // save refs to objects to avoid passing throughout recursive call stack
             _store = store;
-            _crtPanel = crtPanel;
+            _crtPanelController = crtPanelController;
             _frame = frame;
     
             try {
@@ -90,7 +90,7 @@ public class ExamplesMenu {
             }
         } else {
             // deprecated approach
-            buildStaticMenu(exampleMenu, store, crtPanel, frame);
+            buildStaticMenu(exampleMenu, store, crtPanelController, frame);
         }
     
         exampleMenu.setMnemonic(KeyEvent.VK_E);
@@ -261,7 +261,7 @@ public class ExamplesMenu {
                             JMenuItem menuItem = new JMenuItem(fileName);
                             String uriString = "jar:" + zipPath.toUri() + "!" + entryName;
                             // TODO: the uriString here doesn't work with loading files when clicked on
-                            menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanel, _frame));
+                            menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanelController, _frame));
                             targetMenu.add(menuItem);
                         }
                     }
@@ -273,7 +273,7 @@ public class ExamplesMenu {
     private static JMenuItem createMenuItemForFile(Path filePath) throws URISyntaxException, IOException {
         JMenuItem menuItem = new JMenuItem(filePath.getFileName().toString());
         String uriString = filePath.toUri().toString();
-        menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanel, _frame));
+        menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanelController, _frame));
         return menuItem;
     }
 
@@ -285,7 +285,7 @@ public class ExamplesMenu {
      * @param crtPanel the CRT panel to display the store
      * @param frame    the frame to display the example program in
      */
-    private static void buildStaticMenu(JMenu menu, Store store, CrtPanel crtPanel, JFrame frame) {
+    private static void buildStaticMenu(JMenu menu, Store store, CrtPanelController crtPanelController, JFrame frame) {
 
         // Create menu items
         JMenuItem diffeqt = new JMenuItem("demos/diffeqt.asm");
@@ -296,11 +296,11 @@ public class ExamplesMenu {
         
         // Add action listeners for each item
         try {
-            diffeqt.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/diffeqt.asm"), store, crtPanel, frame));
-            baby9.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/Baby9.snp"), store, crtPanel, frame));
-            primegen.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/primegen.asm"), store, crtPanel, frame));
-            virpet.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/virpet.asm"), store, crtPanel, frame));
-            noodleTimer.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/noodletimer.snp"), store, crtPanel, frame));
+            diffeqt.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/diffeqt.asm"), store, crtPanelController, frame));
+            baby9.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/Baby9.snp"), store, crtPanelController, frame));
+            primegen.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/primegen.asm"), store, crtPanelController, frame));
+            virpet.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/virpet.asm"), store, crtPanelController, frame));
+            noodleTimer.addActionListener(new LoadExample(LoadExample.getUriStringForResource("demos/noodletimer.snp"), store, crtPanelController, frame));
         }
         catch(URISyntaxException ex)
         {

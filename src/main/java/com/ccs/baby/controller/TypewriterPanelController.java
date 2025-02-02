@@ -3,30 +3,30 @@ package com.ccs.baby.controller;
 import com.ccs.baby.manager.AnimationManager;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Store;
-import com.ccs.baby.ui.CrtPanel;
-import com.ccs.baby.ui.CrtControlPanel;
+import com.ccs.baby.controller.CrtPanelController;
+import com.ccs.baby.controller.CrtControlPanelController;
 import com.ccs.baby.ui.TypewriterPanel;
 
 public class TypewriterPanelController {
     private final Store store;
     private final Control control;
-    private final CrtPanel crtPanel;
+    private final CrtPanelController crtPanelController;
     final StaticisorPanelController staticisorPanelController;
-    private final CrtControlPanel crtControlPanel;
+    private final CrtControlPanelController crtControlPanelController;
 
     public TypewriterPanelController(
             Store store,
             Control control,
-            CrtPanel crtPanel,
             TypewriterPanel typewriterPanel,
-            CrtControlPanel crtControlPanel,
-            StaticisorPanelController staticisorPanelController
+            CrtPanelController crtPanelController,
+            StaticisorPanelController staticisorPanelController,
+            CrtControlPanelController crtControlPanelController
     ) {
         this.store = store;
         this.control = control;
-        this.crtPanel = crtPanel;
+        this.crtPanelController = crtPanelController;
         this.staticisorPanelController = staticisorPanelController;
-        this.crtControlPanel = crtControlPanel;
+        this.crtControlPanelController = crtControlPanelController;
 
         for (int i = 0; i < typewriterPanel.CONNECTED_KEYS; i++) {
             int keyNumber = i; // copy to final variable for lambda
@@ -50,12 +50,12 @@ public class TypewriterPanelController {
         } else { // otherwise just do current action line
             int lineNumber = staticisorPanelController.getSelectedLineSwitchesValue();
             // true = write, false = erase
-            if (crtControlPanel.getWriteErase()) {
+            if (crtControlPanelController.isWriteErase()) {
                 store.setLine(lineNumber, store.getLine(lineNumber) | (1 << keyNumber));
             } else {
                 store.setLine(lineNumber, store.getLine(lineNumber) & ~(1 << keyNumber));
             }
-            crtPanel.redrawCrtPanel();
+            crtPanelController.redrawCrtPanel();
         }
     }
 

@@ -3,7 +3,7 @@ package com.ccs.baby.core;
 import java.util.concurrent.TimeUnit;
 
 import com.ccs.baby.manager.AnimationManager;
-import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.controller.StaticisorPanelController;
 
 /**
@@ -16,19 +16,23 @@ public class Animator extends Thread {
 
     private volatile boolean keepAnimating = false; // Flag to indicate whether to keep animating (or terminate thread)
 
-    private final CrtPanel crtPanel;
+    private final CrtPanelController crtPanelController;
     private final Control control;
     private final StaticisorPanelController staticisorPanelController;
 
     /**
      * Constructs an Animator with the specified CrtPanel, Control, and staticisorPanel.
      *
-     * @param crtPanel    the CrtPanel instance used for rendering the display
-     * @param control     the Control instance used for executing instructions
+     * @param crtPanel        the CrtPanel instance used for rendering the display
+     * @param control         the Control instance used for executing instructions
      * @param staticisorPanel the StaticisorPanel instance used for managing the manual/automatic mode
      */
-    public Animator(CrtPanel crtPanel, Control control, StaticisorPanelController staticisorPanelController) {
-        this.crtPanel = crtPanel;
+    public Animator(
+            Control control,
+            CrtPanelController crtPanelController,
+            StaticisorPanelController staticisorPanelController
+    ) {
+        this.crtPanelController = crtPanelController;
         this.control = control;
         this.staticisorPanelController = staticisorPanelController;
 
@@ -59,13 +63,12 @@ public class Animator extends Thread {
         final long DEFAULT_FRAME_TIME = 10_000_000L; // 10 ms in nanoseconds
 
         setPriority(Thread.NORM_PRIORITY + 1); // Increment thread priority if needed
-        
+
         keepAnimating = true;
 
         control.setCycleCount(0);
 
-        try
-        {
+        try {
 
             AnimationManager.animationRunning = true; // Indicate that the animation has started
 
@@ -82,8 +85,8 @@ public class Animator extends Thread {
                 executeInstructions();
 
                 // Render and repaint
-                crtPanel.render();
-                crtPanel.efficientRepaint();
+                crtPanelController.renderCurrentDisplay();
+                crtPanelController.efficientRepaint();
                 control.incCycleCount();
 
                 // Calculate elapsed time
@@ -100,12 +103,10 @@ public class Animator extends Thread {
                     }
                 }
             }
-        }
-        finally
-        {
+        } finally {
             AnimationManager.animationRunning = false; // Indicate that the animation has stopped
         }
-        
+
         // recall when run() completes the Thread terminates
     }
 

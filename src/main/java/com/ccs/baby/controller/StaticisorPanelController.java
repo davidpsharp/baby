@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import com.ccs.baby.controller.event.ActionLineListener;
+import com.ccs.baby.controller.listener.CrtPanelActionLineListener;
 import com.ccs.baby.ui.StaticisorPanel;
 
 public class StaticisorPanelController {
 
     private final StaticisorPanel staticisorPanel;
-    private final List<ActionLineListener> listeners = new ArrayList<>();
+    private final List<CrtPanelActionLineListener> listeners = new ArrayList<>();
 
     public StaticisorPanelController(StaticisorPanel staticisorPanel) {
         this.staticisorPanel = staticisorPanel;
@@ -78,7 +78,7 @@ public class StaticisorPanelController {
      *
      * @param listener The listener to be notified when an action line change occurs.
      */
-    public void addActionLineListener(ActionLineListener listener) {
+    public void addActionLineListener(CrtPanelActionLineListener listener) {
         listeners.add(listener);
     }
 
@@ -89,7 +89,7 @@ public class StaticisorPanelController {
         boolean isAutoMode = staticisorPanel.getManAuto();
         int lineValue = getSelectedLineSwitchesValue();
 
-        for (ActionLineListener listener : listeners) {
+        for (CrtPanelActionLineListener listener : listeners) {
             listener.onActionLineChange(isAutoMode, lineValue);
         }
     }
