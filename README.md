@@ -49,42 +49,12 @@ cd baby
 mvn dependency:resolve
 ```
 
-3. **Create a Keystore**: Generate a keystore file used by CheerpJ for signing, follow the prompts and remember your chosen password.
-```bash
-keytool -genkeypair -alias baby -keystore baby.keystore -keyalg RSA -keysize 2048 -validity 3650 -storetype PKCS12
-```
-
-
-4. **Configure Maven for Signing**: Create (or update) the Maven settings file at ~/.m2/settings.xml with your keystore password. If the file does not exist, create it.
-```bash
-touch ~/.m2/settings.xml
-```
-
-Then add the following XML content, replacing YOUR_KEYSTORE_PASSWORD with your actual password.
-```xml
-<settings>
-    <profiles>
-        <profile>
-            <id>sign</id>
-            <properties>
-                <jarsigner.keystore.password>YOUR_KEYSTORE_PASSWORD</jarsigner.keystore.password>
-                <jarsigner.key.password>YOUR_KEYSTORE_PASSWORD</jarsigner.key.password>
-            </properties>
-        </profile>
-    </profiles>
-    <activeProfiles>
-        <activeProfile>sign</activeProfile>
-    </activeProfiles>
-</settings>
-```
-
-
 ## Build
 
 To compile and package the project into a runnable JAR file, execute:
 
 ```bash
-mvn clean package -Psign 
+mvn clean package
 ```
 
 After a successful build, the JAR file (with all dependencies bundled) will be available in the target directory.

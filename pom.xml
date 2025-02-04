@@ -85,53 +85,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Maven Jarsigner Plugin -->
-            <!--
-            Leave this next plugin section commented out until ready to sign a release.
-            
-            Put baby.keystore file in the root of baby source folder (gitignore settings should prevent it being shared)
-
-            In maven config folder put settings.xml (in ~/.m2 folder) and set both passwords per my password vault.
-            <settings>
-                <profiles>
-                    <profile>
-                        <id>sign</id>
-                        <properties>
-                            <jarsigner.keystore.password>your_keystore_password</jarsigner.keystore.password>
-                            <jarsigner.key.password>your_key_password</jarsigner.key.password>
-                        </properties>
-                    </profile>
-                </profiles>
-            </settings>
-
-            Uncomment the Jarsigner plugin config below in pom.xml for maven.
-
-            Then build with: mvn clean package -Psign
-            -->
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jarsigner-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>sign</id>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <keystore>baby.keystore</keystore>
-                    <alias>baby</alias>
-                    <storepass>${jarsigner.keystore.password}</storepass>
-                    <keypass>${jarsigner.key.password}</keypass>
-                    <tsa>http://timestamp.digicert.com</tsa>
-                </configuration>
-            </plugin>
-
 
         </plugins>
 
