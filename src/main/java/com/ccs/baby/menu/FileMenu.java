@@ -4,7 +4,6 @@ import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.io.SaveAssembly;
 import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.core.Store;
-import com.ccs.baby.core.Control;
 import com.ccs.baby.ui.CrtPanel;
 import com.ccs.baby.utils.RecentFilesManager.RecentFileEntry;
 
@@ -15,8 +14,6 @@ import javax.swing.KeyStroke;
 import javax.swing.JOptionPane;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**

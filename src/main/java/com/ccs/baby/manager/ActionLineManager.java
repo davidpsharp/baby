@@ -24,7 +24,7 @@ public class ActionLineManager {
      */
     public void updateActionLine() {
         if (staticisorPanel.getManAuto()) {
-            crtPanel.setActionLine(control.getLineNumber(control.getControlInstruction()));
+            crtPanel.setActionLine(Control.getLineNumber(control.getControlInstruction()));
         } else {
             crtPanel.setActionLine(staticisorPanel.getLineValue());
         }

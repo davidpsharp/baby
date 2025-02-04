@@ -3,9 +3,7 @@ package com.ccs.baby.utils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.JarURLConnection;
 import java.util.Enumeration;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class MiscUtils {
