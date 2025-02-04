@@ -1,17 +1,22 @@
 package com.ccs.baby.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import com.ccs.baby.ui.components.InterlockingPushButton;
 import com.ccs.baby.ui.components.KeySwitch;
 import com.ccs.baby.ui.components.ToggleSwitch;
 
 import static com.ccs.baby.utils.CallbackUtils.runCallback;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 
 public class CrtControlPanel extends JPanel {
     private Runnable onStopRunChange;
@@ -32,7 +37,6 @@ public class CrtControlPanel extends JPanel {
 
     private final ToggleSwitch stopRunSwitch;
     private final ToggleSwitch writeErase;
-
 
     public InterlockingPushButton displayControlButton;
     public InterlockingPushButton displayAccumulatorButton;
@@ -226,20 +230,18 @@ public class CrtControlPanel extends JPanel {
         stopRunSwitch.setSelected(value);
     }
 
-    public void setWriteErase(boolean value) {
-        writeErase.setSelected(value);
-    }
 
     public boolean getWriteErase() {
         return !writeErase.isSelected();
     }
 
-    public void setOnStopRunChange(Runnable callback) {
-        this.onStopRunChange = callback;
+    public void setWriteErase(boolean value) {
+        writeErase.setSelected(value);
     }
 
-    public boolean isStopRunSelected() {
-        return stopRunSwitch.isSelected();
+
+    public void setOnStopRunChange(Runnable callback) {
+        this.onStopRunChange = callback;
     }
 
     public void setOnDisplayControlChange(Runnable callback) {
@@ -290,15 +292,24 @@ public class CrtControlPanel extends JPanel {
         this.onKccReleased = callback;
     }
 
-    /**
-     * Simulate a click on the KSP switch programmatically.
-     */
-    public void simulateKspClick() {
-        kspSwitch.doClick();
+    public KeySwitch getKspSwitch() {
+        return kspSwitch;
     }
 
-    public void simulateStopRunToggle() {
-        stopRunSwitch.doClick();
+    public ToggleSwitch getStopRunSwitch() {
+        return stopRunSwitch;
+    }
+
+    public InterlockingPushButton getDisplayControlButton() {
+        return displayControlButton;
+    }
+
+    public InterlockingPushButton getDisplayAccumulatorButton() {
+        return displayAccumulatorButton;
+    }
+
+    public InterlockingPushButton getDisplayStoreButton() {
+        return displayStoreButton;
     }
 
 }

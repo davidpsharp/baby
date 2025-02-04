@@ -4,7 +4,9 @@ import com.ccs.baby.io.LoadSnapshotAssembly;
 import com.ccs.baby.io.SaveAssembly;
 import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.core.Store;
-import com.ccs.baby.ui.CrtPanel;
+
+import com.ccs.baby.controller.CrtPanelController;
+
 import com.ccs.baby.utils.RecentFilesManager.RecentFileEntry;
 
 import javax.swing.JFrame;
@@ -28,26 +30,25 @@ public class FileMenu {
      * Creates the File menu.
      *
      * @param store      the store object
-     * @param control    the control object
      * @param currentDir the current directory path
      * @param frame      the frame object
-     * @param crtPanel   the crt panel object
+     * @param crtPanelController   the crt panel controller
      * @return the File menu
      */
-    public static JMenu createFileMenu(Store store, String currentDir, JFrame frame, CrtPanel crtPanel) {
+    public static JMenu createFileMenu(Store store, String currentDir, JFrame frame, CrtPanelController crtPanelController) {
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
         recentFilesMenu = new JMenu("Load Recent");
-        updateRecentFilesMenu(store, frame, crtPanel);
+        updateRecentFilesMenu(store, frame, crtPanelController);
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
         JMenuItem close = new JMenuItem("Close");
 
         // Add action listeners for each item
-        loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanel));
+        loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanelController));
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
         close.addActionListener(e -> System.exit(0));
@@ -80,7 +81,7 @@ public class FileMenu {
         return fileMenu;
     }
 
-    public static void updateRecentFilesMenu(Store store, JFrame frame, CrtPanel crtPanel) {
+    public static void updateRecentFilesMenu(Store store, JFrame frame, CrtPanelController crtPanelController) {
         if (recentFilesMenu == null) {
             return;
         }
@@ -109,8 +110,7 @@ public class FileMenu {
                             default:
                                 throw new IllegalStateException("Unknown load method: " + entry.getLoadMethod());
                         }
-                        crtPanel.render();
-                        crtPanel.repaint();
+                        crtPanelController.redrawCrtPanel();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame,
                                 "Error loading file: " + ex.getMessage(),
@@ -128,7 +128,7 @@ public class FileMenu {
         JMenuItem clearList = new JMenuItem("Clear List");
         clearList.addActionListener(e -> {
             store.getRecentFilesManager().clearRecentFiles();
-            updateRecentFilesMenu(store, frame, crtPanel);
+            updateRecentFilesMenu(store, frame, crtPanelController);
         });
         recentFilesMenu.add(clearList);
     }

@@ -2,7 +2,7 @@ package com.ccs.baby.io;
 
 import com.ccs.baby.core.Store;
 import com.ccs.baby.menu.FileMenu;
-import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.controller.CrtPanelController;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -16,13 +16,13 @@ public class LoadSnapshotAssembly implements ActionListener {
     private File fileChooserDirectory;
     private static String currentDir;
     private final Store store;
-    private final CrtPanel crtPanel;
+    private final CrtPanelController crtPanelController;
     private final JFrame frame;
 
 
-    public LoadSnapshotAssembly(Store store, JFrame frame, CrtPanel crtPanel) {
+    public LoadSnapshotAssembly(Store store, JFrame frame, CrtPanelController crtPanelController) {
         this.store = store;
-        this.crtPanel = crtPanel;
+        this.crtPanelController = crtPanelController;
         this.frame = frame;
 
         currentDir = System.getProperty("user.home");
@@ -69,12 +69,11 @@ public class LoadSnapshotAssembly implements ActionListener {
 
             // Add to recent files
             store.getRecentFilesManager().addRecentFile(file, loadMethod);
-            FileMenu.updateRecentFilesMenu(store, frame, crtPanel);
+            FileMenu.updateRecentFilesMenu(store, frame, crtPanelController);
 
             // Only render if not skipped
             if (!skipRender) {
-                crtPanel.render();
-                crtPanel.repaint();
+                crtPanelController.redrawCrtPanel();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame.getContentPane(),

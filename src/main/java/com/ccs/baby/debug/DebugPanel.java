@@ -1,10 +1,8 @@
 package com.ccs.baby.debug;
 
 import com.ccs.baby.core.Control;
-import com.ccs.baby.ui.CrtControlPanel;
 import com.ccs.baby.ui.FpsLabelPushed;
 import com.ccs.baby.ui.FpsLabelService;
-import com.ccs.baby.ui.StaticisorPanel;
 import com.ccs.baby.utils.AppSettings;
 
 import javax.swing.*;
@@ -23,14 +21,10 @@ public class DebugPanel extends JPanel implements ActionListener {
     public static Color backgroundColor = new Color(206, 205, 201);
 
     private final Control control;
-    private final StaticisorPanel staticisorPanel;
-    private final CrtControlPanel crtControlPanel;
 
-    public DebugPanel(Control control, StaticisorPanel staticisorPanel, CrtControlPanel crtControlPanel) {
+    public DebugPanel(Control control) {
 
         this.control = control;
-        this.staticisorPanel = staticisorPanel;
-        this.crtControlPanel = crtControlPanel;
 
 
         setLayout(new BorderLayout(0, 0)); // Ensure no gaps

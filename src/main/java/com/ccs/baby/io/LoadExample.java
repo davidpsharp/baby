@@ -3,7 +3,7 @@ package com.ccs.baby.io;
 import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.menu.FileMenu;
-import com.ccs.baby.ui.CrtPanel;
+import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.utils.MiscUtils;
 
 import javax.swing.*;
@@ -16,14 +16,14 @@ public class LoadExample implements ActionListener {
 
     private final String fileName;
     private final Store store;
-    private final CrtPanel crtPanel;
+    private final CrtPanelController crtPanelController;
     private final JFrame frame;
 
     
-    public LoadExample(String name, Store store, CrtPanel crtPanel, JFrame frame) {
+    public LoadExample(String name, Store store, CrtPanelController crtPanelController, JFrame frame) {
         fileName = name;
         this.store = store;
-        this.crtPanel = crtPanel;
+        this.crtPanelController = crtPanelController;
         this.frame = frame;
 
     }
@@ -39,11 +39,10 @@ public class LoadExample implements ActionListener {
             }
 
             Baby.mainPanel.setTexture(false);
-            crtPanel.render();
-            crtPanel.repaint();
+            crtPanelController.redrawCrtPanel();
             
             // Update recent files menu
-            FileMenu.updateRecentFilesMenu(store, frame, crtPanel);
+            FileMenu.updateRecentFilesMenu(store, frame, crtPanelController);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame.getContentPane(), MiscUtils.getStackTrace(ex), "Error", JOptionPane.ERROR_MESSAGE);
         }

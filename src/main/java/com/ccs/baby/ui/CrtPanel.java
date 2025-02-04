@@ -39,7 +39,7 @@ public class CrtPanel extends JPanel {
     private DisplayType currentDisplay = DisplayType.STORE; // The current display type
     private final boolean renderAccurately = true; // Whether to render the Control and Accumulator accurately
     private final BufferedImage bufferedImage = new BufferedImage(DEFAULT_CRT_WIDTH, DEFAULT_CRT_HEIGHT, BufferedImage.TYPE_INT_ARGB); // The image to be drawn
-    private Graphics2D big = bufferedImage.createGraphics();
+    private final Graphics2D big = bufferedImage.createGraphics();
     private int actionLine = 0;
 
     private final Store store;
@@ -94,13 +94,17 @@ public class CrtPanel extends JPanel {
     }
 
     /**
-     * Paints the component.
+     * <p>Paints the CRT panel by drawing the pre-rendered buffered image.</p>
+     * <p>Calls {@code super.paintComponent} to clear the panel, then draws the image at (0,0).</p>
      *
-     * @param graphicsIn the graphics context to paint to
+     * @param graphicsIn the graphics context used for painting
      */
+    @Override
     public void paintComponent(Graphics graphicsIn) {
         super.paintComponent(graphicsIn);
-        update(graphicsIn);
+
+        Graphics2D graphics2D = (Graphics2D) graphicsIn;
+        graphics2D.drawImage(bufferedImage, 0, 0, this);
     }
 
     /**
@@ -134,25 +138,6 @@ public class CrtPanel extends JPanel {
         }
     }
 
-    /**
-     * Draw the image to the graphics context.
-     *
-     * @param graphicsIn the graphics context to draw to
-     */
-    public void update(Graphics graphicsIn) {
-        Graphics2D graphics2D = (Graphics2D) graphicsIn;
-
-        graphics2D.drawImage(bufferedImage, 0, 0, this);
-    }
-
-    /**
-     * Set the display type of the CRT panel.
-     */
-    public void redrawCrtPanel() {
-        render();
-        repaint();
-    }
-
     public void setActionLine(int newActionLine) {
         // negative values turn off the action line
         if (newActionLine < 0) {
@@ -176,7 +161,7 @@ public class CrtPanel extends JPanel {
     }
 
     // render the graphics to the buffered image
-    public synchronized void render() {
+    private synchronized void render() {
         switch (currentDisplay) {
             case STORE:
                 renderStore();
@@ -194,7 +179,7 @@ public class CrtPanel extends JPanel {
     }
 
     // renders the Store to the buffered image
-    private void renderStore() {
+    public void renderStore() {
 
         for (int lineNumber = 0; lineNumber < 32; lineNumber++) {
             // for each line that has been changed since last redraw
@@ -268,6 +253,11 @@ public class CrtPanel extends JPanel {
                 graphicsContext.drawImage(BIT_ZERO_BRIGHT_IMAGE, DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING + bitNumber * DEFAULT_BIT_LENGTH, DEFAULT_RASTER_OFFSET_Y + DEFAULT_SPACING + line * DEFAULT_BIT_LENGTH, null);
             }
         }
+    }
+
+
+    public DisplayType getCurrentDisplay() {
+        return currentDisplay;
     }
 
 }

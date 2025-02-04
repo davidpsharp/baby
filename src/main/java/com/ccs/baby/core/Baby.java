@@ -5,57 +5,32 @@ package com.ccs.baby.core;
 // January 2001
 // requires Java v8 or later
 
-import java.awt.Container;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.WindowEvent;
-import java.lang.reflect.Method;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetListener;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.dnd.*;
+import java.awt.datatransfer.*;
+import javax.swing.*;
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.ccs.baby.io.LoadSnapshotAssembly;
+import com.ccs.baby.controller.*;
+import com.ccs.baby.controller.listener.*;
+import com.ccs.baby.debug.*;
 import com.ccs.baby.disassembler.*;
-import com.ccs.baby.io.LoadExample;
+import com.ccs.baby.io.*;
 import com.ccs.baby.manager.*;
 import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
-import com.ccs.baby.utils.AppSettings;
-import com.ccs.baby.utils.PreferencesService;
-import com.ccs.baby.utils.Version;
-import com.ccs.baby.controller.*;
-import com.ccs.baby.debug.*;
-import com.ccs.baby.utils.MiscUtils;
+import com.ccs.baby.utils.*;
+
 
 public class Baby extends JFrame {
 
     // Get the current directory
     private static String currentDir;
     public static BackgroundPanel mainPanel;
-    private Store store;
     private CrtPanel crtPanel;
-    private Control control;
     private LoadSnapshotAssembly loadSnapshotAssembly;
 
     public Baby() {
@@ -103,27 +78,20 @@ public class Baby extends JFrame {
             LampManager lampManager = new LampManager();
 
             // Create main hardware components
-            store = new Store();
-            control = new Control(store, lampManager);
+            Store store = new Store();
+            Control control = new Control(store, lampManager);
             store.setControl(control);
 
             crtPanel = new CrtPanel(store, control);
             crtPanel.setOpaque(false);
             crtPanel.setPreferredSize(new Dimension(400, 386));
 
-            // Create LoadSnapshotAssembly instance
-            loadSnapshotAssembly = new LoadSnapshotAssembly(store, this, crtPanel);
 
-            // Create Disassembler
-            Disassembler disassembler = new Disassembler(store, control, crtPanel);
 
             // Create switch panel components
             StaticisorPanel staticisorPanel = new StaticisorPanel();
             TypewriterPanel typewriterPanel = new TypewriterPanel();
             CrtControlPanel crtControlPanel = new CrtControlPanel();
-
-            // Tell control about staticisorPanel and crtControlPanel
-            control.setSwitchPanel(staticisorPanel, crtControlPanel);
 
             // A container for all switch panel components
             JPanel switchPanel = new JPanel();
@@ -133,22 +101,44 @@ public class Baby extends JFrame {
             switchPanel.add(staticisorPanel);
             switchPanel.add(crtControlPanel);
 
-            // Create Action Line Manager
-            ActionLineManager actionLineManager = new ActionLineManager(staticisorPanel, crtPanel, control);
-
             // Setup a DebugPanel (aka modernControls)
-            DebugPanel debugPanel = new DebugPanel(control, staticisorPanel, crtControlPanel);
+            DebugPanel debugPanel = new DebugPanel(control);
             debugPanel.setOpaque(true);
 
             // Get the FpsLabelService from the debugPanel
             FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
 
-            // Initialise AnimationManager
-            AnimationManager animationManager = new AnimationManager(control, crtPanel, staticisorPanel, fpsLabelService, actionLineManager);
+            // Create CrtPanelActionLineListener
+            CrtPanelActionLineListener crtPanelActionLineListener = new CrtPanelActionLineListener(control, crtPanel);
 
-            new TypewriterPanelController(typewriterPanel, store, control, crtPanel, staticisorPanel, crtControlPanel);
-            new StaticisorPanelController(staticisorPanel, actionLineManager);
-            new CrtControlPanelController(actionLineManager, animationManager, crtControlPanel, store, control, crtPanel, staticisorPanel, disassembler);
+            // Create StaticisorPanelController and register crtPanelActionLineListener as a listener
+            StaticisorPanelController staticisorPanelController = new StaticisorPanelController(staticisorPanel);
+            staticisorPanelController.addActionLineListener(crtPanelActionLineListener);
+
+
+            CrtPanelController crtPanelController = new CrtPanelController(crtPanel);
+
+            // Initialise AnimationManager
+            AnimationManager animationManager = new AnimationManager(control, crtPanelController, staticisorPanelController, fpsLabelService);
+
+            // Create LoadSnapshotAssembly instance
+            loadSnapshotAssembly = new LoadSnapshotAssembly(store, this, crtPanelController);
+
+            // Create Disassembler
+            Disassembler disassembler = new Disassembler(store, control, crtPanelController);
+
+            CrtControlPanelController crtControlPanelController = new CrtControlPanelController(store, control, disassembler, animationManager, crtControlPanel, crtPanelController, staticisorPanelController);
+
+            // Register UI update listener
+            CrtPanelDisplayTypeListener crtPanelDisplayTypeListener = new CrtPanelDisplayTypeListener(crtControlPanelController);
+            crtPanelController.addDisplayTypeListener(crtPanelDisplayTypeListener);
+
+            TypewriterPanelController typewriterPanelController = new TypewriterPanelController(store, control, typewriterPanel, crtPanelController, staticisorPanelController, crtControlPanelController);
+
+
+
+            // Tell control about staticisorPanel and crtControlPanel
+            control.setSwitchPanel(staticisorPanelController, crtControlPanelController);
 
             // Create a container mainPanel that wraps crtPanel and switchPanel
             mainPanel = new BackgroundPanel();
@@ -166,7 +156,7 @@ public class Baby extends JFrame {
             // Set up and add menu bars to the window
             JMenuBar menuBar = new JMenuBar();
             setJMenuBar(menuBar);
-            new MenuSetup(menuBar, store, control, crtPanel, crtControlPanel, disassembler, currentDir, this, debugPanel);
+            new MenuSetup(menuBar, store, control, crtPanelController, disassembler, currentDir, this, debugPanel);
 
             // Reset the hardware to initial values
             store.reset();
@@ -184,8 +174,7 @@ public class Baby extends JFrame {
             }
 
             // render and display the CRT display
-            crtPanel.render();
-            crtPanel.repaint();
+            crtPanelController.redrawCrtPanel();
 
             // Open window
             setVisible(true);

@@ -1,4 +1,4 @@
-package com.ccs.baby.ui;
+package com.ccs.baby.manager;
 
 import com.ccs.baby.core.Baby;
 
@@ -9,10 +9,6 @@ public class LampManager {
      * @param stopFlag the stop flag
      */
     public void updateStopLamp(boolean stopFlag) {
-        if (stopFlag) {
-            Baby.mainPanel.setTexture(true);
-        } else {
-            Baby.mainPanel.setTexture(false);
-        }
+        Baby.mainPanel.setTexture(stopFlag);
     }
 }
