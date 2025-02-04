@@ -1,6 +1,5 @@
 package com.ccs.baby.io;
 
-import com.ccs.baby.core.Control;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.menu.FileMenu;
 import com.ccs.baby.controller.CrtPanelController;

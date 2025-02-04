@@ -304,7 +304,6 @@ public class Baby extends JFrame {
             //  -dis <file> - cmd line only, take SNP and output disassembled store to stdout.
             //  -exec <file> - load program, execute without GUI on command line only and output result to stdout on STP instruction (if ever halts).
             //  -autorun - start animation of whatever program is cmd-line loaded / there by default once GUI has started
-            //  -inbrowser - parameter passed to indicate that the application is running in cheerpj or similar web browser-based-javascript/webasm-JVM.
         }
 
         Baby baby = new Baby();

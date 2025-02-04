@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.utils.Version;
 
-import java.awt.Image;
 import javax.swing.ImageIcon;
 
 

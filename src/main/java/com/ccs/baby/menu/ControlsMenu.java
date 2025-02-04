@@ -1,7 +1,6 @@
 package com.ccs.baby.menu;
 
 import com.ccs.baby.core.Control;
-import com.ccs.baby.manual.ReferenceManual;
 
 import java.awt.event.KeyEvent;
 
