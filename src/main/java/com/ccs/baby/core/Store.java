@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import com.ccs.baby.utils.RecentFilesManager;
 
@@ -517,9 +519,14 @@ public class Store
 				}
 				
 				// Open the ZIP file and get the entry
-				java.nio.file.FileSystem zipFs = FileSystems.newFileSystem(zipPath, (ClassLoader) null);
-				Path path = zipFs.getPath(entryPath);
-				return Files.newInputStream(path);
+				ZipFile zipFile = new ZipFile(zipPath.toFile());
+				ZipEntry entry = zipFile.getEntry(entryPath);
+				if (entry == null) {
+					throw new IOException("ZIP entry not found: " + entryPath);
+				}
+				
+				// Return the input stream for the entry
+				return zipFile.getInputStream(entry);
 			}
 			// Regular file URI
 			else if ("file".equals(scheme) || scheme == null) {
