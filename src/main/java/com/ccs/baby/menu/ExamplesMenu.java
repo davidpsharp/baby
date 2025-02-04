@@ -346,7 +346,7 @@ public class ExamplesMenu {
                         if (targetMenu != null) {
                             // Create menu item
                             JMenuItem menuItem = new JMenuItem(fileName);
-                            String uriString = "jar:" + zipPath.toUri() + "!" + entryName;
+                            String uriString = "jar:" + zipPath.toUri() + "!/" + entryName;
                             menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanelController, _frame));
                             targetMenu.add(menuItem);
                         }

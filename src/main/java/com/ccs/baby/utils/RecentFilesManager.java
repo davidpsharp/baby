@@ -45,12 +45,11 @@ public class RecentFilesManager {
             return;
         }
 
-        System.out.println("addRecentFile: " + location + " loadMethod:" + loadMethod);
-
         try {
             // Try parsing as URL first
             FileLocation fileLocation;
             try {
+                System.out.println("addRecentFile: " + location + " loadMethod:" + loadMethod);
                 URL url = new URL(location);
                 fileLocation = new FileLocation(url);
             } catch (Exception e) {
