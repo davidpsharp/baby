@@ -5,11 +5,10 @@ import com.ccs.baby.io.SaveAssembly;
 import com.ccs.baby.io.SaveSnapshot;
 import com.ccs.baby.core.Store;
 
-
 import com.ccs.baby.controller.CrtPanelController;
 
-
 import com.ccs.baby.utils.RecentFilesManager.RecentFileEntry;
+import com.ccs.baby.utils.RecentFilesManager.FileLocation;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -19,6 +18,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.io.File;
 
 /**
  * Creates the File menu.
@@ -96,18 +96,23 @@ public class FileMenu {
             recentFilesMenu.add(noRecentFiles);
         } else {
             for (RecentFileEntry entry : recentFiles) {
-                JMenuItem menuItem = new JMenuItem(entry.getFile().getName());
+                FileLocation location = entry.getLocation();
+                JMenuItem menuItem = new JMenuItem(location.getDisplayName());
                 menuItem.addActionListener(e -> {
                     try {
+                        String path = location.getPath();
                         switch (entry.getLoadMethod()) {
                             case "loadModernAssembly":
-                                store.loadModernAssembly(entry.getFile().getPath());
+                                store.loadModernAssembly(path);
                                 break;
                             case "loadLocalModernAssembly":
-                                store.loadLocalModernAssembly(entry.getFile().getPath());
+                                store.loadLocalModernAssembly(path);
                                 break;
                             case "loadSnapshot":
-                                store.loadSnapshot(entry.getFile().getPath());
+                                store.loadSnapshot(path);
+                                break;
+                            case "loadLocalSnapshot":
+                                store.loadLocalSnapshot(path);
                                 break;
                             default:
                                 throw new IllegalStateException("Unknown load method: " + entry.getLoadMethod());
@@ -120,7 +125,7 @@ public class FileMenu {
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 });
-                menuItem.setToolTipText(entry.getFile().getAbsolutePath());
+                menuItem.setToolTipText(location.getPath());
                 recentFilesMenu.add(menuItem);
             }
         }

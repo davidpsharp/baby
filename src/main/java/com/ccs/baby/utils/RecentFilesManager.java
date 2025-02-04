@@ -1,9 +1,14 @@
 package com.ccs.baby.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.io.*;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,32 +39,36 @@ public class RecentFilesManager {
         return instance;
     }
 
-    public synchronized void addRecentFile(File file, String loadMethod) {
-        if (file == null || loadMethod == null) {
-            LOGGER.log(Level.WARNING, "Attempted to add null file or load method to recent files");
+    public synchronized void addRecentFile(String location, String loadMethod) {
+        if (location == null || loadMethod == null) {
+            LOGGER.log(Level.WARNING, "Attempted to add null location or load method to recent files");
             return;
         }
 
+        System.out.println("addRecentFile: " + location + " loadMethod:" + loadMethod);
+
         try {
-            // Normalize the file path and verify it exists
-            File canonicalFile = file.getCanonicalFile();
-            if (!canonicalFile.exists()) {
-                LOGGER.log(Level.WARNING, "File does not exist: {0}", canonicalFile.getAbsolutePath());
-                return;
+            // Try parsing as URL first
+            FileLocation fileLocation;
+            try {
+                URL url = new URL(location);
+                fileLocation = new FileLocation(url);
+            } catch (Exception e) {
+                // If not a URL, treat as file path
+                File file = new File(location).getCanonicalFile();
+                if (!file.exists()) {
+                    LOGGER.log(Level.WARNING, "File does not exist: {0}", file.getAbsolutePath());
+                    return;
+                }
+                fileLocation = new FileLocation(file);
             }
 
+            final FileLocation finalFileLocation = fileLocation;
             // Remove if already exists
-            recentFiles.removeIf(entry -> {
-                try {
-                    return entry.getFile().getCanonicalPath().equals(canonicalFile.getCanonicalPath());
-                } catch (IOException e) {
-                    LOGGER.log(Level.WARNING, "Failed to compare file paths", e);
-                    return false;
-                }
-            });
+            recentFiles.removeIf(entry -> entry.getLocation().equals(finalFileLocation));
             
             // Add to front
-            recentFiles.addFirst(new RecentFileEntry(canonicalFile, loadMethod));
+            recentFiles.addFirst(new RecentFileEntry(fileLocation, loadMethod));
             
             // Trim if necessary
             while (recentFiles.size() > MAX_RECENT_FILES) {
@@ -69,13 +78,13 @@ public class RecentFilesManager {
             // Save to disk
             saveRecentFiles();
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to process recent file: " + file.getAbsolutePath(), e);
+            LOGGER.log(Level.WARNING, "Failed to process recent file location: " + location, e);
         }
     }
 
     public synchronized List<RecentFileEntry> getRecentFiles() {
         // Clean up any files that no longer exist
-        recentFiles.removeIf(entry -> !entry.getFile().exists());
+        recentFiles.removeIf(entry -> !entry.getLocation().exists());
         return new ArrayList<>(recentFiles);
     }
 
@@ -94,16 +103,25 @@ public class RecentFilesManager {
             props.load(fis);
             int count = Integer.parseInt(props.getProperty("count", "0"));
             for (int i = 0; i < count; i++) {
-                String filePath = props.getProperty("file." + i);
+                String location = props.getProperty("location." + i);
+                String type = props.getProperty("type." + i);
                 String loadMethod = props.getProperty("method." + i);
-                if (filePath != null && loadMethod != null) {
+                
+                if (location != null && type != null && loadMethod != null) {
                     try {
-                        File file = new File(filePath).getCanonicalFile();
-                        if (file.exists()) {
-                            recentFiles.add(new RecentFileEntry(file, loadMethod));
+                        FileLocation fileLocation;
+                        if ("url".equals(type)) {
+                            fileLocation = new FileLocation(new URL(location));
+                        } else {
+                            File file = new File(location).getCanonicalFile();
+                            fileLocation = new FileLocation(file);
                         }
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Failed to process file path: " + filePath, e);
+                        
+                        if (fileLocation.exists()) {
+                            recentFiles.add(new RecentFileEntry(fileLocation, loadMethod));
+                        }
+                    } catch (Exception e) {
+                        LOGGER.log(Level.WARNING, "Failed to process location: " + location, e);
                     }
                 }
             }
@@ -119,13 +137,11 @@ public class RecentFilesManager {
         props.setProperty("count", String.valueOf(recentFiles.size()));
         int i = 0;
         for (RecentFileEntry entry : recentFiles) {
-            try {
-                props.setProperty("file." + i, entry.getFile().getCanonicalPath());
-                props.setProperty("method." + i, entry.getLoadMethod());
-                i++;
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Failed to save file path: " + entry.getFile().getAbsolutePath(), e);
-            }
+            FileLocation location = entry.getLocation();
+            props.setProperty("location." + i, location.toString());
+            props.setProperty("type." + i, location.isUrl() ? "url" : "file");
+            props.setProperty("method." + i, entry.getLoadMethod());
+            i++;
         }
         
         try (FileOutputStream fos = new FileOutputStream(recentFilesFile)) {
@@ -135,17 +151,88 @@ public class RecentFilesManager {
         }
     }
 
-    public static class RecentFileEntry {
+    public static class FileLocation {
         private final File file;
-        private final String loadMethod;
+        private final URL url;
 
-        public RecentFileEntry(File file, String loadMethod) {
+        public FileLocation(File file) {
             this.file = file;
-            this.loadMethod = loadMethod;
+            this.url = null;
+        }
+
+        public FileLocation(URL url) {
+            this.file = null;
+            this.url = url;
+        }
+
+        public boolean isUrl() {
+            return url != null;
         }
 
         public File getFile() {
             return file;
+        }
+
+        public String getDisplayName() {
+            if (isUrl()) {
+                String path = url.getPath();
+                int lastSlash = path.lastIndexOf('/');
+                return lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
+            } else {
+                return file.getName();
+            }
+        }
+
+        public String getPath() {
+            return isUrl() ? url.toString() : file.getPath();
+        }
+
+        public boolean exists() {
+            if (isUrl()) {
+                try {
+                    url.openStream().close();
+                    return true;
+                } catch (IOException e) {
+                    return false;
+                }
+            }
+            return file.exists();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof FileLocation)) {
+                return false;
+            }
+            FileLocation other = (FileLocation) obj;
+            if (this.isUrl() != other.isUrl()) {
+                return false;
+            }
+            return this.getPath().equals(other.getPath());
+        }
+
+        @Override
+        public int hashCode() {
+            return getPath().hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return getPath();
+        }
+    }
+
+    public static class RecentFileEntry {
+        private final FileLocation location;
+        private final String loadMethod;
+
+        public RecentFileEntry(FileLocation location, String loadMethod) {
+            this.location = location;
+            this.loadMethod = loadMethod;
+        }
+
+        public FileLocation getLocation() {
+            return location;
         }
 
         public String getLoadMethod() {
@@ -154,7 +241,7 @@ public class RecentFilesManager {
 
         @Override
         public String toString() {
-            return file.getName();
+            return location.toString();
         }
     }
 }

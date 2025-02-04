@@ -68,7 +68,7 @@ public class LoadSnapshotAssembly implements ActionListener {
             }
 
             // Add to recent files
-            store.getRecentFilesManager().addRecentFile(file, loadMethod);
+            store.getRecentFilesManager().addRecentFile(file.getPath(), loadMethod);
             FileMenu.updateRecentFilesMenu(store, frame, crtPanelController);
 
             // Only render if not skipped

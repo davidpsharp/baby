@@ -257,7 +257,7 @@ public class Store
 		control.reset();
 		
 		// Add to recent files
-        recentFilesManager.addRecentFile(new File(fileName), "loadLocalSnapshot");
+        recentFilesManager.addRecentFile(fileName, "loadLocalSnapshot");
         
 		int lineCounter = 0;
 		
@@ -372,7 +372,7 @@ public class Store
 		control.reset();
 		
 		// Add to recent files
-        recentFilesManager.addRecentFile(snapshotFile, "loadSnapshot");
+        recentFilesManager.addRecentFile(fileName, "loadSnapshot");
         
 		int lineCounter = 0;
 		
@@ -595,7 +595,7 @@ public class Store
 		control.reset();
 		
 		// Add to recent files
-        recentFilesManager.addRecentFile(assemblyFile, "loadModernAssembly");
+        recentFilesManager.addRecentFile(fileName, "loadModernAssembly");
         
 		int lineCounter = 1;
 				
@@ -673,7 +673,7 @@ public class Store
 		control.reset();
 		
 		// Add to recent files
-        recentFilesManager.addRecentFile(new File(fileName), "loadLocalModernAssembly");
+        recentFilesManager.addRecentFile(fileName, "loadLocalModernAssembly");
         
 		int lineCounter = 1;
 				
