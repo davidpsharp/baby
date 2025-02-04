@@ -1,28 +1,37 @@
 package com.ccs.baby.menu;
 
-import com.ccs.baby.core.Baby;
-import com.ccs.baby.core.Store;
-import com.ccs.baby.controller.CrtPanelController;
-import com.ccs.baby.utils.MiscUtils;
-import com.ccs.baby.io.LoadExample;
-
-import javax.swing.*;
-
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.io.*;
-import java.util.Comparator;
-import java.util.jar.*;
-import java.util.Enumeration;
-import java.util.stream.Stream;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+import com.ccs.baby.controller.CrtPanelController;
+import com.ccs.baby.core.Baby;
+import com.ccs.baby.core.Store;
+import com.ccs.baby.io.LoadExample;
+import com.ccs.baby.utils.MiscUtils;
 
 public class ExamplesMenu {
 
@@ -61,12 +70,11 @@ public class ExamplesMenu {
     
             try {
 
-                // experimental
-                //scanJarManually(EXAMPLES_FOLDER);
-
                 // Add built-in examples from resources
-                if(!MiscUtils.onCheerpj())
-                    exampleMenu = createMenuFromResource(exampleMenu, EXAMPLES_FOLDER);
+                if(MiscUtils.onCheerpj())
+                    createMenuFromJar(exampleMenu, EXAMPLES_FOLDER);    
+                else
+                    createMenuFromResource(exampleMenu, EXAMPLES_FOLDER);
     
                 // Try to add programs from external folder
                 Path jarPath = getJarPath();
@@ -107,37 +115,96 @@ public class ExamplesMenu {
     }
   
 
-    // experimental attempt to read examples from JAR when running in cheerpj - basically works, merge in
-    // functionality from createMenuFromZipFile to sort and scan tree and setup load with getUriStringForResource
-    private static void scanJarManually(String folder) throws IOException {
-    
-        System.out.println("jarpath:" + getJarPath());
-        
+    /**
+     * Scan a JAR file manually and create menu items from its contents.
+     * This method is used when running in CheerpJ environment where newFileSystem() used by
+     * createMenuFromResource() doesn't work.
+     * @param parentMenu The menu to add items to
+     * @param folder The folder path within the JAR to scan
+     * @throws IOException If there's an error reading the JAR file
+     */
+    private static void createMenuFromJar(JMenu parentMenu, String folder) throws IOException, URISyntaxException {
         try (java.util.jar.JarFile jarFile = new java.util.jar.JarFile(getJarPath().toString())) {
-            Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (entry.isDirectory()) {
-                    System.out.println("dir: " + entry.getName());
+            // Create a map of menus for each directory path
+            Map<String, JMenu> menuMap = new HashMap<>();
+            menuMap.put("", parentMenu);
+
+            // Sort entries to ensure directories are processed before their contents
+            List<JarEntry> entries = Collections.list(jarFile.entries());
+            entries.sort(Comparator.comparing(JarEntry::getName));
+
+            // First pass: identify directories that contain relevant files
+            Set<String> relevantDirs = new HashSet<>();
+            for (JarEntry entry : entries) {
+                if (!entry.isDirectory()) {
+                    String fileName = new File(entry.getName()).getName().toLowerCase();
+                    if (fileName.endsWith(".snp") || fileName.endsWith(".asm")) {
+                        // Add all parent directories of this file to the relevant dirs set
+                        String parentPath = new File(entry.getName()).getParent();
+                        while (parentPath != null) {
+                            relevantDirs.add(parentPath);
+                            parentPath = new File(parentPath).getParent();
+                        }
+                        // Also add empty string for root directory if file is in root
+                        if (new File(entry.getName()).getParent() == null) {
+                            relevantDirs.add("");
+                        }
+                    }
                 }
-                else {
-                    InputStream input = jarFile.getInputStream(entry);
-                    System.out.println("file: " + entry.getName());
-                }
+            }
+
+            // Second pass: create menus only for directories that contain relevant files
+            for (JarEntry entry : entries) {
+                String entryName = entry.getName();
                 
+                if (entry.isDirectory()) {
+                    // Only create menu for this directory if it contains relevant files
+                    String dirPath = entryName.substring(0, entryName.length() - 1); // remove trailing slash
+                    if (relevantDirs.contains(dirPath)) {
+                        String parentPath = new File(dirPath).getParent();
+                        if (parentPath == null) parentPath = "";
+                        
+                        JMenu parentPathMenu = menuMap.get(parentPath);
+                        if (parentPathMenu != null) {
+                            JMenu dirMenu = new JMenu(new File(dirPath).getName());
+                            parentPathMenu.add(dirMenu);
+                            menuMap.put(dirPath, dirMenu);
+                        }
+                    }
+                } else {
+                    String fileName = new File(entryName).getName().toLowerCase();
+                    if (fileName.endsWith(".snp") || fileName.endsWith(".asm")) {
+                        // Get the parent directory path
+                        String parentPath = new File(entryName).getParent();
+                        if (parentPath == null) parentPath = "";
+                        
+                        // Get the menu for this file's directory
+                        JMenu targetMenu = menuMap.get(parentPath);
+                        if (targetMenu != null) {
+                            // Create menu item
+                            JMenuItem menuItem = new JMenuItem(fileName);
+                            String uriString = LoadExample.getUriStringForResource(entryName);
+                            System.out.println("createMenuFromJar uriString:" + uriString + " fileName:" + fileName);
+                            menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanelController, _frame));
+                            targetMenu.add(menuItem);
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
      * Start scanning folder within the simulator's JAR/target folder for built-in example programs
+     * This works great when running the JAR or in Debugger but not on CheerpJ as doesn't support newFileSystem()
+     * (Errors with ProviderNotFoundException: Provider "jar" not found) so have to use createMenuFromJar() on CheerpJ
      * @param rootMenu
      * @param resourcePath
      * @return
      * @throws URISyntaxException
      * @throws IOException
      */
-    public static JMenu createMenuFromResource(JMenu rootMenu, String resourcePath) throws URISyntaxException, IOException {
+    public static void createMenuFromResource(JMenu rootMenu, String resourcePath) throws URISyntaxException, IOException {
         ClassLoader classLoader = Baby.class.getClassLoader();
         URI uri = classLoader.getResource(resourcePath).toURI();
 
@@ -153,7 +220,6 @@ public class ExamplesMenu {
         System.out.println("createMenu myPath:" + myPath);
         
         processDirectory(rootMenu, myPath);
-        return rootMenu;
     }
 
     private static void processDirectory(JMenu parentMenu, Path directory) throws IOException {
@@ -230,21 +296,43 @@ public class ExamplesMenu {
             List<? extends ZipEntry> entries = Collections.list(zipFile.entries());
             entries.sort(Comparator.comparing(ZipEntry::getName));
 
+            // First pass: identify directories that contain relevant files
+            Set<String> relevantDirs = new HashSet<>();
+            for (ZipEntry entry : entries) {
+                if (!entry.isDirectory()) {
+                    String fileName = new File(entry.getName()).getName().toLowerCase();
+                    if (fileName.endsWith(".snp") || fileName.endsWith(".asm")) {
+                        // Add all parent directories of this file to the relevant dirs set
+                        String parentPath = new File(entry.getName()).getParent();
+                        while (parentPath != null) {
+                            relevantDirs.add(parentPath);
+                            parentPath = new File(parentPath).getParent();
+                        }
+                        // Also add empty string for root directory if file is in root
+                        if (new File(entry.getName()).getParent() == null) {
+                            relevantDirs.add("");
+                        }
+                    }
+                }
+            }
+
+            // Second pass: create menus only for directories that contain relevant files
             for (ZipEntry entry : entries) {
                 String entryName = entry.getName();
                 
-                // Skip directories and non-relevant files
                 if (entry.isDirectory()) {
-                    // Create menu for this directory
+                    // Only create menu for this directory if it contains relevant files
                     String dirPath = entryName.substring(0, entryName.length() - 1); // remove trailing slash
-                    String parentPath = new File(dirPath).getParent();
-                    if (parentPath == null) parentPath = "";
-                    
-                    JMenu parentPathMenu = menuMap.get(parentPath);
-                    if (parentPathMenu != null) {
-                        JMenu dirMenu = new JMenu(new File(dirPath).getName());
-                        parentPathMenu.add(dirMenu);
-                        menuMap.put(dirPath, dirMenu);
+                    if (relevantDirs.contains(dirPath)) {
+                        String parentPath = new File(dirPath).getParent();
+                        if (parentPath == null) parentPath = "";
+                        
+                        JMenu parentPathMenu = menuMap.get(parentPath);
+                        if (parentPathMenu != null) {
+                            JMenu dirMenu = new JMenu(new File(dirPath).getName());
+                            parentPathMenu.add(dirMenu);
+                            menuMap.put(dirPath, dirMenu);
+                        }
                     }
                 } else {
                     String fileName = new File(entryName).getName().toLowerCase();
@@ -259,14 +347,13 @@ public class ExamplesMenu {
                             // Create menu item
                             JMenuItem menuItem = new JMenuItem(fileName);
                             String uriString = "jar:" + zipPath.toUri() + "!" + entryName;
-                            // TODO: the uriString here doesn't work with loading files when clicked on
                             menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanelController, _frame));
                             targetMenu.add(menuItem);
                         }
                     }
                 }
             }
-        } 
+        }
     }
 
     private static JMenuItem createMenuItemForFile(Path filePath) throws URISyntaxException, IOException {
