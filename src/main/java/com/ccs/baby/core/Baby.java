@@ -130,7 +130,7 @@ public class Baby extends JFrame {
             loadSnapshotAssembly = new LoadSnapshotAssembly(store, this, crtPanelController);
 
             // Create Disassembler
-            Disassembler disassembler = new Disassembler(store, control, crtPanelController);
+            Disassembler disassembler = new Disassembler(store, control, crtPanelController, this);
 
             CrtControlPanelController crtControlPanelController = new CrtControlPanelController(store, control, disassembler, animationManager, crtControlPanel, crtPanelController, staticisorPanelController);
 

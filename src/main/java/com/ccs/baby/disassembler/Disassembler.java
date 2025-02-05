@@ -10,7 +10,7 @@ import com.ccs.baby.menu.ControlsMenu;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.controller.CrtPanelController;
 
-public class Disassembler extends JFrame
+public class Disassembler extends JDialog
 {
 	
 	Store store;
@@ -22,8 +22,10 @@ public class Disassembler extends JFrame
 	boolean _updateOnStep = true;
 
 
-	public Disassembler(Store store, Control control, CrtPanelController crtPanelController)
+	public Disassembler(Store store, Control control, CrtPanelController crtPanelController, JFrame parentFrame)
 	{
+		super(parentFrame);
+
 		this.store = store;
 		this.control = control;
 		this.crtPanelController = crtPanelController;
@@ -67,7 +69,7 @@ public class Disassembler extends JFrame
 		// add controls menu so single step hotkey works when disassembler window has focus
 		JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
-		menuBar.add(ControlsMenu.createControlsMenu(this, control, menuBar));
+		menuBar.add(ControlsMenu.createControlsMenu(control, menuBar));
 
 	}
 

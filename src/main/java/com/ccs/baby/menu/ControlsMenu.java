@@ -14,10 +14,11 @@ public class ControlsMenu {
     /**
      * Creates the Controls menu.
      *
-     * @param frame the frame object
+     * @param control the control object
+     * @param menuBar the menu bar
      * @return the Help menu
      */
-    public static JMenu createControlsMenu(JFrame frame, Control control, JMenuBar menuBar) {
+    public static JMenu createControlsMenu(Control control, JMenuBar menuBar) {
 
         // Create the Help menu
         JMenu controlsMenu = new JMenu("Controls");  // is 'Run' or 'Start' better for first time users
