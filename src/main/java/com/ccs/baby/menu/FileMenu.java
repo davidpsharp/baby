@@ -9,7 +9,6 @@ import com.ccs.baby.controller.CrtPanelController;
 
 import com.ccs.baby.utils.RecentFilesManager.RecentFileEntry;
 import com.ccs.baby.utils.CheerpJUtils;
-import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.utils.RecentFilesManager.FileLocation;
 
 import javax.swing.JFrame;
@@ -45,7 +44,7 @@ public class FileMenu {
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
-        if(MiscUtils.onCheerpj())
+        if(CheerpJUtils.onCheerpj())
         {
             JMenuItem loadLocalSnapshotAssembly = new JMenuItem("Load Local snapshot/assembly");
             // set up call direct to javascript function

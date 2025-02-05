@@ -319,7 +319,7 @@ public class Baby extends JFrame {
         baby.setVisible(true);
         baby.setResizable(false);
 
-        if(MiscUtils.onCheerpj()) {
+        if(CheerpJUtils.onCheerpj()) {
             CheerpJUtils.setupJavascriptInteface(baby);
         }
 

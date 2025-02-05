@@ -31,7 +31,7 @@ import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.core.Baby;
 import com.ccs.baby.core.Store;
 import com.ccs.baby.io.LoadExample;
-import com.ccs.baby.utils.MiscUtils;
+import com.ccs.baby.utils.CheerpJUtils;
 
 public class ExamplesMenu {
 
@@ -71,7 +71,7 @@ public class ExamplesMenu {
             try {
 
                 // Add built-in examples from resources
-                if(MiscUtils.onCheerpj())
+                if(CheerpJUtils.onCheerpj())
                     createMenuFromJar(exampleMenu, EXAMPLES_FOLDER);    
                 else
                     createMenuFromResource(exampleMenu, EXAMPLES_FOLDER);

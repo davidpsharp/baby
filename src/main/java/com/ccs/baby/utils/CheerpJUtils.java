@@ -25,8 +25,18 @@ public class CheerpJUtils {
     // receives data from JavaScript and processes it
     public String openFile(String fileName) {
         System.out.println("Java received: " + fileName);
+        // thread safety probably not needed, if the machine is running then the behaviour is beyond undefined anyway...
         _baby.openFile(fileName);
         return "Java received: " + fileName;
+    }
+
+    /** Return true if the current platform is CheerpJ, the web browser-based-javascript/webasm-JVM.
+     * Useful to check if the simulator is running in a web browser as several behavioural differences
+     * over running as a native JVM app exist.
+     * @return true if the current platform is CheerpJ, the web browser-based-javascript/webasm-JVM.
+     */
+    public static boolean onCheerpj() {
+        return System.getProperty("os.arch").equals("cheerpj");
     }
 
     // Captures the running Java thread for persistent communication with JavaScript.
