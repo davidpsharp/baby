@@ -278,6 +278,11 @@ public class Baby extends JFrame {
         return name.endsWith(".snp") || name.endsWith(".asm");
     }
 
+    /** Method to enable javascript on cheerpj to poke a file load through to the simulator */
+    public void openFile(String fileName) {
+        loadSnapshotAssembly.handleFileLoad(new File(fileName), false);
+    }
+
     // Main method to create main window
     public static void main(String args[]) {
         // On MacOS put menu at top of the screen like native MacOS software
@@ -313,6 +318,10 @@ public class Baby extends JFrame {
 
         baby.setVisible(true);
         baby.setResizable(false);
+
+        if(MiscUtils.onCheerpj()) {
+            CheerpJUtils.setupJavascriptInteface(baby);
+        }
 
         // test only
         // Debugger debugger = new Debugger();

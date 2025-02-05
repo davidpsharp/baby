@@ -7,9 +7,128 @@
     <link rel="icon" href="/classes/icons/baby.png">
 </head>
 <body>
+
+<!-- previously could use HTML controls to select a file but now Java can trigger a javascript-side File open dialog directly so not required-->
+<!--
+<div style="margin: 20px;">
+    <input type="file" id="fileInput" accept=".asm,.snp" style="margin-bottom: 10px;"/>
+    <div id="fileInfo" style="font-family: Arial, sans-serif;"></div>
+</div>
+-->
+
+
+<script>
+
+    
+    async function sendFileToSimulator(fileContent, fileName) {
+        // This function will be implemented to handle the file content
+        console.log("File content received in javascript still:", fileName, fileContent);
+
+        // sends file content to the Java simulator
+        const response = await window.myApplication.processInput(fileContent, fileName);
+    }
+
+    async function openFileInSimulator(fileName) {
+        console.log("File name received in javascript still:", fileName);
+        
+        // opens file in simulator
+        const response = await window.myApplication.openFile(fileName);
+    }
+
+    // Function to programmatically open file dialog and handle selection
+    // Receives call from Java to trigger it
+    async function Java_com_ccs_baby_utils_CheerpJUtils_getFileForSimulator() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.asm,.snp';
+        input.style.display = 'none';
+        
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                // sendFileToSimulator(content);
+
+                // or, just copy the filename into the simulator's sandbox filesystem in /str/ which is much simpler
+                cheerpOSAddStringFile("/str/" + file.name, content);
+
+                // and now the file is available in the simulator to be opened
+                openFileInSimulator("/str/" + file.name);
+            };
+
+            reader.onerror = function() {
+                console.error(`Error reading file "${file.name}"`);
+            };
+
+            reader.readAsText(file);
+            document.body.removeChild(input);
+        };
+
+        document.body.appendChild(input);
+        input.click();
+    }
+
+    // Assigns the Java application instance to window.myApplication.
+    // Ensures continuous access by preventing the function from returning.
+    async function Java_com_ccs_baby_utils_CheerpJUtils_nativeSetApplication(
+        lib,
+        myApplication
+    ) {
+        window.myApplication = myApplication;
+        console.log("Java application instance set on JavaScript side.");
+        // Make the fileInput visible after initialization
+        document.getElementById("fileInput").style.display = "block";
+        return new Promise(() => {}); // Keeps the function from returning
+    }
+
+
+    // if user uses a HTML/javascript file chooser on the HTML page... (currently controls removed as not in use)
+    /*
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        const fileInfo = document.getElementById('fileInfo');
+        
+        reader.onload = function(e) {
+            const content = e.target.result;
+            fileInfo.textContent = `File "${file.name}" loaded successfully (${content.length} bytes)`;
+            
+            // could send content direct into simulator
+            // sendFileToSimulator(content, file.name);
+
+            // or, just copy the filename into the simulator's sandbox filesystem in /str/ which is much simpler
+            cheerpOSAddStringFile("/str/" + file.name, content);
+
+            // and now the file is available in the simulator to be opened
+            openFileInSimulator("/str/" + file.name);
+        };
+
+        reader.onerror = function() {
+            fileInfo.textContent = `Error reading file "${file.name}"`;
+        };
+
+        reader.readAsText(file);
+    });
+    */
+
+</script>
+
 <script>
     (async function () {
-        await cheerpjInit({logCanvasUpdates: true, clipboardMode: "system"});
+        await cheerpjInit({
+            logCanvasUpdates: true,
+            clipboardMode: "system",
+            natives: {
+                Java_com_ccs_baby_utils_CheerpJUtils_getFileForSimulator,
+                Java_com_ccs_baby_utils_CheerpJUtils_nativeSetApplication
+            }
+        });
         // set cheerpj size to be the same size as the window in Baby.java
         cheerpjCreateDisplay(700, 950);
         await cheerpjRunJar("/app/baby-3.0.0-alpha.3.jar");
