@@ -65,7 +65,7 @@ After a successful build, the JAR file (with all dependencies bundled) will be a
 
 Start the simulator with the following command:
 ```bash
-java -jar target/baby-3.0.0-alpha.3-jar-with-dependencies.jar
+java -jar target/baby-3.0.0-alpha.4-jar-with-dependencies.jar
 ```
 
 ### CheerpJ Web Application
