@@ -15,15 +15,6 @@ public class MiscUtils {
         return sw.getBuffer().toString();
     }
 
-    /** Return true if the current platform is CheerpJ, the web browser-based-javascript/webasm-JVM.
-     * Useful to check if the simulator is running in a web browser as several behavioural differences
-     * over running as a native JVM app exist.
-     * @return true if the current platform is CheerpJ, the web browser-based-javascript/webasm-JVM.
-     */
-    public static boolean onCheerpj() {
-        return System.getProperty("os.arch").equals("cheerpj");
-    }
-
     /** Return date/time the JAR was built, taken from the JAR manifest */
     public static String getBuildTime() {
         // TODO: inside cheerpj this method returns null, suspect no manifests found but TBC.

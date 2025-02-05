@@ -36,6 +36,11 @@ public class Baby extends JFrame {
     public Baby() {
 
         try {
+
+            // turn off window title bar on CheerpJ
+            if(CheerpJUtils.onCheerpj())
+                this.setUndecorated(true);
+
             AppSettings settings = AppSettings.getInstance();
 
             setTitle("Manchester Baby Simulator v" + Version.getVersion());
@@ -316,6 +321,7 @@ public class Baby extends JFrame {
         baby.setSize(700, 950);
     
 
+        
         baby.setVisible(true);
         baby.setResizable(false);
 
