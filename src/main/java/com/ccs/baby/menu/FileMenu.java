@@ -85,8 +85,13 @@ public class FileMenu {
         fileMenu.addSeparator();
         fileMenu.add(saveSnapshot);
         fileMenu.add(saveAssembly);
-        fileMenu.addSeparator();
-        fileMenu.add(close);
+        
+
+        // doesn't make sense if on CheerpJ, just close the browser tab/window when done
+        if(!CheerpJUtils.onCheerpj()) {
+            fileMenu.addSeparator();
+            fileMenu.add(close);
+        }
 
         return fileMenu;
     }
