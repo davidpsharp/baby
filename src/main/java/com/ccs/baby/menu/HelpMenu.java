@@ -55,7 +55,7 @@ public class HelpMenu {
                 JOptionPane.INFORMATION_MESSAGE,
                 icon
         ));
-        refManual.addActionListener(new ReferenceManual());
+        refManual.addActionListener(new ReferenceManual(frame));
 
         // Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
         helpMenu.setMnemonic(KeyEvent.VK_H); // Alt + H
