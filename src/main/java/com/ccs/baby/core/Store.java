@@ -784,29 +784,3 @@ public class Store
 	}	
 }
 
-
-class SnapshotException extends IOException
-{
-	public SnapshotException()
-	{
-		super();
-	}
-	
-	public SnapshotException(String str)
-	{
-		super( str );
-	}
-}
-
-class AssemblyException extends IOException
-{
-	public AssemblyException()
-	{
-		super();
-	}
-	
-	public AssemblyException(String str)
-	{
-		super( str );
-	}
-}

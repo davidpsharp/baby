@@ -68,16 +68,10 @@ public class Baby extends JFrame {
                     setIconImageMethod.invoke(taskbarObj, icon);
                 }
             } catch (Exception e) {
-                System.err.println("Could not load application icon: " + e);
+                System.err.println("Could not load application icon, only works on JRE 9 and later: " + e);
             }
 
-            try {
-                currentDir = System.getProperty("user.home");
-                System.out.println(currentDir);
-            } catch (SecurityException e) {
-                System.out.println("user.dir not accessible from applet");
-                System.out.println(e.getMessage());
-            }
+            currentDir = System.getProperty("user.home");
 
             // Create LampManager
             LampManager lampManager = new LampManager();

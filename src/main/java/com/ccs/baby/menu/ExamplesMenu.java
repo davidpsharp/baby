@@ -184,7 +184,6 @@ public class ExamplesMenu {
                             // Create menu item
                             JMenuItem menuItem = new JMenuItem(fileName);
                             String uriString = LoadExample.getUriStringForResource(entryName);
-                            System.out.println("createMenuFromJar uriString:" + uriString + " fileName:" + fileName);
                             menuItem.addActionListener(new LoadExample(uriString, _store, _crtPanelController, _frame));
                             targetMenu.add(menuItem);
                         }
@@ -210,14 +209,11 @@ public class ExamplesMenu {
 
         Path myPath;
         if ("jar".equals(uri.getScheme())) {
-            System.out.println("createMenu uri:" + uri.toString());
             FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
             myPath = fileSystem.getPath(resourcePath);
         } else {
             myPath = Paths.get(uri);
         }
-
-        System.out.println("createMenu myPath:" + myPath);
         
         processDirectory(rootMenu, myPath);
     }
