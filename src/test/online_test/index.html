@@ -16,7 +16,8 @@
 </div>
 -->
 
-
+<div>
+    
 <script>
 
     async function sendFileToSimulator(fileContent, fileName) {
@@ -80,7 +81,7 @@
         window.myApplication = myApplication;
         console.log("Java application instance set on JavaScript side.");
         // Make the fileInput visible after initialization
-        document.getElementById("fileInput").style.display = "block";
+        // document.getElementById("fileInput").style.display = "block";
         return new Promise(() => {}); // Keeps the function from returning
     }
 
@@ -121,7 +122,7 @@
 <script>
     (async function () {
         await cheerpjInit({
-            logCanvasUpdates: true,
+            //licenseKey:"",
             clipboardMode: "system",
             natives: {
                 Java_com_ccs_baby_utils_CheerpJUtils_getFileForSimulator,
@@ -133,5 +134,10 @@
         await cheerpjRunJar("/app/baby-3.0.0-alpha.4.jar");
     })();
 </script>
+</div>
+
+
+<!--</div><img src="CheerpJ_Horizontal_Trans.png" alt="cheerpj logo" width="100" ></div> -->
+
 </body>
 </html>
