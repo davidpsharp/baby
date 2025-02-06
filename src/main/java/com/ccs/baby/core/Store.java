@@ -223,265 +223,101 @@ public class Store
 		}
 	}
 	
-	public void loadLocalSnapshot(String fileName) throws IOException
-	{
-		// setup file
-		// snapshot reader
-		
-		InputStream snapshotReader;
-		
-		// open snapshot file
-		try
-		{
-			snapshotReader = openFile(fileName);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new IOException(e.getMessage());
-		}
-      
-		// create buffered reader from input stream
-		BufferedReader in = new BufferedReader(new InputStreamReader(snapshotReader));
-		
-		// read number of lines in snapshot
-		String numberOfLinesS = (in.readLine()).trim();
-		try
-		{
-			int numberOfLines = Integer.parseInt(numberOfLinesS);
-		}
-		catch(NumberFormatException e)
-		{
-			throw new IOException("File " + fileName + " is of an unrecognised format");
-		}
-		
-		// reset the store to empty
-		reset();
-		control.reset();
-		
-		// Add to recent files
-        recentFilesManager.addRecentFile(fileName, "loadLocalSnapshot");
-        
-		int lineCounter = 0;
-		
-		
-		// while more lines to read
-		while( in.ready() )
-		{
-			
-			lineCounter++;
-			
-			int lineNumber;
-			int lineData;
-			
-			// read line from file, trailing spaces removed
-			String fileLine = ( in.readLine() ).trim();
-			
-			// if line isn't blank
-			if( !fileLine.equals("") )
-			{
-				// create a new tokenizer, tokenizing on colons
-				StringTokenizer tokenizer = new StringTokenizer(fileLine, ":");
-				
-				// get store line number
-				if(tokenizer.hasMoreElements())
-				{
-					// get the first token on the line
-					String lineNumberS = tokenizer.nextToken();
-				
-					// convert string to int
-					try
-					{
-						lineNumber = Integer.parseInt(lineNumberS);
-					}
-					catch(NumberFormatException e)
-					{
-						throw new IOException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
-					}
-				}
-				else
-				{
-					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
-				}
-				
-				// get binary information for store line
-				if(tokenizer.hasMoreElements())
-				{
-					// get the second token on the line
-					String lineDataS = tokenizer.nextToken();
-					
-					// reverse binary string (for SSEM's reverse binary representation)
-					lineDataS = reverseString(lineDataS);
-					
-					// convert string to int
-					try
-					{
-						// radix (i.e. base) 2 or binary
-						lineData = parseBinaryString(lineDataS);
-						
-					}
-					catch(NumberFormatException e)
-					{
-						throw new IOException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
-					}					
-					
-				}
-				else
-				{
-					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
-				}
-								
-				// put data for this line into the store
-				setLine(lineNumber, lineData);
-			
-			}				
-		}		
-	}
-	
 	// load a snapshot format image into the store
-	public void loadSnapshot(String fileName) throws IOException
-	{
-		// setup file
-		File snapshotFile = new File(fileName);
-		// snapshot reader
-		FileReader snapshotReader;
-		
-		// open snapshot file
-		try
-		{
-			snapshotReader = new FileReader(snapshotFile);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new IOException(e.getMessage());
-		}
-      
-		// create buffered reader from input stream
-		BufferedReader in = new BufferedReader(snapshotReader);
-		
-		// read number of lines in snapshot
-		String numberOfLinesS = (in.readLine()).trim();
-		try
-		{
-			int numberOfLines = Integer.parseInt(numberOfLinesS);
-		}
-		catch(NumberFormatException e)
-		{
-			throw new IOException("File " + fileName + " is of an unrecognised format");
-		}
-		
-		// reset the store to empty
-		reset();
-		control.reset();
-		
-		// Add to recent files
-        recentFilesManager.addRecentFile(fileName, "loadSnapshot");
+	public void loadSnapshot(String fileName) throws IOException {
+        // setup file
+        File snapshotFile = new File(fileName);
         
-		int lineCounter = 0;
-		
-		
-		// while more lines to read
-		while( in.ready() )
-		{
-			
-			lineCounter++;
-			
-			int lineNumber;
-			int lineData;
-			
-			// read line from file, trailing spaces removed
-			String fileLine = ( in.readLine() ).trim();
-			
-			// if line isn't blank
-			if( !fileLine.equals("") )
-			{
-				// create a new tokenizer, tokenizing on colons
-				StringTokenizer tokenizer = new StringTokenizer(fileLine, ":");
-				
-				// get store line number
-				if(tokenizer.hasMoreElements())
-				{
-					// get the first token on the line
-					String lineNumberS = tokenizer.nextToken();
-				
-					// convert string to int
-					try
-					{
-						lineNumber = Integer.parseInt(lineNumberS);
-					}
-					catch(NumberFormatException e)
-					{
-						throw new IOException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
-					}
-				}
-				else
-				{
-					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
-				}
-				
-				// get binary information for store line
-				if(tokenizer.hasMoreElements())
-				{
-					// get the second token on the line
-					String lineDataS = tokenizer.nextToken();
-					
-					// reverse binary string (for SSEM's reverse binary representation)
-					lineDataS = reverseString(lineDataS);
-					
-					// convert string to int
-					try
-					{
-						// radix (i.e. base) 2 or binary
-						lineData = parseBinaryString(lineDataS);
-						
-					}
-					catch(NumberFormatException e)
-					{
-						throw new IOException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
-					}					
-					
-				}
-				else
-				{
-					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
-				}
-								
-				// put data for this line into the store
-				setLine(lineNumber, lineData);
-			
-			}				
-		}		
-	}
-	
-	/*
-	public InputStream openFile(String fileName) throws IOException
-    {
-	
-		InputStream inputStream;
-        if (fileName.contains("!")) {
-            inputStream = Store.class.getResourceAsStream(
-                fileName.substring(fileName.indexOf("!") + 1)
-            );
-        } else {
-            
-			try
-			{
-				String path =  Paths.get(new URI(fileName)).toString();
-				inputStream = new FileInputStream(path);
-			}
-			catch(URISyntaxException ex)
-			{
-				System.out.print(ex.toString());
-
-				// try this then...
-				inputStream = new FileInputStream(fileName);
-			}
-			
-
+        // open snapshot file and process it
+        try (FileReader snapshotReader = new FileReader(snapshotFile)) {
+            processSnapshot(new BufferedReader(snapshotReader), fileName, "loadSnapshot");
+        } catch(FileNotFoundException e) {
+            throw new IOException(e.getMessage());
         }
-		return inputStream;
-	  
     }
-		*/
+
+    /** used for loading built-in examples from the JAR */
+    public void loadLocalSnapshot(String fileName) throws IOException {
+        // open snapshot file and process it
+        try (InputStream snapshotReader = openFile(fileName)) {
+            processSnapshot(new BufferedReader(new InputStreamReader(snapshotReader)), fileName, "loadLocalSnapshot");
+        } catch(FileNotFoundException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    private void processSnapshot(BufferedReader in, String fileName, String loadMethod) throws IOException {
+        // read number of lines in snapshot
+        String numberOfLinesS = (in.readLine()).trim();
+        try {
+            int numberOfLines = Integer.parseInt(numberOfLinesS);
+        } catch(NumberFormatException e) {
+            throw new IOException("File " + fileName + " is of an unrecognised format");
+        }
+        
+        // reset the store to empty
+        reset();
+        control.reset();
+        
+        // Add to recent files
+        recentFilesManager.addRecentFile(fileName, loadMethod);
+           
+        int lineCounter = 0;
+        
+        // while more lines to read
+        while(in.ready()) {
+            lineCounter++;
+            
+            int lineNumber;
+            int lineData;
+            
+            // read line from file, trailing spaces removed
+            String fileLine = (in.readLine()).trim();
+            
+            // if line isn't blank
+            if(!fileLine.equals("")) {
+                // create a new tokenizer, tokenizing on colons
+                StringTokenizer tokenizer = new StringTokenizer(fileLine, ":");
+                
+                // get store line number
+                if(tokenizer.hasMoreElements()) {
+                    // get the first token on the line
+                    String lineNumberS = tokenizer.nextToken();
+                
+                    // convert string to int
+                    try {
+                        lineNumber = Integer.parseInt(lineNumberS);
+                    } catch(NumberFormatException e) {
+                        throw new IOException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
+                    }
+                } else {
+                    throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+                }
+                
+                // get binary information for store line
+                if(tokenizer.hasMoreElements()) {
+                    // get the second token on the line
+                    String lineDataS = tokenizer.nextToken();
+                    
+                    // reverse binary string (for SSEM's reverse binary representation)
+                    lineDataS = reverseString(lineDataS);
+                    
+                    // convert string to int
+                    try {
+                        // radix (i.e. base) 2 or binary
+                        lineData = parseBinaryString(lineDataS);
+                    } catch(NumberFormatException e) {
+                        throw new IOException("File " + fileName + " has bad store line data at line " + lineCounter + " in the file");
+                    }                    
+                } else {
+                    throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+                }
+                                
+                // put data for this line into the store
+                setLine(lineNumber, lineData);
+            }                
+        }        
+    }
 	
 	/**
 	 * Gets an InputStream for various flavours of URI e.g.
@@ -548,157 +384,68 @@ public class Store
 
 
 	// load a modern assembly file into the store, mainly file input issues
-	public void loadModernAssembly(String fileName) throws IOException
-	{
-		
-		// setup file
-		File assemblyFile = new File(fileName);
-		
-		// assembly reader
-		FileReader assemblyReader;
-		
-		// open assembly file
-		try
-		{
-			assemblyReader = new FileReader(assemblyFile);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new IOException(e.getMessage());
-		}
-      
-		// create buffered reader from input stream
-		BufferedReader in = new BufferedReader(assemblyReader);
-		
-		int numberOfLines = -1;
-		
-		// while lines to read and we haven't yet read the number of lines value
-		while( in.ready() && (numberOfLines == -1) )
-		{		
-			// read number of lines in snapshot
-			String numberOfLinesS = (in.readLine()).trim();
-			
-			// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
-			// if the line isn't empty
-			if( !numberOfLinesS.equals("") )
-			{
-				// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
-				if(numberOfLinesS.charAt(0) != ';')
-				{
-					try
-					{
-						numberOfLines = Integer.parseInt(numberOfLinesS);
-					}
-					catch(NumberFormatException e)
-					{
-						throw new IOException("File " + fileName + " is of an unrecognised format");
-					}
-				}
-			}
-		}
-		
-		// reset the store to empty
-		reset();
-		control.reset();
-		
-		// Add to recent files
-        recentFilesManager.addRecentFile(fileName, "loadModernAssembly");
+	public void loadModernAssembly(String fileName) throws IOException {
+        // setup file
+        File assemblyFile = new File(fileName);
         
-		int lineCounter = 1;
-				
-		// while more lines to read
-		while( in.ready() )
-		{
-		
-			lineCounter++;
-			
-			// read line from file, trailing spaces removed
-			String fileLine = ( in.readLine() ).trim();
-			
-			assembleModernToStore(fileLine, lineCounter);
-							
-		}
-	
-	}
-	
+        // open assembly file and process it
+        try (FileReader assemblyReader = new FileReader(assemblyFile)) {
+            processModernAssembly(new BufferedReader(assemblyReader), fileName, "loadModernAssembly");
+        } catch(FileNotFoundException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 
-	
+	/** used for loading built-inexamples from the JAR */
+    public void loadLocalModernAssembly(String fileName) throws IOException {
+        // open assembly file and process it
+        try (InputStream assemblyReader = openFile(fileName)) {
+            processModernAssembly(new BufferedReader(new InputStreamReader(assemblyReader)), fileName, "loadLocalModernAssembly");
+        } catch(FileNotFoundException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 
-	// TODO: de-duplicate the logic that was copied here when put into a JAR
-
-	public void loadLocalModernAssembly(String fileName) throws IOException
-	{
-
-		// setup file
-		//File assemblyFile = new File(fileName);
-		
-		// assembly reader
-		InputStream assemblyReader;
-		
-		// open assembly file
-		try
-		{
-			assemblyReader = openFile(fileName);
-		}
-		catch(FileNotFoundException e)
-		{
-			throw new IOException(e.getMessage());
-		}
-      
-		// create buffered reader from input stream
-		BufferedReader in = new BufferedReader(new InputStreamReader(assemblyReader));
-		
-		int numberOfLines = -1;
-		
-		// while lines to read and we haven't yet read the number of lines value
-		while( in.ready() && (numberOfLines == -1) )
-		{		
-			// read number of lines in snapshot
-			String numberOfLinesS = (in.readLine()).trim();
-			
-			// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
-			// if the line isn't empty
-			if( !numberOfLinesS.equals("") )
-			{
-				// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
-				if(numberOfLinesS.charAt(0) != ';')
-				{
-					try
-					{
-						numberOfLines = Integer.parseInt(numberOfLinesS);
-					}
-					catch(NumberFormatException e)
-					{
-						throw new IOException("File " + fileName + " is of an unrecognised format");
-					}
-				}
-			}
-		}
-		
-		// reset the store to empty
-		reset();
-		control.reset();
-		
-		// Add to recent files
-        recentFilesManager.addRecentFile(fileName, "loadLocalModernAssembly");
+    private void processModernAssembly(BufferedReader in, String fileName, String loadMethod) throws IOException {
+        int numberOfLines = -1;
         
-		int lineCounter = 1;
-				
-		// while more lines to read
-		while( in.ready() )
-		{
-		
-			lineCounter++;
-			
-			// read line from file, trailing spaces removed
-			String fileLine = ( in.readLine() ).trim();
-			
-			assembleModernToStore(fileLine, lineCounter);
-							
-		}
-	
-	}
-	
+        // while lines to read and we haven't yet read the number of lines value
+        while (in.ready() && (numberOfLines == -1)) {        
+            // read number of lines in snapshot
+            String numberOfLinesS = (in.readLine()).trim();
+            
+            // if the line isn't empty
+            if (!numberOfLinesS.equals("")) {
+                // if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
+                if (numberOfLinesS.charAt(0) != ';') {
+                    try {
+                        numberOfLines = Integer.parseInt(numberOfLinesS);
+                    } catch(NumberFormatException e) {
+                        throw new IOException("File " + fileName + " is of an unrecognised format");
+                    }
+                }
+            }
+        }
+        
+        // reset the store to empty
+        reset();
+        control.reset();
+        
+        // Add to recent files
+        recentFilesManager.addRecentFile(fileName, loadMethod);
+           
+        int lineCounter = 1;
+                
+        // while more lines to read
+        while (in.ready()) {
+            lineCounter++;
+            
+            // read line from file, trailing spaces removed
+            String fileLine = (in.readLine()).trim();
+            
+            assembleModernToStore(fileLine, lineCounter);
+        }
+    }
 	
 	// actually assemble an individual line of text
 	public void assembleModernToStore(String fileLine, int lineCounter) throws IOException

@@ -44,6 +44,8 @@ public class FileMenu {
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
+
+        // if on cheerpj add special menu item to ask javascript to show an open file dialog for host machine file system
         if(CheerpJUtils.onCheerpj())
         {
             JMenuItem loadLocalSnapshotAssembly = new JMenuItem("Load Local snapshot/assembly");
