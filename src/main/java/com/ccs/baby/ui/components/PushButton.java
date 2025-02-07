@@ -33,4 +33,13 @@ public class PushButton extends JButton {
         setText("");
         setToolTipText(toolTipText);
     }
+
+    // hacky way to change icon without doClick()
+    public void setIconPressed(boolean pressed)
+    {
+        if(pressed)
+            setIcon(DEFAULT_IN_ICON);
+        else
+            setIcon(DEFAULT_OUT_ICON);
+    }
 }

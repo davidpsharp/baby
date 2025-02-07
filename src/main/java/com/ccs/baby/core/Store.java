@@ -12,14 +12,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.ccs.baby.utils.RecentFilesManager;
+import com.ccs.baby.controller.CrtControlPanelController;
 
 public class Store
 {
 	
+	private final boolean EXPERIMENTAL_INTERACTIVE_LOAD = true;
+
 	// actual data in the store
 	private int line[];
-	
+
 	private Control control;
+	
+	private CrtControlPanelController crtControlPanelController;
 	
 	// array showing whether the line has changed since the display was last updated
 	public boolean isLineAltered[];
@@ -31,7 +36,7 @@ public class Store
 	
 	// Manager for tracking recently loaded files
     private RecentFilesManager recentFilesManager;
-    
+
     public RecentFilesManager getRecentFilesManager() {
         return recentFilesManager;
     }
@@ -50,11 +55,15 @@ public class Store
 		// setup recent files manager
         recentFilesManager = RecentFilesManager.getInstance();
 	}
-	
-	// set control since both objects mutually linked
+
 	public void setControl(Control aControl)
 	{
 		control = aControl;
+	}
+
+	public void setCrtControlPanelController(CrtControlPanelController controller)
+	{
+		crtControlPanelController = controller;
 	}
 	
 	// adjust a line value
@@ -257,7 +266,7 @@ public class Store
         
         // reset the store to empty
         reset();
-        control.reset();
+		control.reset();
         
         // Add to recent files
         recentFilesManager.addRecentFile(fileName, loadMethod);
@@ -396,14 +405,36 @@ public class Store
         }
     }
 
-	/** used for loading built-inexamples from the JAR */
-    public void loadLocalModernAssembly(String fileName) throws IOException {
-        // open assembly file and process it
-        try (InputStream assemblyReader = openFile(fileName)) {
-            processModernAssembly(new BufferedReader(new InputStreamReader(assemblyReader)), fileName, "loadLocalModernAssembly");
-        } catch(FileNotFoundException e) {
-            throw new IOException(e.getMessage());
-        }
+	/** used for loading built-in examples from the JAR */
+    public void loadLocalModernAssembly(String fileName) {
+
+		// moved to background thread so that can experiment with interactively having CrtControlPanelController
+		// press individual buttons to load the program
+
+		if(EXPERIMENTAL_INTERACTIVE_LOAD)
+		{
+		    // while we're operating in this mode then switch to MAN so highlighted action line shows line being programmed
+            crtControlPanelController.setManAuto(false);
+
+			new Thread(() -> {
+				try (InputStream assemblyReader = openFile(fileName)) {
+					processModernAssembly(new BufferedReader(new InputStreamReader(assemblyReader)), fileName, "loadLocalModernAssembly");
+				} catch(IOException e) {
+					System.err.println("Error loading assembly file: " + e.getMessage());
+				}
+
+				// switch back to AUTO so can easily 'Run' program
+				crtControlPanelController.setManAuto(true);
+			}).start();
+		}
+		else
+		{
+			try (InputStream assemblyReader = openFile(fileName)) {
+				processModernAssembly(new BufferedReader(new InputStreamReader(assemblyReader)), fileName, "loadLocalModernAssembly");
+			} catch(IOException e) {
+				System.err.println("Error loading assembly file: " + e.getMessage());
+			}
+		}
     }
 
     private void processModernAssembly(BufferedReader in, String fileName, String loadMethod) throws IOException {
@@ -429,7 +460,7 @@ public class Store
         
         // reset the store to empty
         reset();
-        control.reset();
+		control.reset();
         
         // Add to recent files
         recentFilesManager.addRecentFile(fileName, loadMethod);
@@ -591,8 +622,13 @@ public class Store
 					lineData |= (functionNumber << 13);
 				}
 				
-				setLine(lineNumber, lineData);	
 				
+
+				if(EXPERIMENTAL_INTERACTIVE_LOAD)
+					crtControlPanelController.setLine(lineNumber, lineData);
+				else
+					setLine(lineNumber, lineData);
+
 			// if there was no mnemonic on the line	
 			}
 			else
@@ -783,4 +819,3 @@ public class Store
 		return result;
 	}	
 }
-

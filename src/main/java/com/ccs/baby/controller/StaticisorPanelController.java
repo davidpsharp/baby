@@ -136,4 +136,21 @@ public class StaticisorPanelController {
                 .sum();
     }
 
+    /**
+     * Sets the state of a specific line switch.
+     *
+     * @param index The index of the line switch to set (0-4).
+     * @param value The new state of the line switch (true for selected, false for unselected).
+     */
+    public void setLineSwitch(int index, boolean value) {
+        
+        // doClick causes horrendous flicker so...
+        // this works without flicker and toggles the switches but doesn't fire updates so action
+        // line highlight doesn't follow the line even in MAN mode
+        staticisorPanel.setLineSwitch(index, value); 
+        // so fire the action listeners manually
+        notifyActionLineListeners();
+    }
+
+
 }

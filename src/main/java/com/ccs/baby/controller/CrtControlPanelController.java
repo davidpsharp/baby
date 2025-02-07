@@ -16,6 +16,7 @@ public class CrtControlPanelController {
     private final CrtControlPanel crtControlPanel;
     private final CrtPanelController crtPanelController;
     private final StaticisorPanelController staticisorPanelController;
+    private TypewriterPanelController typewriterPanelController;
 
     public CrtControlPanelController(
             Store store,
@@ -53,6 +54,11 @@ public class CrtControlPanelController {
 
         crtControlPanel.setOnKacPressed(this::handleKacPushed);
         crtControlPanel.setOnKacReleased(this::handleKacReleased);
+
+    }
+
+    public void addTypewriterPanelController(TypewriterPanelController aTypewriterPanelController) {
+        this.typewriterPanelController = aTypewriterPanelController;
     }
 
 
@@ -92,6 +98,53 @@ public class CrtControlPanelController {
 
     public void setDisplayStoreButton(boolean value) {
         crtControlPanel.getDisplayStoreButton().setSelected(value);
+    }
+
+    public void setManAuto(boolean value)
+    {
+        staticisorPanelController.setManAuto(value);
+    }
+
+    /**
+     * Handle interactively pushing buttons on the staticisor panel and typewriter with delay to load
+     * values into the store as a person would have had to to load a program, rather than just pushing
+     * the value straight into the store. This is intended to be used when loading a program from file
+     * and run in a background thread
+     * @param lineNumber The line number to set (0-31)
+     * @param value The value to set at that line
+     */
+    public void setLine(int lineNumber, int value) {
+
+        // set line number
+        // should probably call doClick on the specific control, but see if this works first...
+        for (int i = 0; i < 5; i++) {
+            boolean newValue = ((lineNumber >> i) & 1)==1 ? true : false;
+            staticisorPanelController.setLineSwitch(i, newValue);
+            actionDelay();
+        }
+
+        // start pressing typewriter buttons for every bit set
+        for (int i = 0; i < 32; i++) {
+            if(((value >> i) & 1)==1) {
+                typewriterPanelController.pressKey(i);
+                actionDelay();
+            }
+        }
+
+        // TODO: currently no way of stopping the interactive loading algorithm, can get really
+        // funky if you load another program during the time it's loading, have to just wait a while
+        // for it to finish
+        
+    }
+
+    private void actionDelay() {
+        final int ACTION_DELAY = 100; // ms
+
+        try {
+            Thread.sleep(ACTION_DELAY);
+        } catch (InterruptedException e) {
+            // ignore
+        }
     }
 
     // if pulse execute instructions repeatedly either from store or from line and function switches

@@ -88,4 +88,21 @@ public class TypewriterPanel extends JPanel {
         }
     }
 
+    // The original code used doClick() which simulates a button click but doesn't trigger
+    // MouseListener events. It only triggers ActionListener events, which weren't set up.
+    // but this doesn't visually press the button so have hacky flick of the icon back and
+    // forth to simulate a press. Doing a doClick on the button had horrible redraw issues
+    // anyway.
+    public void pressKey(int i) {
+        runCallback(onKeyPressedCallbacks[i]);
+        try {
+            numberKeys[i].setIconPressed(true);
+            Thread.sleep(50);
+            numberKeys[i].setIconPressed(false);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        runCallback(onKeyReleasedCallbacks[i]);
+    }
+
 }

@@ -12,7 +12,8 @@ public class TypewriterPanelController {
     private final Control control;
     private final CrtPanelController crtPanelController;
     final StaticisorPanelController staticisorPanelController;
-    private final CrtControlPanelController crtControlPanelController;
+    private final CrtControlPanelController crtControlPanelController;  
+    private final TypewriterPanel typewriterPanel;
 
     public TypewriterPanelController(
             Store store,
@@ -27,6 +28,7 @@ public class TypewriterPanelController {
         this.crtPanelController = crtPanelController;
         this.staticisorPanelController = staticisorPanelController;
         this.crtControlPanelController = crtControlPanelController;
+        this.typewriterPanel = typewriterPanel;
 
         for (int i = 0; i < typewriterPanel.CONNECTED_KEYS; i++) {
             int keyNumber = i; // copy to final variable for lambda
@@ -64,4 +66,9 @@ public class TypewriterPanelController {
         // running or not.
         control.setKeyPressed(false, keyNumber);
     }
+
+    public void pressKey(int keyNumber) {
+        typewriterPanel.pressKey(keyNumber);
+    }
+
 }

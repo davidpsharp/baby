@@ -133,8 +133,9 @@ public class Baby extends JFrame {
             crtPanelController.addDisplayTypeListener(crtPanelDisplayTypeListener);
 
             TypewriterPanelController typewriterPanelController = new TypewriterPanelController(store, control, typewriterPanel, crtPanelController, staticisorPanelController, crtControlPanelController);
+            crtControlPanelController.addTypewriterPanelController(typewriterPanelController);
 
-
+            store.setCrtControlPanelController(crtControlPanelController);
 
             // Tell control about staticisorPanel and crtControlPanel
             control.setSwitchPanel(staticisorPanelController, crtControlPanelController);
@@ -161,17 +162,6 @@ public class Baby extends JFrame {
             store.reset();
             control.reset();
 
-            // Load an initial program
-            try {
-                
-                String defaultFile = settings.getInitialExample();
-                String uriString = LoadExample.getUriStringForResource(defaultFile);
-                store.loadLocalModernAssembly(uriString);
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
             // render and display the CRT display
             crtPanelController.redrawCrtPanel();
 
@@ -193,6 +183,21 @@ public class Baby extends JFrame {
                     System.exit(0);
                 }
             });
+
+            // Load an initial program
+            try {
+                
+                String defaultFile = settings.getInitialExample();
+                String uriString = LoadExample.getUriStringForResource(defaultFile);
+                store.loadLocalModernAssembly(uriString);
+                
+                // render and display the CRT display
+                crtPanelController.redrawCrtPanel();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(getContentPane(), "Default program not loaded. " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         }
         catch(Exception e) {
             JOptionPane.showMessageDialog(getContentPane(), MiscUtils.getStackTrace(e), "Error", JOptionPane.ERROR_MESSAGE);
