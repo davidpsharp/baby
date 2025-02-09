@@ -3,23 +3,23 @@ package com.ccs.baby.menu;
 import com.ccs.baby.manual.ReferenceManual;
 
 import javax.swing.*;
-
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URI;
 
 import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.utils.Version;
 
-import javax.swing.ImageIcon;
-
-
 public class HelpMenu {
 
     private static final String ABOUT_TITLE = "Manchester Baby Simulator";
-    private static final String ABOUT_MESSAGE = String.join("\n",
+    private static final String ABOUT_MESSAGE = String.join("<br>",
             "Manchester Baby Simulator",
             "",
             "v" + Version.getVersion(),
-            "Built " + MiscUtils.getBuildTime(),
+            (MiscUtils.getBuildTime().equals("")) ? "" : "Built " + MiscUtils.getBuildTime(),
             "",
             "Originally by David Sharp",
             "January 2001",
@@ -27,10 +27,10 @@ public class HelpMenu {
             "The GUI was created from pictures of the Baby replica by Gulzaman Khan",
             "August 2006",
             "",
-            "https://davidsharp.com/baby"
+            "<a href='https://manchesterbaby.com'>manchesterbaby.com</a>"
     );
 
-    private static ImageIcon icon = new ImageIcon(HelpMenu.class.getResource("/icons/baby.png"));//.getImage();
+    private static ImageIcon icon = new ImageIcon(HelpMenu.class.getResource("/icons/baby.png"));
 
     /**
      * Creates the Help menu.
@@ -39,7 +39,6 @@ public class HelpMenu {
      * @return the Help menu
      */
     public static JMenu createHelpMenu(JFrame frame) {
-
         // Create the Help menu
         JMenu helpMenu = new JMenu("Help");
 
@@ -48,13 +47,7 @@ public class HelpMenu {
         JMenuItem refManual = new JMenuItem("Programmer's Reference Manual");
 
         // Add action listeners
-        about.addActionListener(e -> JOptionPane.showMessageDialog(
-                frame.getContentPane(),
-                ABOUT_MESSAGE,
-                ABOUT_TITLE,
-                JOptionPane.INFORMATION_MESSAGE,
-                icon
-        ));
+        about.addActionListener(e -> showAboutDialog(frame));
         refManual.addActionListener(new ReferenceManual(frame));
 
         // Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
@@ -67,5 +60,35 @@ public class HelpMenu {
         helpMenu.add(about);
 
         return helpMenu;
+    }
+
+    private static void showAboutDialog(JFrame frame) {
+        JEditorPane editorPane = new JEditorPane();
+        editorPane.setContentType("text/html");
+        editorPane.setText("<html><body style='width: 300px; padding: 5px; font-family: Arial, sans-serif;'>" + ABOUT_MESSAGE + "</body></html>");
+        editorPane.setEditable(false);
+        editorPane.setBackground(UIManager.getColor("Panel.background"));
+        
+        // Make links clickable
+        editorPane.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                try {
+                    Desktop.getDesktop().browse(new URI(e.getURL().toString()));
+                } catch (IOException | URISyntaxException ex) {
+                    JOptionPane.showMessageDialog(frame,
+                            "Could not open link: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        JOptionPane.showMessageDialog(
+                frame.getContentPane(),
+                editorPane,
+                ABOUT_TITLE,
+                JOptionPane.INFORMATION_MESSAGE,
+                icon
+        );
     }
 }

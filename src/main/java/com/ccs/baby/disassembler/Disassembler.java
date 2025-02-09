@@ -84,6 +84,8 @@ public class Disassembler extends JDialog
 	{
 		String output = "";
 
+		// TODO: would be cool if this updated as interactive loading goes on for each line loaded so can see program getting entered
+
 		int controlInstruction = control.getControlInstruction();
 		
 		output += "; CI: " + controlInstruction + "\n";
