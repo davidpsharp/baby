@@ -138,7 +138,7 @@ public class CrtControlPanelController {
     }
 
     private void actionDelay() {
-        final int ACTION_DELAY = 100; // ms
+        final int ACTION_DELAY = 10; // ms
 
         try {
             Thread.sleep(ACTION_DELAY);

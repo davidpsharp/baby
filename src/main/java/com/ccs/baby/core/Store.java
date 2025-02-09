@@ -394,19 +394,15 @@ public class Store
 
 	// load a modern assembly file into the store, mainly file input issues
 	public void loadModernAssembly(String fileName) throws IOException {
-        // setup file
-        File assemblyFile = new File(fileName);
-        
-        // open assembly file and process it
-        try (FileReader assemblyReader = new FileReader(assemblyFile)) {
-            processModernAssembly(new BufferedReader(assemblyReader), fileName, "loadModernAssembly");
-        } catch(FileNotFoundException e) {
-            throw new IOException(e.getMessage());
-        }
+        doLoadModernAssembly(fileName, "loadModernAssembly");
     }
 
+	public void loadLocalModernAssembly(String fileName) throws IOException {
+		doLoadModernAssembly(fileName, "loadLocalModernAssembly");
+	}
+
 	/** used for loading built-in examples from the JAR */
-    public void loadLocalModernAssembly(String fileName) {
+    public void doLoadModernAssembly(String fileName, String loadMethod) throws IOException {
 
 		// moved to background thread so that can experiment with interactively having CrtControlPanelController
 		// press individual buttons to load the program
@@ -417,28 +413,43 @@ public class Store
             crtControlPanelController.setManAuto(false);
 
 			new Thread(() -> {
-				try (InputStream assemblyReader = openFile(fileName)) {
-					processModernAssembly(new BufferedReader(new InputStreamReader(assemblyReader)), fileName, "loadLocalModernAssembly");
-				} catch(IOException e) {
+				try {
+					processModernAssembly(fileName, loadMethod);
+				}
+				catch(IOException e) {
 					System.err.println("Error loading assembly file: " + e.getMessage());
 				}
-
-				// switch back to AUTO so can easily 'Run' program
+				
 				crtControlPanelController.setManAuto(true);
 			}).start();
 		}
 		else
 		{
-			try (InputStream assemblyReader = openFile(fileName)) {
-				processModernAssembly(new BufferedReader(new InputStreamReader(assemblyReader)), fileName, "loadLocalModernAssembly");
+			try {
+				processModernAssembly(fileName, loadMethod);
 			} catch(IOException e) {
 				System.err.println("Error loading assembly file: " + e.getMessage());
 			}
 		}
     }
 
-    private void processModernAssembly(BufferedReader in, String fileName, String loadMethod) throws IOException {
+    private void processModernAssembly(String fileName, String loadMethod) throws IOException {
         int numberOfLines = -1;
+		BufferedReader in;
+
+		if(loadMethod == "loadLocalModernAssembly")
+		{
+			// load URL from JAR, Zip etc. (typically an Example program)
+			InputStream assemblyReader = openFile(fileName);
+			in = new BufferedReader(new InputStreamReader(assemblyReader));
+		}
+		else
+		{
+			// load plain file path (loadModernAssembly)
+			File assemblyFile = new File(fileName);
+			FileReader assemblyReader = new FileReader(assemblyFile);
+			in = new BufferedReader(assemblyReader);
+		}
         
         // while lines to read and we haven't yet read the number of lines value
         while (in.ready() && (numberOfLines == -1)) {        
