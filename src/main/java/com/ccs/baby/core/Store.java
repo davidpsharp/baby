@@ -274,7 +274,7 @@ public class Store
 		control.reset();
         
         // Add to recent files
-        recentFilesManager.addRecentFile(fileName, loadMethod);
+        recentFilesManager.addRecentFile(fileName, "snapshot:" + loadMethod);
            
         int lineCounter = 0;
         
@@ -508,7 +508,7 @@ public class Store
 		control.reset();
         
         // Add to recent files
-        recentFilesManager.addRecentFile(fileName, loadMethod);
+        recentFilesManager.addRecentFile(fileName, "assembly:" + loadMethod);
            
         int lineCounter = 1;
                 

@@ -12,6 +12,7 @@ public class AppSettings {
     public static final String KEY_INITIAL_EXAMPLE = "initial_example";
     public static final String KEY_SHOW_DEBUG_PANEL = "show_debug_panel";
     public static final String KEY_INTERACTIVE_LOADING = "interactive_loading";
+    public static final String KEY_LOAD_PATH = "load_path";
     
     // Default values
     public static final boolean DEFAULT_SHOW_FPS = true;
@@ -20,6 +21,7 @@ public class AppSettings {
     public static final String DEFAULT_INITIAL_EXAMPLE = "demos/diffeqt.asm";
     public static final boolean DEFAULT_SHOW_DEBUG_PANEL = false;
     public static final boolean DEFAULT_INTERACTIVE_LOADING = true;
+    public static final String DEFAULT_LOAD_PATH = System.getProperty("user.home");
 
     private static AppSettings instance;
     private final PreferencesService prefs;
@@ -62,7 +64,9 @@ public class AppSettings {
         return prefs.getBooleanPreference(KEY_INTERACTIVE_LOADING, DEFAULT_INTERACTIVE_LOADING);
     }
 
-
+    public String getLoadPath() {
+        return prefs.getPreference(KEY_LOAD_PATH, DEFAULT_LOAD_PATH);
+    }
 
     // Setter methods
     public void setShowFps(boolean value) {
@@ -87,6 +91,10 @@ public class AppSettings {
 
     public void setInteractiveLoading(boolean value) {
         prefs.setBooleanPreference(KEY_INTERACTIVE_LOADING, value);
+    }   
+
+    public void setLoadPath(String value) {
+        prefs.setPreference(KEY_LOAD_PATH, value);
     }
     
 }

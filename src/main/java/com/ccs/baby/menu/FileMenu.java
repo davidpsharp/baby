@@ -117,16 +117,16 @@ public class FileMenu {
                     try {
                         String path = location.getPath();
                         switch (entry.getLoadMethod()) {
-                            case "loadModernAssembly":
+                            case "assembly:filePath":  // TODO: switch all these to enums rather than strings
                                 store.loadModernAssembly(path);
                                 break;
-                            case "loadLocalModernAssembly":
+                            case "assembly:URL":
                                 store.loadLocalModernAssembly(path);
                                 break;
-                            case "loadSnapshot":
+                            case "snapshot:filePath":
                                 store.loadSnapshot(path);
                                 break;
-                            case "loadLocalSnapshot":
+                            case "snapshot:URL":
                                 store.loadLocalSnapshot(path);
                                 break;
                             default:

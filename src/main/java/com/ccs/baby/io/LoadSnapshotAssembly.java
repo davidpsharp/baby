@@ -2,6 +2,7 @@ package com.ccs.baby.io;
 
 import com.ccs.baby.core.Store;
 import com.ccs.baby.menu.FileMenu;
+import com.ccs.baby.utils.AppSettings;
 import com.ccs.baby.controller.CrtPanelController;
 
 import javax.swing.*;
@@ -13,8 +14,6 @@ import java.io.File;
 public class LoadSnapshotAssembly implements ActionListener {
 
     boolean firstLoad = true;
-    private File fileChooserDirectory;
-    private static String currentDir;
     private final Store store;
     private final CrtPanelController crtPanelController;
     private final JFrame frame;
@@ -24,18 +23,13 @@ public class LoadSnapshotAssembly implements ActionListener {
         this.store = store;
         this.crtPanelController = crtPanelController;
         this.frame = frame;
-
-        currentDir = System.getProperty("user.home");
     }
 
     public void actionPerformed(ActionEvent e) {
         JFileChooser fc;
+
         // Open up a load box and select the item
-        if (firstLoad)
-            fc = new JFileChooser(currentDir);
-        else
-            fc = new JFileChooser(fileChooserDirectory);
-        firstLoad = false;
+        fc = new JFileChooser(AppSettings.getInstance().getLoadPath());
 
         fc.setDialogTitle("Load snapshot or assembly...");
 
@@ -43,7 +37,7 @@ public class LoadSnapshotAssembly implements ActionListener {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
-            fileChooserDirectory = file.getParentFile();
+            AppSettings.getInstance().setLoadPath(file.getParentFile().getPath());
             handleFileLoad(file);
         }
     }
@@ -55,20 +49,17 @@ public class LoadSnapshotAssembly implements ActionListener {
     public void handleFileLoad(File file, boolean skipRender) {
         try {
             String name = file.getName().toLowerCase();
-            String loadMethod;
 
             if (name.endsWith(".snp")) {
                 store.loadSnapshot(file.getPath());
-                loadMethod = "loadSnapshot";
             } else if (name.endsWith(".asm")) {
                 store.loadModernAssembly(file.getPath());
-                loadMethod = "loadModernAssembly";
             } else {
                 throw new IllegalArgumentException("Unknown file type. Must be .snp or .asm");
             }
 
             // Add to recent files
-            store.getRecentFilesManager().addRecentFile(file.getPath(), loadMethod);
+            //store.getRecentFilesManager().addRecentFile(file.getPath(), loadMethod + ":filePath"); // shouldn't need to do this as already called in store when load done
             FileMenu.updateRecentFilesMenu(store, frame, crtPanelController);
 
             // Only render if not skipped
