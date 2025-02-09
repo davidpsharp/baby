@@ -1,3 +1,12 @@
+;50th anniversary competition entry
+;Parabola
+;Magnus Olsson from Sweden wrote a program which: "uses the CRT as an X-Y display to plot a parabola by 
+;setting bits in the unused upper half of lines 1-22. The parabola is computed as the solution of a 
+;difference equation.
+;One of very few programs to make active use of the unused bits on the right, rather than just having a
+;picture there. Also a nice cross between "mathematical" and "graphical".
+;source: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+
 31
 0001 LDN 29
 0002 SUB 29

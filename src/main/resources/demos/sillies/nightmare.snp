@@ -1,3 +1,12 @@
+;50th anniversary competition entry
+;Tom Kilburn's nightmare
+;Frank Hurley's: "Tom Kilburn's Nightmare of '48. The program is an animation of a giant baby and
+;Tom chasing after each other for eternity underneath a jumble of bulbs, switches, cables, smoke and 
+;iron. Viewable on store tube. The program does not terminate and the animation cycles every 
+;8 seconds @ 700 ips. Blurred vision helps.
+;Note how the actual code is incorporated into the graphics.
+;source: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+
 32
 0000:00000110101001000100000100000100
 0001:10011011111100100010000010001000

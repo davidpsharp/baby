@@ -1,5 +1,5 @@
 ; experimental new assembly format version of diffeqt.asm program
-; as of 3 Jan 2025 format is not settled yet
+; as of 3 Jan 2025 format is not settled yet and not supported by the simulator
 ; also doesn't include any examples of data bits set alongside instructions
 
 	NUM 0				; line 0 unused as execution starts at line 1.

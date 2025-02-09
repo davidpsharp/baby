@@ -190,49 +190,6 @@ public class Store
 	}
 	
 	
-	// simple auto detection of the file type
-	// UNACCEPTABLE - no number on first uncommented line
-	// SNAPSHOT - colon on the first uncommented line after the initial number
-	// ASSEMBLY - otherwise
-	public int getFileType(String fileName) throws IOException {
-		File snapshotFile = new File(fileName);
-		
-		try (FileReader snapshotReader = new FileReader(snapshotFile);
-			 BufferedReader in = new BufferedReader(snapshotReader)) {
-			
-			// check for a number of lines value on the first non-comment line
-			int numberOfLines = -1;
-			// while lines to read and we haven't yet read the number of lines value
-			while (in.ready() && (numberOfLines == -1)) {
-				// read number of lines in snapshot
-				// trim whitespace
-				String numberOfLinesS = (in.readLine()).trim();
-				
-				// if the line isn't empty
-				if (!numberOfLinesS.equals("")) {
-					// if the line doesn't start with a semi-colon (comment) then it must be the number of lines value
-					if (numberOfLinesS.charAt(0) != ';') {
-						try {
-							numberOfLines = Integer.parseInt(numberOfLinesS);
-						} catch (NumberFormatException e) {
-							return UNACCEPTABLE;
-						}
-					}
-				}
-			}
-			if (numberOfLines == -1)
-				return UNACCEPTABLE;
-			
-			String nextLine = in.readLine();
-			if (nextLine.indexOf(':') == -1)
-				return ASSEMBLY;
-			else
-				return SNAPSHOT;
-		} catch (FileNotFoundException e) {
-			throw new IOException(e.getMessage());
-		}
-	}
-	
 	// load a snapshot format image into the store
 	public void loadSnapshot(String fileName) throws IOException {
 		doLoadAssemblySnapshot(fileName, "filePath", "snapshot");
@@ -260,15 +217,7 @@ public class Store
 			FileReader assemblyReader = new FileReader(assemblyFile);
 			in = new BufferedReader(assemblyReader);
 		}
-
-        // read number of lines in snapshot
-        String numberOfLinesS = (in.readLine()).trim();
-        try {
-            int numberOfLines = Integer.parseInt(numberOfLinesS);
-        } catch(NumberFormatException e) {
-            throw new IOException("File " + fileName + " is of an unrecognised format");
-        }
-        
+      
         // reset the store to empty
         reset();
 		control.reset();
@@ -277,6 +226,8 @@ public class Store
         recentFilesManager.addRecentFile(fileName, "snapshot:" + loadMethod);
            
         int lineCounter = 0;
+
+		boolean firstNonBlankLine = true;
         
         // while more lines to read
         while(in.ready()) {
@@ -288,8 +239,17 @@ public class Store
             // read line from file, trailing spaces removed
             String fileLine = (in.readLine()).trim();
             
-            // if line isn't blank
-            if(!fileLine.equals("")) {
+
+            // if line isn't blank or a comment
+            if( !fileLine.equals("") && !(fileLine.charAt(0) == ';') ) {
+
+				// handle first non-blank/non-comment line being number of lines in file
+				if(firstNonBlankLine && fileLine.matches("\\d+"))
+				{
+					firstNonBlankLine = false;
+					continue; // skip to next line if it's just the number of lines at start of the file, we don't need it anyway
+				}
+
                 // create a new tokenizer, tokenizing on colons
                 StringTokenizer tokenizer = new StringTokenizer(fileLine, ":");
                 
@@ -305,8 +265,8 @@ public class Store
                         throw new IOException("File " + fileName + " has a bad store line number at line " + lineCounter + " in the file");
                     }
                 } else {
-                    throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
-                }
+					throw new IOException("File " + fileName + " is of an unrecognised format at line " + lineCounter + " in the file");
+                }				
                 
                 // get binary information for store line
                 if(tokenizer.hasMoreElements()) {
