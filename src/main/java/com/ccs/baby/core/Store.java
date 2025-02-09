@@ -11,20 +11,21 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.ccs.baby.utils.AppSettings;
+import com.ccs.baby.utils.MiscUtils;
 import com.ccs.baby.utils.RecentFilesManager;
 import com.ccs.baby.controller.CrtControlPanelController;
 
 public class Store
 {
 	
-	private final boolean EXPERIMENTAL_INTERACTIVE_LOAD = true;
 
 	// actual data in the store
 	private int line[];
 
 	private Control control;
 	
-	private CrtControlPanelController crtControlPanelController;
+	private CrtControlPanelController crtControlPanelController; // the code that interacts with this for loading should probably be moved out to a separate class
 	
 	// array showing whether the line has changed since the display was last updated
 	public boolean isLineAltered[];
@@ -394,11 +395,11 @@ public class Store
 
 	// load a modern assembly file into the store, mainly file input issues
 	public void loadModernAssembly(String fileName) throws IOException {
-        doLoadModernAssembly(fileName, "loadModernAssembly");
+        doLoadModernAssembly(fileName, "filePath");
     }
 
 	public void loadLocalModernAssembly(String fileName) throws IOException {
-		doLoadModernAssembly(fileName, "loadLocalModernAssembly");
+		doLoadModernAssembly(fileName, "URL");
 	}
 
 	/** used for loading built-in examples from the JAR */
@@ -407,20 +408,36 @@ public class Store
 		// moved to background thread so that can experiment with interactively having CrtControlPanelController
 		// press individual buttons to load the program
 
-		if(EXPERIMENTAL_INTERACTIVE_LOAD)
+		if(AppSettings.getInstance().isInteractiveLoading())
 		{
 		    // while we're operating in this mode then switch to MAN so highlighted action line shows line being programmed
             crtControlPanelController.setManAuto(false);
 
 			new Thread(() -> {
 				try {
+					Thread.currentThread().setName("Interactive Loading");
 					processModernAssembly(fileName, loadMethod);
 				}
 				catch(IOException e) {
 					System.err.println("Error loading assembly file: " + e.getMessage());
 				}
+				catch(Exception e) {
+					System.err.println("Error unhandled: " + MiscUtils.getStackTrace(e));
+				}
 				
+				// revert to auto mode ready to run
 				crtControlPanelController.setManAuto(true);
+
+				// if interactive loading was turned off while the thread was running then need to...
+				if(!AppSettings.getInstance().isInteractiveLoading())
+				{
+					// make sure the line switches are all set down otherwise program unlikely to run, will have been
+					// left in some hodgepodge state part way through interactive loading
+					crtControlPanelController.setAllLineSwitchesDown();
+
+					// and redraw the CRT panel as the panel will need redrawing
+					crtControlPanelController.redrawCrtPanel();
+				}
 			}).start();
 		}
 		else
@@ -437,7 +454,7 @@ public class Store
         int numberOfLines = -1;
 		BufferedReader in;
 
-		if(loadMethod == "loadLocalModernAssembly")
+		if(loadMethod == "URL")
 		{
 			// load URL from JAR, Zip etc. (typically an Example program)
 			InputStream assemblyReader = openFile(fileName);
@@ -635,7 +652,7 @@ public class Store
 				
 				
 
-				if(EXPERIMENTAL_INTERACTIVE_LOAD)
+				if(AppSettings.getInstance().isInteractiveLoading())
 					crtControlPanelController.setLine(lineNumber, lineData);
 				else
 					setLine(lineNumber, lineData);

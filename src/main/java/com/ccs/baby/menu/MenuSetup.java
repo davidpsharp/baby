@@ -29,6 +29,7 @@ public class MenuSetup {
         menuBar.add(ControlsMenu.createControlsMenu(control, menuBar));
         menuBar.add(ViewMenu.createViewMenu(crtPanelController, disassembler, debugPanel));
         menuBar.add(ExamplesMenu.createExampleMenu(store, crtPanelController, frame));
+        menuBar.add(SettingsMenu.createSettingsMenu());
         menuBar.add(HelpMenu.createHelpMenu(frame));
     }
 

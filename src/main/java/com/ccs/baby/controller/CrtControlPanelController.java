@@ -249,4 +249,14 @@ public class CrtControlPanelController {
         control.setKacPressed(false);
     }
 
+    public void redrawCrtPanel() {
+        crtPanelController.redrawCrtPanel();
+    }
+
+    public void setAllLineSwitchesDown() {
+        for (int i = 0; i < 5; i++) {
+            staticisorPanelController.setLineSwitch(i, true);
+        }
+    }
+
 }
