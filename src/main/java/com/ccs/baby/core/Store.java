@@ -235,28 +235,32 @@ public class Store
 	
 	// load a snapshot format image into the store
 	public void loadSnapshot(String fileName) throws IOException {
-        // setup file
-        File snapshotFile = new File(fileName);
-        
-        // open snapshot file and process it
-        try (FileReader snapshotReader = new FileReader(snapshotFile)) {
-            processSnapshot(new BufferedReader(snapshotReader), fileName, "loadSnapshot");
-        } catch(FileNotFoundException e) {
-            throw new IOException(e.getMessage());
-        }
+		doLoadAssemblySnapshot(fileName, "filePath", "snapshot");
     }
 
     /** used for loading built-in examples from the JAR */
     public void loadLocalSnapshot(String fileName) throws IOException {
-        // open snapshot file and process it
-        try (InputStream snapshotReader = openFile(fileName)) {
-            processSnapshot(new BufferedReader(new InputStreamReader(snapshotReader)), fileName, "loadLocalSnapshot");
-        } catch(FileNotFoundException e) {
-            throw new IOException(e.getMessage());
-        }
+		doLoadAssemblySnapshot(fileName, "URL", "snapshot");
     }
 
-    private void processSnapshot(BufferedReader in, String fileName, String loadMethod) throws IOException {
+    private void processSnapshot(String fileName, String loadMethod) throws IOException {
+		
+		BufferedReader in;
+
+		if(loadMethod == "URL")
+		{
+			// load URL from JAR, Zip etc. (typically an Example program)
+			InputStream assemblyReader = openFile(fileName);
+			in = new BufferedReader(new InputStreamReader(assemblyReader));
+		}
+		else
+		{
+			// load plain file path (loadModernAssembly)
+			File assemblyFile = new File(fileName);
+			FileReader assemblyReader = new FileReader(assemblyFile);
+			in = new BufferedReader(assemblyReader);
+		}
+
         // read number of lines in snapshot
         String numberOfLinesS = (in.readLine()).trim();
         try {
@@ -324,7 +328,10 @@ public class Store
                 }
                                 
                 // put data for this line into the store
-                setLine(lineNumber, lineData);
+				if(AppSettings.getInstance().isInteractiveLoading())
+					crtControlPanelController.setLine(lineNumber, lineData);
+				else
+					setLine(lineNumber, lineData);
             }                
         }        
     }
@@ -395,15 +402,15 @@ public class Store
 
 	// load a modern assembly file into the store, mainly file input issues
 	public void loadModernAssembly(String fileName) throws IOException {
-        doLoadModernAssembly(fileName, "filePath");
+        doLoadAssemblySnapshot(fileName, "filePath", "assembly");
     }
 
 	public void loadLocalModernAssembly(String fileName) throws IOException {
-		doLoadModernAssembly(fileName, "URL");
+		doLoadAssemblySnapshot(fileName, "URL", "assembly");
 	}
 
 	/** used for loading built-in examples from the JAR */
-    public void doLoadModernAssembly(String fileName, String loadMethod) throws IOException {
+    public void doLoadAssemblySnapshot(String fileName, String loadMethod, String fileType) throws IOException {
 
 		// moved to background thread so that can experiment with interactively having CrtControlPanelController
 		// press individual buttons to load the program
@@ -416,7 +423,12 @@ public class Store
 			new Thread(() -> {
 				try {
 					Thread.currentThread().setName("Interactive Loading");
-					processModernAssembly(fileName, loadMethod);
+					if(fileType.equals("assembly"))
+						processModernAssembly(fileName, loadMethod);
+					else if(fileType.equals("snapshot"))
+						processSnapshot(fileName, loadMethod);
+					else
+						throw new IOException("File type not recognised: " + fileType);
 				}
 				catch(IOException e) {
 					System.err.println("Error loading assembly file: " + e.getMessage());
@@ -443,7 +455,12 @@ public class Store
 		else
 		{
 			try {
-				processModernAssembly(fileName, loadMethod);
+				if(fileType.equals("assembly"))
+					processModernAssembly(fileName, loadMethod);
+				else if(fileType.equals("snapshot"))
+					processSnapshot(fileName, loadMethod);
+				else
+					throw new IOException("File type not recognised: " + fileType);
 			} catch(IOException e) {
 				System.err.println("Error loading assembly file: " + e.getMessage());
 			}
