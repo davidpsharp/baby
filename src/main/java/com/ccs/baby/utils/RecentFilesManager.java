@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class RecentFilesManager {
     private static final Logger LOGGER = Logger.getLogger(RecentFilesManager.class.getName());
-    private static final int MAX_RECENT_FILES = 20;
+    private static final int MAX_RECENT_FILES = 50;
     private static final String RECENT_FILES_FILE = "baby-recent-files.properties";
     private static RecentFilesManager instance;
     private final LinkedList<RecentFileEntry> recentFiles;
