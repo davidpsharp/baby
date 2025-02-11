@@ -2,31 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Baby Simulator - v3.0 Alpha Test Version</title>
+    <title>Manchester Baby Simulator - Cheerpj Test</title>
     <script src="https://cjrtnc.leaningtech.com/3.0/cj3loader.js"></script>
     <link rel="icon" href="/classes/icons/baby.png">
 </head>
 <body>
 
-<!-- previously could use HTML controls to select a file but now Java can trigger a javascript-side File open dialog directly so not required-->
-<!--
-<div style="margin: 20px;">
-    <input type="file" id="fileInput" accept=".asm,.snp" style="margin-bottom: 10px;"/>
-    <div id="fileInfo" style="font-family: Arial, sans-serif;"></div>
-</div>
--->
 
 <div>
     
 <script>
-
-    async function sendFileToSimulator(fileContent, fileName) {
-        // This function will be implemented to handle the file content
-        console.log("File content received in javascript still:", fileName, fileContent);
-
-        // sends file content to the Java simulator
-        const response = await window.myApplication.processInput(fileContent, fileName);
-    }
+    // define the javascript functions to be called from the Java application running on the CheerpJ JVM in the browser
 
     async function openFileInSimulator(fileName) {
         console.log("File name received in javascript still:", fileName);
@@ -51,9 +37,8 @@
             
             reader.onload = function(e) {
                 const content = e.target.result;
-                // sendFileToSimulator(content);
 
-                // or, just copy the filename into the simulator's sandbox filesystem in /str/ which is much simpler
+                // just copy the filename into the simulator's sandbox filesystem in /str/ which is much simpler
                 cheerpOSAddStringFile("/str/" + file.name, content);
 
                 // and now the file is available in the simulator to be opened
@@ -80,49 +65,15 @@
     ) {
         window.myApplication = myApplication;
         console.log("Java application instance set on JavaScript side.");
-        // Make the fileInput visible after initialization
-        // document.getElementById("fileInput").style.display = "block";
         return new Promise(() => {}); // Keeps the function from returning
     }
-
-
-    // if user uses a HTML/javascript file chooser on the HTML page... (currently controls removed as not in use)
-    /*
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        const fileInfo = document.getElementById('fileInfo');
-        
-        reader.onload = function(e) {
-            const content = e.target.result;
-            fileInfo.textContent = `File "${file.name}" loaded successfully (${content.length} bytes)`;
-            
-            // could send content direct into simulator
-            // sendFileToSimulator(content, file.name);
-
-            // or, just copy the filename into the simulator's sandbox filesystem in /str/ which is much simpler
-            cheerpOSAddStringFile("/str/" + file.name, content);
-
-            // and now the file is available in the simulator to be opened
-            openFileInSimulator("/str/" + file.name);
-        };
-
-        reader.onerror = function() {
-            fileInfo.textContent = `Error reading file "${file.name}"`;
-        };
-
-        reader.readAsText(file);
-    });
-    */
 
 </script>
 
 <script>
     (async function () {
         await cheerpjInit({
-            //licenseKey:"",
+            licenseKey:"v1-78XJpCYyasiWIQVMqUfwXea3tVk=", // license key from leaning technologies ltd, only for use on https://davidsharp.com/baby/online
             clipboardMode: "system",
             natives: {
                 Java_com_ccs_baby_utils_CheerpJUtils_getFileForSimulator,
@@ -137,7 +88,6 @@
 </div>
 
 
-<!--</div><img src="CheerpJ_Horizontal_Trans.png" alt="cheerpj logo" width="100" ></div> -->
 
 </body>
 </html>

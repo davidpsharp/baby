@@ -9,17 +9,11 @@ public class CheerpJUtils {
 
     // all as per CheerpJ docs at https://cheerpj.com/docs/tutorials/interoperability-tutorial.html 
 
-    // ask jscript to have user select a file
+    // ask javascript to have user select a file
     public static native void getFileForSimulator();
 
     public CheerpJUtils(Baby baby) {
         _baby = baby;
-    }
-
-    // receives data from JavaScript and processes it (not currently used)
-    public String processInput(String input, String fileName) {
-        System.out.println("Java received: " + fileName + "\n" + input);
-        return "Java received: " + input;
     }
 
     // receives data from JavaScript and processes it
@@ -46,6 +40,7 @@ public class CheerpJUtils {
     public static void setupJavascriptInteface(Baby baby) {
         CheerpJUtils app = new CheerpJUtils(baby);
         new Thread(() -> {
+            Thread.currentThread().setName("CheerpJ Java-side Interface");
             nativeSetApplication(app);
             System.out.println("Starting cheerpj interface thread");
         }).start();
