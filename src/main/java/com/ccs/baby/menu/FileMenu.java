@@ -9,6 +9,8 @@ import com.ccs.baby.controller.CrtPanelController;
 
 import com.ccs.baby.utils.RecentFilesManager.RecentFileEntry;
 import com.ccs.baby.utils.CheerpJUtils;
+import com.ccs.baby.utils.MiscUtils;
+import com.ccs.baby.utils.Version;
 import com.ccs.baby.utils.RecentFilesManager.FileLocation;
 
 import javax.swing.JFrame;
@@ -20,6 +22,9 @@ import javax.swing.JOptionPane;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.io.File;
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Creates the File menu.
@@ -88,11 +93,25 @@ public class FileMenu {
         fileMenu.add(saveSnapshot);
         fileMenu.add(saveAssembly);
         
+        fileMenu.addSeparator();
 
         // doesn't make sense if on CheerpJ, just close the browser tab/window when done
-        if(!CheerpJUtils.onCheerpj()) {
-            fileMenu.addSeparator();
+        if(!CheerpJUtils.onCheerpj()) {    
             fileMenu.add(close);
+        }
+        else {
+            JMenuItem downloadSimulator = new JMenuItem("Download Simulator Java App");
+            downloadSimulator.addActionListener(e -> {
+                try {
+                    String downloadUrl = "https://davidsharp.com/baby/baby-" + Version.getVersion() + ".jar";
+                    Desktop.getDesktop().browse(new URI(downloadUrl));
+                } catch (URISyntaxException ex) {
+                    System.err.println("Error opening download URL: " + ex.getMessage());
+                } catch (Exception ex) {
+                    System.err.println("Error opening download URL: " + ex.getMessage());
+                }
+            });
+            fileMenu.add(downloadSimulator);
         }
 
         return fileMenu;

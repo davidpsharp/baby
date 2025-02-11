@@ -16,12 +16,19 @@ public class CheerpJUtils {
         _baby = baby;
     }
 
-    // receives data from JavaScript and processes it
+    // receives data from JavaScript and processes it, usually file copied to /str/...
     public String openFile(String fileName) {
         System.out.println("Java received: " + fileName);
         // thread safety probably not needed, if the machine is running then the behaviour is beyond undefined anyway...
         _baby.openFile(fileName);
         return "Java received: " + fileName;
+    }
+
+    // called from javascript when the browser zoom level changes
+    public void onBrowserZoomChange(double newPixelRatio) {
+        System.out.println("Java side: browser zoom level changed to: " + newPixelRatio);
+        // browser zoom changing tends to mess up so repaint the display
+        _baby.repaint();
     }
 
     /** Return true if the current platform is CheerpJ, the web browser-based-javascript/webasm-JVM.
@@ -46,3 +53,4 @@ public class CheerpJUtils {
         }).start();
     }
 }
+
