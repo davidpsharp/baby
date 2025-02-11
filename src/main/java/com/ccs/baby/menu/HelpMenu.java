@@ -27,7 +27,12 @@ public class HelpMenu {
             "The GUI was created from pictures of the Baby replica by Gulzaman Khan",
             "August 2006",
             "",
-            "<a href='https://manchesterbaby.com'>manchesterbaby.com</a>"
+            "<a href='https://manchesterbaby.com'>manchesterbaby.com</a>",
+            "<a href='https://github.com/davidpsharp/baby'>github.com/davidpsharp/baby</a>",
+            "",
+            "Licensed under the GPL 3.0",
+            "",
+            "Thanks to Leaning Technologies for providing the <a href='https://cheerpj.com/'>CheerpJ</a> JVM to run the online version." 
     );
 
     private static ImageIcon icon = new ImageIcon(HelpMenu.class.getResource("/icons/baby.png"));

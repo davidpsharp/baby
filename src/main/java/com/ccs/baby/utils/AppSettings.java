@@ -38,6 +38,12 @@ public class AppSettings {
     }
 
 
+    // TODO:
+    // add historical accuracy menu
+    // - show unconnected buttons
+    // - run at original speed
+    // - list of zoom settings for scaleUi; 0.5, 0.75, default (no scale), 1.25, 1.5, 2, 2.5, 3 
+
 
     // Getter methods
     public boolean isShowFps() {
