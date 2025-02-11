@@ -369,16 +369,22 @@ public class Store
 		doLoadAssemblySnapshot(fileName, "URL", "assembly");
 	}
 
-	/** used for loading built-in examples from the JAR */
+	// handle loading files whether SNP or ASM from JAR or file system
     public void doLoadAssemblySnapshot(String fileName, String loadMethod, String fileType) throws IOException {
 
 		// moved to background thread so that can experiment with interactively having CrtControlPanelController
 		// press individual buttons to load the program
 
+		// TODO: all the crtControlPanelController.* calls should be moved out of the Store class
+		// maybe all the file IO stuff.
+
 		if(AppSettings.getInstance().isInteractiveLoading())
 		{
 		    // while we're operating in this mode then switch to MAN so highlighted action line shows line being programmed
             crtControlPanelController.setManAuto(false);
+
+			// set to write bits when typewriter pressed 
+			crtControlPanelController.setWriteErase(false);
 
 			new Thread(() -> {
 				try {
