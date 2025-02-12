@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import com.ccs.baby.ui.components.InterlockingPushButton;
 import com.ccs.baby.ui.components.KeySwitch;
 import com.ccs.baby.ui.components.ToggleSwitch;
+import com.ccs.baby.utils.AppSettings;
 
 import static com.ccs.baby.utils.CallbackUtils.runCallback;
 
@@ -135,6 +136,16 @@ public class CrtControlPanel extends JPanel {
         KeySwitch kbcSwitch = new KeySwitch("Not connected", KeySwitch.KeyColour.GREY);
         KeySwitch kecSwitch = new KeySwitch("Not connected", KeySwitch.KeyColour.GREY);
         KeySwitch kmcSwitch = new KeySwitch("Not connected", KeySwitch.KeyColour.GREY);
+
+        if(AppSettings.getInstance().isShowDisconnectedButtons()) {
+            kbcSwitch.setVisible(true);
+            kecSwitch.setVisible(true);
+            kmcSwitch.setVisible(true);
+        } else {
+            kbcSwitch.setVisible(false);
+            kecSwitch.setVisible(false);
+            kmcSwitch.setVisible(false);
+        }
 
         GridBagConstraints controlSwitchPanelConstraints = new GridBagConstraints();
         controlSwitchPanelConstraints.anchor = GridBagConstraints.WEST;

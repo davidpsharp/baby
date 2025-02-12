@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import com.ccs.baby.ui.components.PushButton;
+import com.ccs.baby.utils.AppSettings;
 
 import static com.ccs.baby.utils.CallbackUtils.runCallback;
 
@@ -62,6 +63,7 @@ public class TypewriterPanel extends JPanel {
 
             } else {
                 numberKeys[i] = new PushButton("Left unconnected.");
+                numberKeys[i].setVisible(AppSettings.getInstance().isShowDisconnectedButtons());
             }
         }
 

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import com.ccs.baby.ui.components.ToggleSwitch;
+import com.ccs.baby.utils.AppSettings;
 
 import static com.ccs.baby.utils.CallbackUtils.runCallback;
 
@@ -30,6 +31,7 @@ public class StaticisorPanel extends JPanel {
         ToggleSwitch dud = new ToggleSwitch("Left unconnected.");
         dud.setSelected(true); // Ensures it starts in the correct default state
         add(dud); // Needed to align ManAuto switch with the L stat switches
+        dud.setVisible(AppSettings.getInstance().isShowDisconnectedButtons());
 
         initialiseLineSwitches(gridBagConstraints);  // L stat switches
 
@@ -104,6 +106,7 @@ public class StaticisorPanel extends JPanel {
             } else if (i == 5 || i == 6 || i == 12) {
                 lineSwitch[i] = new ToggleSwitch("Left unconnected.");
                 lineSwitch[i].setSelected(true);
+                lineSwitch[i].setVisible(AppSettings.getInstance().isShowDisconnectedButtons());
             } else {
                 lineSwitch[i] = new ToggleSwitch(""); // No tooltip for other switches
             }
@@ -136,6 +139,7 @@ public class StaticisorPanel extends JPanel {
             if (i == 3) {
                 functionSwitch[i] = new ToggleSwitch("Left unconnected.");
                 functionSwitch[i].setSelected(true);
+                functionSwitch[i].setVisible(AppSettings.getInstance().isShowDisconnectedButtons());
             }
 
             if (i > 3) {

@@ -13,6 +13,7 @@ public class AppSettings {
     public static final String KEY_SHOW_DEBUG_PANEL = "show_debug_panel";
     public static final String KEY_INTERACTIVE_LOADING = "interactive_loading";
     public static final String KEY_LOAD_PATH = "load_path";
+    public static final String KEY_SHOW_DISCONNECTED_BUTTONS = "show_disconnected_buttons";
     
     // Default values
     public static final boolean DEFAULT_SHOW_FPS = true;
@@ -22,6 +23,7 @@ public class AppSettings {
     public static final boolean DEFAULT_SHOW_DEBUG_PANEL = false;
     public static final boolean DEFAULT_INTERACTIVE_LOADING = true;
     public static final String DEFAULT_LOAD_PATH = System.getProperty("user.home");
+    public static final boolean DEFAULT_SHOW_DISCONNECTED_BUTTONS = true;
 
     private static AppSettings instance;
     private final PreferencesService prefs;
@@ -40,7 +42,6 @@ public class AppSettings {
 
     // TODO:
     // add historical accuracy menu
-    // - show unconnected buttons
     // - run at original speed
     // - list of zoom settings for scaleUi; 0.5, 0.75, default (no scale), 1.25, 1.5, 2, 2.5, 3 
 
@@ -74,6 +75,10 @@ public class AppSettings {
         return prefs.getPreference(KEY_LOAD_PATH, DEFAULT_LOAD_PATH);
     }
 
+    public boolean isShowDisconnectedButtons() {
+        return prefs.getBooleanPreference(KEY_SHOW_DISCONNECTED_BUTTONS, DEFAULT_SHOW_DISCONNECTED_BUTTONS);
+    }
+
     // Setter methods
     public void setShowFps(boolean value) {
         prefs.setBooleanPreference(KEY_SHOW_FPS, value);
@@ -101,6 +106,10 @@ public class AppSettings {
 
     public void setLoadPath(String value) {
         prefs.setPreference(KEY_LOAD_PATH, value);
+    }
+
+    public void setShowDisconnectedButtons(boolean value) {
+        prefs.setBooleanPreference(KEY_SHOW_DISCONNECTED_BUTTONS, value);
     }
     
 }

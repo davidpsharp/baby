@@ -13,12 +13,18 @@ public class SettingsMenu {
         JMenu settingsMenu = new JMenu("Settings");
         
         JMenuItem interactiveLoadingItem = new JCheckBoxMenuItem("Interactive Loading");
+        JMenuItem showDisconnectedButtonsItem = new JCheckBoxMenuItem("Show Disconnected Buttons");
         
         settingsMenu.add(interactiveLoadingItem);
-
+        
+        // alignment of buttons when some are removed is all over the place so leave this out for now
+        //settingsMenu.add(showDisconnectedButtonsItem);
+        
         interactiveLoadingItem.setSelected(AppSettings.getInstance().isInteractiveLoading());
+        showDisconnectedButtonsItem.setSelected(AppSettings.getInstance().isShowDisconnectedButtons());
 
         interactiveLoadingItem.addActionListener(e -> AppSettings.getInstance().setInteractiveLoading(interactiveLoadingItem.isSelected()));
+        showDisconnectedButtonsItem.addActionListener(e -> AppSettings.getInstance().setShowDisconnectedButtons(showDisconnectedButtonsItem.isSelected()));
         
         return settingsMenu;
     }
