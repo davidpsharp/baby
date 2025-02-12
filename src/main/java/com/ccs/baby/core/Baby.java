@@ -24,7 +24,11 @@ import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
 import com.ccs.baby.utils.*;
 
-
+/**
+ * The main class for the Manchester Baby Simulator.
+ * 
+ * @author David Sharp
+ */
 public class Baby extends JFrame {
 
     // Get the current directory
@@ -32,6 +36,8 @@ public class Baby extends JFrame {
     public static BackgroundPanel mainPanel;
     private CrtPanel crtPanel;
     private LoadSnapshotAssembly loadSnapshotAssembly;
+    private JTabbedPane tabbedPane;
+    private JPanel mainContentPanel;
 
     public Baby() {
 
@@ -85,7 +91,13 @@ public class Baby extends JFrame {
             crtPanel.setOpaque(false);
             crtPanel.setPreferredSize(new Dimension(400, 386));
 
+            // Create main content panel that will hold either the mainPanel or tabbedPane
+            mainContentPanel = new JPanel(new BorderLayout());
+            mainContentPanel.setOpaque(false);
 
+            // Create tabbed pane
+            tabbedPane = new JTabbedPane();
+            tabbedPane.setOpaque(false);
 
             // Create switch panel components
             StaticisorPanel staticisorPanel = new StaticisorPanel();
@@ -113,7 +125,6 @@ public class Baby extends JFrame {
             // Create StaticisorPanelController and register crtPanelActionLineListener as a listener
             StaticisorPanelController staticisorPanelController = new StaticisorPanelController(staticisorPanel);
             staticisorPanelController.addActionLineListener(crtPanelActionLineListener);
-
 
             CrtPanelController crtPanelController = new CrtPanelController(crtPanel);
 
@@ -143,14 +154,20 @@ public class Baby extends JFrame {
             // Create a container mainPanel that wraps crtPanel and switchPanel
             mainPanel = new BackgroundPanel();
             mainPanel.setLayout(new BorderLayout());
-            mainPanel.setSize(690, 905);
+            mainPanel.setOpaque(false);
             mainPanel.add(crtPanel, BorderLayout.NORTH);
             mainPanel.add(switchPanel);
+
+            // Add main panel to content panel
+            mainContentPanel.add(mainPanel, BorderLayout.CENTER);
+
+            // Add content panel to frame
+            add(mainContentPanel);
 
             // Set up display window GUI
             Container contentPane = getContentPane();
             contentPane.setLayout(new BorderLayout());
-            contentPane.add(mainPanel, BorderLayout.CENTER);
+            contentPane.add(mainContentPanel, BorderLayout.CENTER);
             contentPane.add(debugPanel, BorderLayout.SOUTH);
 
             // Set up and add menu bars to the window
@@ -285,6 +302,30 @@ public class Baby extends JFrame {
     /** Method to enable javascript on cheerpj to poke a file load through to the simulator */
     public void openFile(String fileName) {
         loadSnapshotAssembly.handleFileLoad(new File(fileName), false);
+    }
+
+    public void addTab(String title, JComponent component) {
+        if (mainContentPanel.getComponentCount() == 1 && mainContentPanel.getComponent(0) == mainPanel) {
+            // First tab being added, switch from mainPanel to tabbedPane
+            mainContentPanel.remove(mainPanel);
+            tabbedPane.addTab("Baby", mainPanel);
+            mainContentPanel.add(tabbedPane, BorderLayout.CENTER);
+        }
+        tabbedPane.addTab(title, component);
+        tabbedPane.setSelectedComponent(component);
+        validate();
+        repaint();
+    }
+
+    public void removeTab(JComponent component) {
+        tabbedPane.remove(component);
+        if (tabbedPane.getTabCount() == 1 && tabbedPane.getComponentAt(0) == mainPanel) {
+            // Only the main panel tab remains, switch back to showing it directly
+            mainContentPanel.remove(tabbedPane);
+            mainContentPanel.add(mainPanel, BorderLayout.CENTER);
+        }
+        validate();
+        repaint();
     }
 
     // Main method to create main window
