@@ -44,6 +44,8 @@ public class AppSettings {
     // add historical accuracy menu
     // - run at original speed
     // - list of zoom settings for scaleUi; 0.5, 0.75, default (no scale), 1.25, 1.5, 2, 2.5, 3 
+    // - auto run program on startup
+    // - save default program (so persisted in settings, not just a link to a program file)
 
 
     // Getter methods
