@@ -3,6 +3,7 @@ package com.ccs.baby.controller;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.core.SimulationSpeedTracker;
 import com.ccs.baby.ui.DebugPanel;
+import com.ccs.baby.core.SimulationSpeedData;
 
 /**
  * Handles interactions between DebugPanel and Control.
@@ -24,7 +25,7 @@ public class DebugPanelController {
         debugPanel.setOnStopPressed(this::handleStopPressed);
 
         // Register as the listener for simulation speed updates
-        simulationSpeedTracker.setListener(() -> updateSpeedDisplay(simulationSpeedTracker.formatSpeedText()));
+        simulationSpeedTracker.setListener(this::updateSpeedDisplay);
 
         debugPanel.setOnResetElapsedTimePressed(this::handleResetElapsedTimePressed);
     }
@@ -43,10 +44,10 @@ public class DebugPanelController {
 
     /**
      * Updates the speed display in DebugPanel.
-     * @param speedText The updated speed text.
      */
-    private void updateSpeedDisplay(String speedText) {
-        debugPanel.updateSimulationSpeedDisplay(speedText);
+    private void updateSpeedDisplay() {
+        SimulationSpeedData speedData = simulationSpeedTracker.getSimulationSpeedData();
+        debugPanel.updateSimulationSpeedDisplay(speedData);
     }
 
     private void handleResetElapsedTimePressed() {

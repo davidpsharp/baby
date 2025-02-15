@@ -120,7 +120,7 @@ public class Baby extends JFrame {
             debugPanel.setOpaque(true);
 
             // Create DebugPanelController
-            DebugPanelController debugPanelController = new DebugPanelController(control, simulationSpeedTracker, debugPanel);
+            new DebugPanelController(control, simulationSpeedTracker, debugPanel);
 
             // Create CrtPanelActionLineListener
             CrtPanelActionLineListener crtPanelActionLineListener = new CrtPanelActionLineListener(control, crtPanel);

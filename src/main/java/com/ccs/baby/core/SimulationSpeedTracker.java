@@ -11,6 +11,7 @@ public class SimulationSpeedTracker {
     // TODO: is this simulated or wall-clock time?
     private double elapsedTime = 0;
     private int instructionsPerSecond = 0;
+    private double executionSpeedPercentage = 0;
     private int instructionsPerRedraw = 0;
 
 
@@ -38,8 +39,12 @@ public class SimulationSpeedTracker {
         // Calculate the elapsed time in seconds
         elapsedTime += (((double) (control.getCycleCount() * control.getInstructionsPerRefresh())) / REAL_CYCLES_PER_SECOND);
 
+
         // Calculate the number of instructions executed per second
         instructionsPerSecond = control.getCycleCount() * control.getInstructionsPerRefresh();
+
+        // Calculate the percentage of real-world execution speed ()
+        executionSpeedPercentage = (instructionsPerSecond / REAL_CYCLES_PER_SECOND) * 100;
 
         // Get the number of instructions processed per screen redraw
         instructionsPerRedraw = control.getInstructionsPerRefresh();
@@ -71,17 +76,13 @@ public class SimulationSpeedTracker {
     }
 
 
-    public String formatSpeedText() {
-
-        // Calculate the percentage of real-world execution speed ()
-        double executionSpeedPercentage = (instructionsPerSecond / REAL_CYCLES_PER_SECOND) * 100;
-
-        // Format and return the speed information
-        return String.format("%d instr/sec | %.1f%% | %.1fs | %d instr/redraw",
+    public SimulationSpeedData getSimulationSpeedData() {
+        return new SimulationSpeedData(
                 instructionsPerSecond,
-                executionSpeedPercentage, // Rounded to 1 decimal place
-                elapsedTime, // Rounded to 1 decimal place
+                executionSpeedPercentage,
+                elapsedTime,
                 instructionsPerRedraw
         );
     }
+
 }

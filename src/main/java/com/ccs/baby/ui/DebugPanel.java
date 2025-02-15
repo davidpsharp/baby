@@ -2,6 +2,7 @@ package com.ccs.baby.ui;
 
 import com.ccs.baby.utils.AppSettings;
 import com.ccs.baby.ui.components.DebugButton;
+import com.ccs.baby.core.SimulationSpeedData;
 
 import static com.ccs.baby.utils.CallbackUtils.runCallback;
 
@@ -21,25 +22,27 @@ public class DebugPanel extends JPanel {
     public DebugButton stopButton;
     public DebugButton resetElapsedTimeButton;
 
-    private JLabel simulationSpeedLabel;
+    private JLabel instructionsPerSecLabel;
+    private JLabel executionSpeedPercentageLabel;
+    private JLabel elapsedTimeLabel;
+    private JLabel instructionsPerRedrawLabel;
+
 
     public static Color BACKGROUND_COLOR = new Color(206, 205, 201);
 
     public DebugPanel() {
         setLayout(new BorderLayout(0, 0)); // Ensure no gaps
         setBackground(BACKGROUND_COLOR);
+        setPreferredSize(new Dimension(700, 90));
         setVisible(AppSettings.getInstance().isShowDebugPanel());
 
+        // Create tool panel and info panel
         JPanel toolPanel = createToolPanel();
         JPanel infoPanel = createInfoPanel();
 
-        JPanel container = new JPanel();
-        container.setBorder(null);
-        container.setBackground(BACKGROUND_COLOR);
-        container.add(toolPanel);
-        container.add(infoPanel);
-
-        add(container, BorderLayout.CENTER);
+        // Add toolPanel at the TOP (NORTH) and infoPanel BELOW it (SOUTH)
+        add(toolPanel, BorderLayout.NORTH);
+        add(infoPanel, BorderLayout.SOUTH);
     }
 
     private JPanel createToolPanel() {
@@ -64,22 +67,50 @@ public class DebugPanel extends JPanel {
     }
 
     private JPanel createInfoPanel() {
-        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Center align info
         infoPanel.setBackground(BACKGROUND_COLOR);
-        infoPanel.setBorder(null);
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Add spacing
 
-        // Wrap label in a box with padding and background color
-        JPanel speedBox = new JPanel();
-        speedBox.setBackground(new Color(220, 220, 220)); // Light gray box
-        speedBox.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        // Create a structured display for simulation speed
+        JPanel speedBox = new JPanel(new GridLayout(2, 4, 10, 2)); // 2 rows, 4 columns
+        speedBox.setBackground(new Color(220, 220, 220)); // Light gray background
+        speedBox.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 1),  // Outer border
+                BorderFactory.createEmptyBorder(0, 10, 0, 10)   // Inner padding
+        ));
 
-        simulationSpeedLabel = new JLabel("Simulation Speed Initializing...");
-        simulationSpeedLabel.setToolTipText("Displays the current execution speed of the simulation.");
+        // Titles
+        JLabel instrSecTitle = new JLabel("Instr/sec", SwingConstants.CENTER);
+        instrSecTitle.setToolTipText("Number of instructions executed per second.");
 
-        speedBox.add(simulationSpeedLabel);
+        JLabel speedPercentTitle = new JLabel("Speed", SwingConstants.CENTER);
+        speedPercentTitle.setToolTipText("Percentage of real-time execution speed (700 instr/sec = 100%).");
+
+        JLabel elapsedTimeTitle = new JLabel("Elapsed", SwingConstants.CENTER);
+        elapsedTimeTitle.setToolTipText("Total elapsed simulation time in seconds.");
+
+        JLabel instrRedrawTitle = new JLabel("Instr/Redraw", SwingConstants.CENTER);
+        instrRedrawTitle.setToolTipText("Number of instructions executed before screen redraw.");
+
+        // Values (updated dynamically)
+        instructionsPerSecLabel = new JLabel("0", SwingConstants.CENTER);
+        executionSpeedPercentageLabel = new JLabel("0%", SwingConstants.CENTER);
+        elapsedTimeLabel = new JLabel("0.0s", SwingConstants.CENTER);
+        instructionsPerRedrawLabel = new JLabel("0", SwingConstants.CENTER);
+
+        // Add components in GridLayout
+        speedBox.add(instrSecTitle);
+        speedBox.add(speedPercentTitle);
+        speedBox.add(elapsedTimeTitle);
+        speedBox.add(instrRedrawTitle);
+        speedBox.add(instructionsPerSecLabel);
+        speedBox.add(executionSpeedPercentageLabel);
+        speedBox.add(elapsedTimeLabel);
+        speedBox.add(instructionsPerRedrawLabel);
+
         infoPanel.add(speedBox);
 
-        // Add Reset Elapsed Time Button
+        // Add Reset Button next to it
         resetElapsedTimeButton = new DebugButton("Reset", "Reset the elapsed time counter.");
         resetElapsedTimeButton.addActionListener(e -> runCallback(onResetElapsedTimePressed));
         infoPanel.add(resetElapsedTimeButton);
@@ -103,10 +134,13 @@ public class DebugPanel extends JPanel {
      * Updates the simulation speed display.
      * Called by DebugPanelController when speed updates occur.
      *
-     * @param speedText The new simulation speed text.
+     * @param speedData The latest simulation speed data.
      */
-    public void updateSimulationSpeedDisplay(String speedText) {
-        simulationSpeedLabel.setText(speedText);
+    public void updateSimulationSpeedDisplay(SimulationSpeedData speedData) {
+        instructionsPerSecLabel.setText(String.valueOf(speedData.getInstructionsPerSecond()));
+        executionSpeedPercentageLabel.setText(String.format("%.1f%%", speedData.getExecutionSpeedPercentage()));
+        elapsedTimeLabel.setText(String.format("%.1fs", speedData.getElapsedTime()));
+        instructionsPerRedrawLabel.setText(String.valueOf(speedData.getInstructionsPerRedraw()));
     }
 
     public void setOnResetElapsedTimePressed(Runnable callback) {
