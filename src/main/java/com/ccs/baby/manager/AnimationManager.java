@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import com.ccs.baby.core.Animator;
 import com.ccs.baby.core.Control;
 import com.ccs.baby.controller.CrtPanelController;
-import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.SimulationSpeedTracker;
 import com.ccs.baby.controller.StaticisorPanelController;
 
 
@@ -22,7 +22,7 @@ public class AnimationManager {
     // thread control for animation
     private Animator animator;
 
-    private final FpsLabelService fpsLabelService;
+    private final SimulationSpeedTracker simulationSpeedTracker;
 
     public static volatile boolean animationRunning = false;
 
@@ -30,12 +30,12 @@ public class AnimationManager {
             Control control,
             CrtPanelController crtPanelController,
             StaticisorPanelController staticisorPanelController,
-            FpsLabelService fpsLabelService
+            SimulationSpeedTracker simulationSpeedTracker
     ) {
         this.control = control;
         this.crtPanelController = crtPanelController;
         this.staticisorPanelController = staticisorPanelController;
-        this.fpsLabelService = fpsLabelService;
+        this.simulationSpeedTracker = simulationSpeedTracker;
 
         // create timer to calculate speed to tick once a second
         fpsTimer = new Timer(1000, this::handleFpsTimer);
@@ -73,7 +73,7 @@ public class AnimationManager {
     // one second timer to measure the speed and correct to real machine speed
     private void handleFpsTimer(ActionEvent e) {
 
-        fpsLabelService.updateFpsLabel();
+        simulationSpeedTracker.updateFpsLabel();
 
         if (animationRunning) {
             // we don't want to adjust speed if baby has finished executing as may have only done a few

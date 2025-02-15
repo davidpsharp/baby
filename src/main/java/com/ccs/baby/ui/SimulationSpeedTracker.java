@@ -4,7 +4,7 @@ import javax.swing.*;
 
 import com.ccs.baby.core.Control;
 
-public class FpsLabelService {
+public class SimulationSpeedTracker {
     private final JButton fpsLabel;
     private final Control control;
 
@@ -12,7 +12,7 @@ public class FpsLabelService {
     private static final double REAL_CYCLES_PER_SECOND = 700.0;
     private double elapsedTime = 0; // in seconds // TODO: is this simulated or wall-clock time?
 
-    public FpsLabelService(JButton fpsLabel, Control control) {
+    public SimulationSpeedTracker(JButton fpsLabel, Control control) {
         this.fpsLabel = fpsLabel;
         this.control = control;
     }

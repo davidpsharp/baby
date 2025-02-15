@@ -9,18 +9,18 @@ import javax.swing.*;
 
 
 // reset the real world elapsed time to 0
-public class FpsLabelPushed implements ActionListener {
+public class SimulationSpeedController implements ActionListener {
 
     private final Control control;
-    private final FpsLabelService fpsLabelService;
+    private final SimulationSpeedTracker simulationSpeedTracker;
 
-    public FpsLabelPushed(JButton fpsLabel, Control control){
+    public SimulationSpeedController(JButton fpsLabel, Control control){
         this.control = control;
-        this.fpsLabelService = new FpsLabelService(fpsLabel, control);
+        this.simulationSpeedTracker = new SimulationSpeedTracker(fpsLabel, control);
     }
 
     public void actionPerformed(ActionEvent e) {
         control.setCycleCount(0);
-        fpsLabelService.updateFpsLabel();
+        simulationSpeedTracker.updateFpsLabel();
     }
 }

@@ -1,8 +1,8 @@
 package com.ccs.baby.debug;
 
 import com.ccs.baby.core.Control;
-import com.ccs.baby.ui.FpsLabelPushed;
-import com.ccs.baby.ui.FpsLabelService;
+import com.ccs.baby.ui.SimulationSpeedController;
+import com.ccs.baby.ui.SimulationSpeedTracker;
 import com.ccs.baby.utils.AppSettings;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ public class DebugPanel extends JPanel implements ActionListener {
     protected JButton stepButton = new JButton("Step");
     protected JButton runButton = new JButton("Run");
     protected JButton stopButton = new JButton("Stop");
-    private final FpsLabelService fpsLabelService;
+    private final SimulationSpeedTracker simulationSpeedTracker;
 
     public static Color backgroundColor = new Color(206, 205, 201);
 
@@ -44,10 +44,10 @@ public class DebugPanel extends JPanel implements ActionListener {
         infoPanel.setBorder(null);
 
         JButton fpsLabel = new JButton("Speed and elapsed time info.");
-        fpsLabel.addActionListener(new FpsLabelPushed(fpsLabel, control));
+        fpsLabel.addActionListener(new SimulationSpeedController(fpsLabel, control));
         infoPanel.add(fpsLabel);
 
-        fpsLabelService = new FpsLabelService(fpsLabel, control);
+        simulationSpeedTracker = new SimulationSpeedTracker(fpsLabel, control);
 
         // check for clicks on modern controls
         stepButton.addActionListener(this);
@@ -70,8 +70,8 @@ public class DebugPanel extends JPanel implements ActionListener {
         fpsLabel.setToolTipText("Displays the speed of the simulation.");
     }
 
-    public FpsLabelService getFpsLabelService() {
-        return fpsLabelService;
+    public SimulationSpeedTracker getFpsLabelService() {
+        return simulationSpeedTracker;
     }
 
     public void actionPerformed(ActionEvent e) {

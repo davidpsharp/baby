@@ -116,8 +116,8 @@ public class Baby extends JFrame {
             DebugPanel debugPanel = new DebugPanel(control);
             debugPanel.setOpaque(true);
 
-            // Get the FpsLabelService from the debugPanel
-            FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
+            // Get the SimulationSpeedTracker from the debugPanel
+            SimulationSpeedTracker simulationSpeedTracker = debugPanel.getFpsLabelService();
 
             // Create CrtPanelActionLineListener
             CrtPanelActionLineListener crtPanelActionLineListener = new CrtPanelActionLineListener(control, crtPanel);
@@ -129,7 +129,7 @@ public class Baby extends JFrame {
             CrtPanelController crtPanelController = new CrtPanelController(crtPanel);
 
             // Initialise AnimationManager
-            AnimationManager animationManager = new AnimationManager(control, crtPanelController, staticisorPanelController, fpsLabelService);
+            AnimationManager animationManager = new AnimationManager(control, crtPanelController, staticisorPanelController, simulationSpeedTracker);
 
             // Create LoadSnapshotAssembly instance
             loadSnapshotAssembly = new LoadSnapshotAssembly(store, this, crtPanelController);
