@@ -107,6 +107,19 @@
         // Use requestAnimationFrame to debounce the check
         requestAnimationFrame(onBrowserZoomChange);
     });
+
+    // Disable F5 and F10 keyboard shortcuts for Windows Chrome so Simulator can use them (and don't
+    // accidentally reload the page with F5)
+    function preventFn(event) {
+        // 116 F5, 121 F10
+        var functionKeys = new Array(116, 121);
+        if(functionKeys.indexOf(event.keyCode) > -1 ) {
+            event.preventDefault();
+        }
+    }
+    
+    document.addEventListener('keydown', preventFn, true); // true means use capture phase of event
+
 </script>
 
 <div id="page_title" style="text-align: center; width: 700px; margin: 0 auto; font-family: Arial, sans-serif; color: #606060; font-size: 36px; display: flex; align-items: center; justify-content: center; min-height: 50px;">
