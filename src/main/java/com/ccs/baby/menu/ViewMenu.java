@@ -2,14 +2,13 @@ package com.ccs.baby.menu;
 
 import com.ccs.baby.ui.CrtPanel.DisplayType;
 import com.ccs.baby.disassembler.Disassembler;
-import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.ui.DebugPanel;
 import com.ccs.baby.ui.display.DisplayDisassemblerWindow;
 import com.ccs.baby.ui.display.DisplayDebugPanel;
 import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.utils.AppSettings;
 import com.ccs.baby.utils.CheerpJUtils;
 import com.ccs.baby.core.Baby;
-import com.ccs.baby.core.Control;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;

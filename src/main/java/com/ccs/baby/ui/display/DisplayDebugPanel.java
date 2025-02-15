@@ -1,6 +1,6 @@
 package com.ccs.baby.ui.display;
 
-import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.ui.DebugPanel;
 import com.ccs.baby.utils.AppSettings;
 
 import javax.swing.JMenuItem;
