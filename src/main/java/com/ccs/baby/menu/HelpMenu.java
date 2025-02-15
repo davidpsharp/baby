@@ -53,7 +53,7 @@ public class HelpMenu {
 
         // Add action listeners
         about.addActionListener(e -> showAboutDialog(frame));
-        refManual.addActionListener(new ReferenceManual(frame));
+        refManual.addActionListener(e -> new ReferenceManual(frame).setVisible(true));
 
         // Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
         helpMenu.setMnemonic(KeyEvent.VK_H); // Alt + H

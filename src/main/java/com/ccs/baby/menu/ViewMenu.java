@@ -9,6 +9,7 @@ import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.utils.AppSettings;
 import com.ccs.baby.utils.CheerpJUtils;
 import com.ccs.baby.core.Baby;
+import com.ccs.baby.manual.ReferenceManual;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -16,7 +17,6 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 
 import java.awt.event.KeyEvent;
 
@@ -49,6 +49,8 @@ public class ViewMenu {
         JMenuItem viewAccumulator = new JMenuItem("Accumulator");
         JMenuItem viewDisassemblerWindow = new JMenuItem("Disassembler Window");
         JCheckBoxMenuItem viewDisassemblerTab = new JCheckBoxMenuItem("Disassembler Tab");
+        JMenuItem viewReferenceManualWindow = new JMenuItem("Reference Manual Window");
+        JCheckBoxMenuItem viewReferenceManualTab = new JCheckBoxMenuItem("Reference Manual Tab");
         JMenuItem viewDebugPanel = new JCheckBoxMenuItem("Debug");
         JMenuItem viewRefreshView = new JMenuItem("Refresh View");
 
@@ -58,13 +60,23 @@ public class ViewMenu {
         viewAccumulator.addActionListener(e -> crtPanelController.setCrtDisplay(DisplayType.ACCUMULATOR));
         viewDisassemblerWindow.addActionListener(new DisplayDisassemblerWindow(disassembler));
         viewDisassemblerTab.addActionListener(e -> {
-            JCheckBoxMenuItem source = (JCheckBoxMenuItem) e.getSource();
-            if (source.isSelected()) {
-                JPanel tabPanel = disassembler.getTabPanel();
-                ((Baby)_parentFrame).addTab("Disassembler", tabPanel);
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
+            if (item.isSelected()) {
+                ((Baby) _parentFrame).addDisassemblerTab(disassembler);
             } else {
-                JPanel tabPanel = disassembler.getTabPanel();
-                ((Baby)_parentFrame).removeTab(tabPanel);
+                ((Baby) _parentFrame).removeDisassemblerTab(disassembler);
+            }
+        });
+        viewReferenceManualWindow.addActionListener(e -> {
+            ReferenceManual referenceManual = new ReferenceManual(_parentFrame);
+            referenceManual.setVisible(true);
+        });
+        viewReferenceManualTab.addActionListener(e -> {
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
+            if (item.isSelected()) {
+                ((Baby) _parentFrame).addReferenceManualTab();
+            } else {
+                ((Baby) _parentFrame).removeReferenceManualTab();
             }
         });
         viewDebugPanel.addActionListener(new DisplayDebugPanel(debugPanel));
@@ -77,14 +89,21 @@ public class ViewMenu {
         viewAccumulator.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.ALT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK)); // Alt + Ctrl + A
         viewDisassemblerWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK)); // Alt + D
         viewDisassemblerTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.ALT_DOWN_MASK)); // Alt + T
+        viewReferenceManualWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK)); // Alt + R
+        viewReferenceManualTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.ALT_DOWN_MASK)); // Alt + M
         viewDebugPanel.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_DOWN_MASK)); // Alt + B
 
         // Add items to the view menu
         viewMenu.add(viewStore);
         viewMenu.add(viewControl);
         viewMenu.add(viewAccumulator);
+        viewMenu.addSeparator();
         viewMenu.add(viewDisassemblerWindow);
         viewMenu.add(viewDisassemblerTab);
+        viewMenu.addSeparator();
+        viewMenu.add(viewReferenceManualWindow);
+        viewMenu.add(viewReferenceManualTab);
+        viewMenu.addSeparator();
         viewMenu.add(viewDebugPanel);
         
         // this feature is only needed on CheerpJ when zooming certain browsers it doesn't redraw properly

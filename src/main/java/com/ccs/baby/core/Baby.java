@@ -22,6 +22,7 @@ import com.ccs.baby.manager.*;
 import com.ccs.baby.menu.*;
 import com.ccs.baby.ui.*;
 import com.ccs.baby.utils.*;
+import com.ccs.baby.manual.*;
 
 /**
  * The main class for the Manchester Baby Simulator.
@@ -37,6 +38,7 @@ public class Baby extends JFrame {
     private LoadSnapshotAssembly loadSnapshotAssembly;
     private JTabbedPane tabbedPane;
     private JPanel mainContentPanel;
+    private ReferenceManual referenceManual;
 
     public Baby() {
 
@@ -329,6 +331,31 @@ public class Baby extends JFrame {
         }
         validate();
         repaint();
+    }
+
+    public void addDisassemblerTab(Disassembler disassembler) {
+        JPanel tabPanel = disassembler.getTabPanel();
+        addTab("Disassembler", tabPanel);
+    }
+
+    public void removeDisassemblerTab(Disassembler disassembler) {
+        JPanel tabPanel = disassembler.getTabPanel();
+        removeTab(tabPanel);
+    }
+
+    public void addReferenceManualTab() {
+        if (referenceManual == null) {
+            referenceManual = new ReferenceManual(this);
+        }
+        JPanel tabPanel = referenceManual.getTabPanel();
+        addTab("Reference Manual", tabPanel);
+    }
+
+    public void removeReferenceManualTab() {
+        if (referenceManual != null) {
+            JPanel tabPanel = referenceManual.getTabPanel();
+            removeTab(tabPanel);
+        }
     }
 
     // Main method to create main window
