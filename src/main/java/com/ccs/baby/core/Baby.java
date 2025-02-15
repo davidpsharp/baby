@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import com.ccs.baby.controller.*;
 import com.ccs.baby.controller.listener.*;
-import com.ccs.baby.debug.*;
 import com.ccs.baby.disassembler.*;
 import com.ccs.baby.io.*;
 import com.ccs.baby.manager.*;
@@ -112,12 +111,16 @@ public class Baby extends JFrame {
             switchPanel.add(staticisorPanel);
             switchPanel.add(crtControlPanel);
 
+
+            // Create SimulationSpeedTracker instance
+            SimulationSpeedTracker simulationSpeedTracker = new SimulationSpeedTracker(control);
+
             // Setup a DebugPanel (aka modernControls)
-            DebugPanel debugPanel = new DebugPanel(control);
+            DebugPanel debugPanel = new DebugPanel();
             debugPanel.setOpaque(true);
 
-            // Get the FpsLabelService from the debugPanel
-            FpsLabelService fpsLabelService = debugPanel.getFpsLabelService();
+            // Create DebugPanelController
+            new DebugPanelController(control, simulationSpeedTracker, debugPanel);
 
             // Create CrtPanelActionLineListener
             CrtPanelActionLineListener crtPanelActionLineListener = new CrtPanelActionLineListener(control, crtPanel);
@@ -129,7 +132,7 @@ public class Baby extends JFrame {
             CrtPanelController crtPanelController = new CrtPanelController(crtPanel);
 
             // Initialise AnimationManager
-            AnimationManager animationManager = new AnimationManager(control, crtPanelController, staticisorPanelController, fpsLabelService);
+            AnimationManager animationManager = new AnimationManager(control, crtPanelController, staticisorPanelController, simulationSpeedTracker);
 
             // Create LoadSnapshotAssembly instance
             loadSnapshotAssembly = new LoadSnapshotAssembly(store, this, crtPanelController);

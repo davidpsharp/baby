@@ -4,9 +4,8 @@ import com.ccs.baby.core.Store;
 import com.ccs.baby.core.Control;
 
 import com.ccs.baby.controller.CrtPanelController;
-import com.ccs.baby.controller.CrtPanelController;
 import com.ccs.baby.disassembler.Disassembler;
-import com.ccs.baby.debug.DebugPanel;
+import com.ccs.baby.ui.DebugPanel;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
