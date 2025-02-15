@@ -100,7 +100,7 @@ public class ExamplesMenu {
             buildStaticMenu(exampleMenu, store, crtPanelController, frame);
         }
     
-        exampleMenu.setMnemonic(KeyEvent.VK_E);
+        exampleMenu.setMnemonic(KeyEvent.VK_X);
         return exampleMenu;
     }
 
