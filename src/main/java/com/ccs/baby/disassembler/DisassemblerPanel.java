@@ -25,6 +25,7 @@ public class DisassemblerPanel extends JPanel {
         
         JPanel backPanel = new JPanel(new BorderLayout());
         
+        JButton singleStep = new JButton("Step");
         JButton loadFromStore = new JButton("Load from store");
         JButton saveToStore = new JButton("Save to store");
         JCheckBox updateOnStep = new JCheckBox("Update");
@@ -33,6 +34,7 @@ public class DisassemblerPanel extends JPanel {
         textArea.setEditable(true);
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         
+        singleStep.addActionListener(e -> control.singleStep());
         loadFromStore.addActionListener(e -> updateTextArea());
         saveToStore.addActionListener(e -> updateStore());
         updateOnStep.addActionListener(e -> this.updateOnStep = updateOnStep.isSelected());
@@ -41,6 +43,7 @@ public class DisassemblerPanel extends JPanel {
         scrollPane.setPreferredSize(new Dimension(100, 100));
         
         JPanel controlsPanel = new JPanel();
+        controlsPanel.add(singleStep);
         controlsPanel.add(loadFromStore);
         controlsPanel.add(saveToStore);
         controlsPanel.add(updateOnStep);
