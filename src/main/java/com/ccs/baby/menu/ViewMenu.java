@@ -47,10 +47,8 @@ public class ViewMenu {
         JMenuItem viewStore = new JMenuItem("Store");
         JMenuItem viewControl = new JMenuItem("Control");
         JMenuItem viewAccumulator = new JMenuItem("Accumulator");
-        JMenuItem viewDisassemblerWindow = new JMenuItem("Disassembler Window");
+        JMenuItem viewDisassemblerWindow = new JMenuItem("Disassembler");
         JCheckBoxMenuItem viewDisassemblerTab = new JCheckBoxMenuItem("Disassembler Tab");
-        JMenuItem viewReferenceManualWindow = new JMenuItem("Reference Manual Window");
-        JCheckBoxMenuItem viewReferenceManualTab = new JCheckBoxMenuItem("Reference Manual Tab");
         JMenuItem viewDebugPanel = new JCheckBoxMenuItem("Debug");
         JMenuItem viewRefreshView = new JMenuItem("Refresh View");
 
@@ -58,27 +56,24 @@ public class ViewMenu {
         viewStore.addActionListener(e -> crtPanelController.setCrtDisplay(DisplayType.STORE));
         viewControl.addActionListener(e -> crtPanelController.setCrtDisplay(DisplayType.CONTROL));
         viewAccumulator.addActionListener(e -> crtPanelController.setCrtDisplay(DisplayType.ACCUMULATOR));
-        viewDisassemblerWindow.addActionListener(new DisplayDisassemblerWindow(disassembler));
-        viewDisassemblerTab.addActionListener(e -> {
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
-            if (item.isSelected()) {
-                ((Baby) _parentFrame).addDisassemblerTab(disassembler);
-            } else {
-                ((Baby) _parentFrame).removeDisassemblerTab(disassembler);
-            }
-        });
-        viewReferenceManualWindow.addActionListener(e -> {
-            ReferenceManual referenceManual = new ReferenceManual(_parentFrame);
-            referenceManual.setVisible(true);
-        });
-        viewReferenceManualTab.addActionListener(e -> {
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
-            if (item.isSelected()) {
-                ((Baby) _parentFrame).addReferenceManualTab();
-            } else {
-                ((Baby) _parentFrame).removeReferenceManualTab();
-            }
-        });
+
+        if(CheerpJUtils.onCheerpj()) {
+        
+            
+            viewDisassemblerTab.addActionListener(e -> {
+                JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
+                if (item.isSelected()) {
+                    ((Baby) _parentFrame).addDisassemblerTab(disassembler);
+                } else {
+                    ((Baby) _parentFrame).removeDisassemblerTab(disassembler);
+                }
+            });
+            
+        }
+        else
+        {
+            viewDisassemblerWindow.addActionListener(new DisplayDisassemblerWindow(disassembler));
+        }
         viewDebugPanel.addActionListener(new DisplayDebugPanel(debugPanel));
         viewRefreshView.addActionListener(e -> parentFrame.repaint());
 
@@ -87,10 +82,6 @@ public class ViewMenu {
         viewStore.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK)); // Alt + Ctrl + S
         viewControl.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK)); // Alt + Ctrl + C
         viewAccumulator.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.ALT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK)); // Alt + Ctrl + A
-        viewDisassemblerWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK)); // Alt + D
-        viewDisassemblerTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.ALT_DOWN_MASK)); // Alt + T
-        viewReferenceManualWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK)); // Alt + R
-        viewReferenceManualTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.ALT_DOWN_MASK)); // Alt + M
         viewDebugPanel.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_DOWN_MASK)); // Alt + B
 
         // Add items to the view menu
@@ -98,11 +89,14 @@ public class ViewMenu {
         viewMenu.add(viewControl);
         viewMenu.add(viewAccumulator);
         viewMenu.addSeparator();
-        viewMenu.add(viewDisassemblerWindow);
-        viewMenu.add(viewDisassemblerTab);
-        viewMenu.addSeparator();
-        viewMenu.add(viewReferenceManualWindow);
-        viewMenu.add(viewReferenceManualTab);
+        if(CheerpJUtils.onCheerpj()) {
+            viewMenu.add(viewDisassemblerTab);
+            viewDisassemblerTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.ALT_DOWN_MASK)); // Alt + T
+        }
+        else {  
+            viewMenu.add(viewDisassemblerWindow);
+            viewDisassemblerWindow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK)); // Alt + D
+        }
         viewMenu.addSeparator();
         viewMenu.add(viewDebugPanel);
         
