@@ -222,7 +222,8 @@ public class Baby extends JFrame {
 
         }
         catch(Exception e) {
-            JOptionPane.showMessageDialog(getContentPane(), MiscUtils.getStackTrace(e), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(getContentPane(), MiscUtils.getStackTrace(e), "Baby Constructor Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

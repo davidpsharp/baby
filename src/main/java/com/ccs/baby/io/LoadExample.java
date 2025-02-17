@@ -44,7 +44,7 @@ public class LoadExample implements ActionListener {
             // Update recent files menu
             FileMenu.updateRecentFilesMenu(store, frame, crtPanelController);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame.getContentPane(), MiscUtils.getStackTrace(ex), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame.getContentPane(), MiscUtils.getStackTrace(ex), "LoadExample Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

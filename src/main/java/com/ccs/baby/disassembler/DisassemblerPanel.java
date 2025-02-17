@@ -110,7 +110,7 @@ public class DisassemblerPanel extends JPanel {
         }
         catch(Exception ex)
         {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "updateStore Error", JOptionPane.ERROR_MESSAGE);
         }
         
         crtPanelController.redrawCrtPanel();
