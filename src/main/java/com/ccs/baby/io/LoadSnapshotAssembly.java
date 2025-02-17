@@ -69,7 +69,7 @@ public class LoadSnapshotAssembly implements ActionListener {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame.getContentPane(),
                     "Error loading file: " + e.getMessage(),
-                    "Error",
+                    "handleFileLoad Error",
                     JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }

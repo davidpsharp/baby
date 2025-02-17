@@ -36,7 +36,7 @@ public class SaveAssembly implements ActionListener {
                 store.saveAssembly(file.toString());
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "SaveAssembly Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         frame.getContentPane().repaint();

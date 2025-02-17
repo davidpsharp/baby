@@ -34,7 +34,7 @@ public class SaveSnapshot implements ActionListener {
                 store.saveSnapshot(file.toString());
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame.getContentPane(), ex.getMessage(), "SaveSnapshot Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         frame.getContentPane().repaint();
