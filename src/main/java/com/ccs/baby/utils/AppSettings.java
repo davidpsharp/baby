@@ -14,6 +14,7 @@ public class AppSettings {
     public static final String KEY_INTERACTIVE_LOADING = "interactive_loading";
     public static final String KEY_LOAD_PATH = "load_path";
     public static final String KEY_SHOW_DISCONNECTED_BUTTONS = "show_disconnected_buttons";
+    public static final String KEY_NUM_DISS_FORMAT = "num_diss_format";
     
     // Default values
     public static final boolean DEFAULT_SHOW_FPS = true;
@@ -24,6 +25,7 @@ public class AppSettings {
     public static final boolean DEFAULT_INTERACTIVE_LOADING = true;
     public static final String DEFAULT_LOAD_PATH = System.getProperty("user.home");
     public static final boolean DEFAULT_SHOW_DISCONNECTED_BUTTONS = true;
+    public static final String DEFAULT_NUM_DISS_FORMAT = "dec";
 
     private static AppSettings instance;
     private final PreferencesService prefs;
@@ -81,6 +83,10 @@ public class AppSettings {
         return prefs.getBooleanPreference(KEY_SHOW_DISCONNECTED_BUTTONS, DEFAULT_SHOW_DISCONNECTED_BUTTONS);
     }
 
+    public String getNumDissFormat() {
+        return prefs.getPreference(KEY_NUM_DISS_FORMAT, DEFAULT_NUM_DISS_FORMAT);
+    }
+
     // Setter methods
     public void setShowFps(boolean value) {
         prefs.setBooleanPreference(KEY_SHOW_FPS, value);
@@ -112,6 +118,10 @@ public class AppSettings {
 
     public void setShowDisconnectedButtons(boolean value) {
         prefs.setBooleanPreference(KEY_SHOW_DISCONNECTED_BUTTONS, value);
+    }
+
+    public void setNumDissFormat(String value) {
+        prefs.setPreference(KEY_NUM_DISS_FORMAT, value);
     }
     
 }

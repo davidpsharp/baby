@@ -598,10 +598,9 @@ public class Store
 						// get the third token on the line
 						String operandValueS = tokenizer.nextToken();
 						
-						// convert string to int
 						try
 						{
-							operandValue = Integer.parseInt(operandValueS);
+							operandValue = parseStringToNumber(operandValueS);
 						}
 						catch(NumberFormatException e)
 						{
@@ -650,10 +649,76 @@ public class Store
 		
 		}
 	}
+
+	private int parseStringToNumber(String numberString) throws NumberFormatException
+	{
+		// Example number formats this can parse:
+		// 0b01011011011 : binary
+		// L0b10010101 : LSB first binary (same as Baby CRT store)
+		// 0xABC5 or ABC5h : hexadecimal
+		// 1234 -1234 : decimal
+
+		int number;
+
+		// check for Least-Significant-Bit-first encoding (to match baby CRT Store bit order)
+		if(numberString.startsWith("L0b"))
+		{
+			number = parseBinaryString(reverseString(numberString.substring(3)));
+		}
+		else if(numberString.startsWith("0x"))
+		{ 
+			// try hex (parseLong otherwise can't handle bit 31 being set)
+			number = (int)Long.parseLong(numberString.substring(2), 16);
+		}
+		else if(numberString.startsWith("0b"))
+		{
+			// try binary
+			number = parseBinaryString(numberString.substring(2));
+		}
+		// No prefixes found so check suffixes...
+		else if(numberString.endsWith("h"))
+		{
+			// try hex (parseLong otherwise can't handle bit 31 being set)
+			number = (int)Long.parseLong(numberString.substring(0, numberString.length()-1), 16);
+		}
+		else
+		{
+			// try decimal
+			number = Integer.parseInt(numberString);
+		}
+		
+		return number;
+		
+	}
 	
 	public String disassembleModern(int line)
 	{
 		return disassembleModern(line, false);
+	}
+
+	private String formatNUMoperand(int line)
+	{
+		String format = AppSettings.getInstance().getNumDissFormat();
+
+		String value;
+
+		// pad binary formats with an extra space so long binary string separated from the semi colon that starts the comment
+
+		switch(format) {
+			case "bin" :
+				value = "0b" + getBinaryString(line) + " ";
+				break;
+			case "hex" :
+				value = "0x" + String.format("%08x", line);
+				break;
+			case "lsbbin" :
+				value = "L0b" + reverseString(getBinaryString(line)) + " ";
+				break;
+			default : // also catch for "dec"
+				value = Integer.toString(line);
+		}
+
+		return value;
 	}
 
 	// takes a line and returns the NUM value or the mdoern mnemonic
@@ -663,17 +728,18 @@ public class Store
 		String output = "";
 		
 		// get integer representation of the line
-		String lineValue = Integer.toString(line);
+		String lineValueDec = Integer.toString(line);
 		
 		// if any bits other than 0-4 and 13-15 are set then decide it's a NUM
 		if( (line & (~0x0000E01F)) != 0)
 		{
-			output = "NUM " + lineValue;
+			output = "NUM " + formatNUMoperand(line);
 		}
 		else
 		{
 			output = disassembleModernMnemonic(line); 
 		}
+		
 		
 		// format of line is
 		// mmm nn             ; alternative 
@@ -707,7 +773,7 @@ public class Store
 		}
 		else
 		{
-			output += lineValue;
+			output += lineValueDec;
 		}
 
 		// append value of the line being read from if an instruction that reads a line value

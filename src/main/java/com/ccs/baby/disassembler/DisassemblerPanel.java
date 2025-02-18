@@ -114,6 +114,9 @@ public class DisassemblerPanel extends JPanel {
         }
         
         crtPanelController.redrawCrtPanel();
+
+        // and disassemble again from the store so that the comments update when assembled instruction alters them
+        updateTextArea();
     }
 
 }
