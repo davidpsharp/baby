@@ -98,6 +98,8 @@ public class DisassemblerPanel extends JPanel {
         // create a new tokenizer, tokenizing on newlines
         StringTokenizer tokenizer = new StringTokenizer(fullText, "\n");
         
+        boolean assemblyErrors = false;
+
         try
         {
             // any exception will cause drop out of while loop and be handled
@@ -110,13 +112,16 @@ public class DisassemblerPanel extends JPanel {
         }
         catch(Exception ex)
         {
+            assemblyErrors = true;
             JOptionPane.showMessageDialog(null, ex.getMessage(), "updateStore Error", JOptionPane.ERROR_MESSAGE);
         }
         
         crtPanelController.redrawCrtPanel();
 
-        // and disassemble again from the store so that the comments update when assembled instruction alters them
-        updateTextArea();
+        // if assembled without issue then disassemble again from the store so that the comments
+        // update when assembled instruction alters them
+        if(!assemblyErrors)
+            updateTextArea();
     }
 
 }
