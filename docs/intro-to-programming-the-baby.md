@@ -1,6 +1,6 @@
 # A Technical Introduction To Programming The Baby Computer
 
-## Creating and Modifying Programs for the Baby Computer Using the PC-based “Baby Simulator”
+## Creating and Modifying Programs for the Baby Computer Using the “Baby Simulator”
 
 Version 0.10 (May 2013) Page 4 of 24 Author: NC, based on original work by JT.
 
@@ -8,41 +8,10 @@ Converted from PDF to markdown by David Sharp (Feb 2025).
 
 *Fig. 1 - Photo of the real Baby control panel, as used in the PC-based Baby Simulator*
 
-**Who this guide is for 3**
 
-**Setting the scene 3**
 
-**Introducing the Baby simulator 4**
 
-**Loading the simulator 4**
-
-**First steps using the simulator 4**
-
-**Introducing the Disassembler interface 6**
-
-**Introducing the Assembler instructions 7**
-
-**Getting more familiar with the Disassembler 10**
-
-**Adding numbers together 12**
-
-**Preparing to type in and run a program on the simulator 12**
-
-**An example program to add numbers 13**
-
-**An example program to subtract numbers 14**
-
-**Reviewing the main steps to type in, load and run programs 14**
-
-**Single-stepping programs 15**
-
-**A look at the original 1948 Baby program 18**
-
-**APPENDIX A: Setting up the free-standing Java applet version 20**
-
-**APPENDIX B: Baby control panel switch and button reference 21**
-
-**Who this guide is for**
+## Who this guide is for
 
 This guide explains the basics of programming the Baby computer. It gives an introduction to programming concepts applicable to both the PC-based Baby simulator, and the physically recreated Baby running in MOSI. It is intended particularly for use as an aid for new members of the Baby volunteer team, and will help such colleagues to get familiar with the fundamentals of programming to a level needed to support the machine. It assumes no prior knowledge of computer programming.
 
@@ -204,13 +173,13 @@ Example:
 
 Suppose on line 1 of a program there is:
 
-```markdown
+```
 01 JMP 25
 ```
 
 And, on lines 2, 3, 4, 5 and 25 are:
 
-```markdown
+```
 02 STO 31
 03 STP
 04 LDN 6
@@ -236,13 +205,13 @@ Example:
 
 Suppose on line 1 of a program there is:
 
-```markdown
+```
 01 JRP 25
 ```
 
 And, on lines 2, 3, 4, 5 and 25 are:
 
-```markdown
+```
 02 STO 31
 03 STP
 04 LDN 6
@@ -264,13 +233,13 @@ Example:
 
 Suppose on line 1 of a program there is:
 
-```markdown
+```
 01 LDN 25
 ```
 
 And, on line 25, is:
 
-```markdown
+```
 25 NUM 123
 ```
 
@@ -284,7 +253,7 @@ Example:
 
 The instructions
 
-```markdown
+```
 02 LDN 26
 26 NUM -8
 ```
@@ -299,7 +268,7 @@ Example:
 
 Suppose line 8 of a program is:
 
-```markdown
+```
 08 STO 27
 ```
 
@@ -309,7 +278,7 @@ Example:
 
 If the Accumulator holds 1234, and on line 6 of a program there is:
 
-```markdown
+```
 06 STO 21
 ```
 
@@ -323,13 +292,13 @@ Example:
 
 Suppose line 4 of a program is:
 
-```markdown
+```
 04 SUB 27
 ```
 
 and on line 27 is:
 
-```markdown
+```
 27 NUM 123
 ```
 
@@ -347,7 +316,7 @@ Example:
 
 Suppose the program has the following lines in it:
 
-```markdown
+```
 03 CMP
 04 STP
 05 LDN 25
@@ -374,7 +343,7 @@ When you load an existing program into the Disassembler window (either from the 
 
   For example: For a line holding the number -1 (a case when all 32 bits in the line are set), it indicates the possibility that it might be a STOP instruction line instead of a number line by adding “; STP” at the end of the display for that line. (In that case, the line contents *might* mean STOP because the bits 13-15 are all set, just as they would also be in a STOP command line):
 
-```markdown
+```
 NUM -1 ; STP
 ```
 
@@ -382,7 +351,7 @@ NUM -1 ; STP
 
   For example:
 
-```markdown
+```
 STO 2 ; 24578
 ```
 
@@ -392,7 +361,7 @@ STO 2 ; 24578
 
   For example:
 
-```markdown
+```
 JMP 4 ; 4
 ```
 
@@ -408,7 +377,7 @@ ii. Whilst a program is running, stopped, or whilst it is being manually stepped
 
 To quickly check the values currently held in the CI & PI (Control) and A (Accumulator) working stores at that particular point in the execution of the program. On loading the Disassembler window, and on later performing a **Load from store**, the current values in these stores are listed in the top three lines of the Disassembler display, as shown in the following example:
 
-```markdown
+```
 ; CI: 5
 ; PI: JMP 0 ; 0
 ; ACC: -1
@@ -440,7 +409,7 @@ Below is a program to add two numbers. As there is no add instruction, it uses s
 
 We will add 136 to 478 (but any numbers could be used - as long as the result is smaller than 2,147,483,647!):
 
-```markdown
+```
 01 LDN 10 ; Load into the Accumulator the number found on line 10, changing its sign.
 ; The Accumulator becomes -136.
 
@@ -548,7 +517,7 @@ In this example we subtract 36 from 89. Once again we will put the numbers in li
 
 Follow the process above that was used for the input and running of the addition program using the Disassembler window, and try inputting and running the program below in a similar way. Remember to clear the memory as described earlier (see “***Preparing to type in and run a program”\***) before inputting this new program.
 
-```markdown
+```
 01 LDN 10 ; Load into the Accumulator the number in line 10 changing its sign. 
 ; -89 is now in the Accumulator.
 
@@ -613,7 +582,7 @@ As explained earlier in the description of the JMP instruction, it allows us to 
 
 To illustrate, suppose there are these lines in a program:
 
-```markdown
+```
 03 JMP 20
 
 ...
@@ -629,7 +598,7 @@ To demonstrate for yourself the effect of single stepping a program that include
 2. **Load from store** to clear the **Disassembler** window.
 3. Type in the program below:
 
-```markdown
+```
 01 JMP 25 ; Jump to execute line 5, one more than the number in line 25
 05 JMP 26 ; Jump to execute line 10 one more than the number in line 26
 10 JMP 27 ; Jump to execute line 15, one more than the number in line 27
@@ -665,7 +634,7 @@ As we described previously in the description of the CMP assembler instruction, 
 
 Read again the description of the CMP (**Compare**) instruction earlier, and then look at the following program, before inputting it, to work out where it will stop, and what number will be displayed on line 20 when it stops:
 
-```markdown
+```
 01 LDN 30
 02 CMP
 03 JMP 29
@@ -732,68 +701,64 @@ To run in the simulator:
 
 *Note: The disassembler display in Fig. 10 has been simplified to show only relevant assembler interpretations for each line. Note also that the actual snapshot file FACTORCT.SNP also sets the bit 5 (value 32) on some of the program lines, but this bit is ignored when the program runs, so it has been omitted here for reasons of clarity.*
 
-```markdown
-0000: **00000000000000000000000000000000**
-0001: **00011000000000100000000000000000**
-0002: **01011000000001100000000000000000**
-0003: **01011000000000100000000000000000**
-0004: **11011000000001100000000000000000**
-0005: **11101000000000100000000000000000**
-0006: **11011000000000010000000000000000**
-0007: **00000000000000110000000000000000**
-0008: **00101000000001000000000000000000**
-0009: **01011000000000010000000000000000**
-0010: **10011000000001100000000000000000**
-0011: **10011000000000100000000000000000**
-0012: **00000000000000110000000000000000**
-0013: **00000000000001110000000000000000**
-0014: **01011000000000100000000000000000**
-0015: **10101000000000010000000000000000**
-0016: **11011000000001100000000000000000**
-0017: **11011000000000100000000000000000**
-0018: **01011000000001100000000000000000**
-0019: **01101000000000000000000000000000**
-0020: **10111111111111111111111111111111**
-0021: **10000000000000000000000000000000**
-0022: **00100000000000000000000000000000**
-0023: **00000000000000000011111111111111**
-0024: **11111111111111111100000000000000**
-0025: **00000000000000000000000000000000**
-0026: **00000000000000000000000000000000**
-0027: **00000000000000000000000000000000**
-0028: **00000000000000000000000000000000**
-0029: **00000000000000000000000000000000**
-0030: **00000000000000000000000000000000**
-0031: **00000000000000000000000000000000**
+```
+0000: 00000000000000000000000000000000
+0001: 00011000000000100000000000000000
+0002: 01011000000001100000000000000000
+0003: 01011000000000100000000000000000
+0004: 11011000000001100000000000000000
+0005: 11101000000000100000000000000000
+0006: 11011000000000010000000000000000
+0007: 00000000000000110000000000000000
+0008: 00101000000001000000000000000000
+0009: 01011000000000010000000000000000
+0010: 10011000000001100000000000000000
+0011: 10011000000000100000000000000000
+0012: 00000000000000110000000000000000
+0013: 00000000000001110000000000000000
+0014: 01011000000000100000000000000000
+0015: 10101000000000010000000000000000
+0016: 11011000000001100000000000000000
+0017: 11011000000000100000000000000000
+0018: 01011000000001100000000000000000
+0019: 01101000000000000000000000000000
+0020: 10111111111111111111111111111111
+0021: 10000000000000000000000000000000
+0022: 00100000000000000000000000000000
+0023: 00000000000000000011111111111111
+0024: 11111111111111111100000000000000
+0025: 00000000000000000000000000000000
+0026: 00000000000000000000000000000000
+0027: 00000000000000000000000000000000
+0028: 00000000000000000000000000000000
+0029: 00000000000000000000000000000000
+0030: 00000000000000000000000000000000
+0031: 00000000000000000000000000000000
 ```
 
 ### Program Logic
 
 Lines 1 - 4: Initialisation
 
-```markdown
-`
 ```
-
 01 LDN 24 ; Loads to Acc -(1 less than no to be factored) = initial -b value
 02 STO 26 ; Stores the initial **–b test value in line 26**
 03 LDN 26 ; Loads initial +b value into Acc
 04 STO 27 ; Stores the initial **+b test value in line 27**
+```
 
 Lines 6 - 8: Do subtractions using the current b test value, check sign of difference, jump back if 0 is not passed yet
 
-```markdown
-`
 ```
-
 05 LDN 23 ; Loads in no. to be factored to Acc.
 06 SUB 27 ; Subtracts the latest +b test value from the current Acc value
 07 CMP ; Jumps to execute line 9 if Acc is now –ve.
 08 JRP 20 ; Loops back to execute from line 6 again if Acc value not yet –ve.
+```
 
 Lines 9-13: Form a remainder, Test it and Stop if it is Zero (because we have a result then)
 
-```markdown
+```
 09 SUB 26 ; Subtract current -b test value from Acc (so adds +b back on).
 ; By adding +b back on, we identify if subtractions have overshot 0
 ; by less than the amount +b, in which case b isn’t a factor.
@@ -814,7 +779,7 @@ Lines 9-13: Form a remainder, Test it and Stop if it is Zero (because we have a 
 
 Lines 14 – 19: Form a new divisor **b** to be tested, then jump back and test it as a possible factor using subtractions
 
-```markdown
+```
 14 LDN 26 ; Load the last tested b value as a positive Acc value.
 15 SUB 21 ; Decrement the last tested b value by 1.
 16 STO 27 ; Store **new +b test value in line 27**.
@@ -825,7 +790,7 @@ Lines 14 – 19: Form a new divisor **b** to be tested, then jump back and test 
 
 Lines 20 – 24: Fixed data
 
-```markdown
+```
 20 NUM -3 ; Value for use in the JRP jump instruction in line 8.
 21 NUM 1 ; Value for decrementing value of the test b value in line 15.
 22 NUM 4 ; Value for use in the JMP jump instruction in line 19.
@@ -835,7 +800,7 @@ Lines 20 – 24: Fixed data
 
 Lines 25 – 27: Variable data written to during execution (initially all zero)
 
-```markdown
+```
 25 NUM 0 ; Latest overshoot difference (written by line 10).
 26 NUM 0 ; Latest **-b** value under test (written by line 2 or 18).
 27 NUM 0 ; Latest **+b** value under test (written by line 4 or 16).****
@@ -845,7 +810,10 @@ Lines 25 – 27: Variable data written to during execution (initially all zero)
 31 NUM 0 ; Not used.
 ```
 
-***** The answer is left displayed in store line 27 at end of run.
+The answer is left displayed in store line 27 at end of run.
+
+
+
 
 
 ## APPENDIX B: Baby control panel switch and button reference
