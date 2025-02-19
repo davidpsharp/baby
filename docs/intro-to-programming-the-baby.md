@@ -52,7 +52,7 @@ If you do already have programming knowledge, you will find that the main ‘Ref
 
 For others, this guide will serve as a primer, so that you can later refer to the detailed Reference Manual.
 
-**Setting the scene**
+## Setting the scene
 
 The work of the Baby volunteer team involves the demonstration of programs running on the PC-based simulator, and also on the replica Baby itself. We also need to be able to write and run extra programs in order to debug the Baby machine when needed.
 
@@ -76,7 +76,7 @@ The ability to run new or modified programs in this way relies on the ability to
 
 Familiarity with the use of the simulator is therefore a pre-requisite for Baby volunteers to be able to demonstrate effectively, and to be capable of debugging operational problems. To that end, the following sections will guide the reader in Baby simulator operation, and in basic programming techniques using the simulator’s features.
 
-**Introducing the Baby simulator**
+## Introducing the Baby simulator
 
 A Java based Baby simulator has been written that runs on Windows based PCs, both in a web browser, and as a freestanding Java program. It is a very close representation of both the 1948 ‘Small Scale Experimental Machine’ (the original ‘Baby’), and of the working replica in MOSI.
 
@@ -84,7 +84,7 @@ It is interesting to note that the Baby simulator described in detail in the res
 
 The earlier simulators are still available on the support PCs if needed by support team members, but for the purposes of this guide, the use of only the latest simulator is covered.
 
-**Loading the simulator**
+## Loading the simulator
 
 To run the latest Baby simulator in a web browser, go to:
 
@@ -102,7 +102,7 @@ When you start up the simulator, the image of the Baby control panel may also be
 
 There is also a freestanding Java applet version of the same simulator that you may wish to download, which lets you work with it offline without needing to use the web browser to access the public website. If you still have problems with the display in the web browser version not appearing correct after adjusting the Zoom settings, you may find that this version works better for you. If you need help setting this up, see Appendix A.
 
-**First steps using the simulator**
+## First steps using the simulator
 
 Before we start programming, we will first get a general overview of the simulator and how it relates to the actual MOSI Baby. In working through this section, you should ideally have the Baby simulator ready to run.
 
@@ -157,7 +157,7 @@ It took a while to enter a new program into store one bit at a time by pressing 
 
 See Appendix B for fuller descriptions of the Baby switch and button functions.
 
-**Introducing the Disassembler interface**
+## Introducing the Disassembler interface
 
 On the 1948 machine, the only way to read the result of a calculation was to look at the monitor and to manually convert from binary into normal numbers the dots and dashes on the screen on the line in store where the program had written the answer. This still has to be done now when running the actual Baby computer, but fortunately, when running the simulation, we can use the Disassembler interface. This interface – which is included in the Baby simulator itself - helps us with inputting of new programs, and also with reading the results of running programs.
 
@@ -182,13 +182,13 @@ From now on, we will refer to Disassembler rows as lines:
 
 We will return later to more advanced features of the Disassembler interface that help in programming the Baby simulator with Assembler instructions. But first, we will get familiar with the various Assembler instructions used in programs.
 
-**Introducing the Assembler instructions**
+## Introducing the Assembler instructions
 
-**NUM Stands For: Number**
+### NUM Stands For: Number
 
 Following the 3 letter NUM code there is a number (data) that will be used by other instruction lines in the program.
 
-**JMP Stands For: Indirect Jump - Baby Function Code 0 (000)**
+### JMP Stands For: Indirect Jump - Baby Function Code 0 (000)
 
 This instruction looks in a given store line that has been set up to contain a number that is *one less than* the number of the next program line to be read and executed. JMP causes the reading of the number held in the store line whose own address is given in the JMP instruction line, and it then sets the value for the Current Instruction (CI) address to be equal to that number:
 
@@ -224,7 +224,7 @@ The effect is as follows:
 2. Baby automatically adds 1 to the value of 3, indicating that it is line 4 to be read next.
 3. Instruction line 4 is read and executed (i.e. LDN 6).
 
-**JRP Stands For: Indirect Relative Jump - Baby Function Code 1 (100)**
+### JRP Stands For: Indirect Relative Jump - Baby Function Code 1 (100)
 
 This instruction looks in a given store address that holds a number for calculation of the next program line to be read and executed: JRP causes the reading of the number that has been set in the store line whose address is included in the JRP instruction line, and the addition of that number to the present Current Instruction (CI) address (which will always be the line number holding the JRP instruction). This gives a new value for the Current Instruction address that is *one less* than the address of the next instruction to be executed, as follows:
 
@@ -256,7 +256,7 @@ The effect is as follows:
 1. Baby automatically adds 1 to the value of 3, indicating that it is line 4 to be read next.
 1. Instruction line 4 is read and executed (i.e. LDN 6).
 
-**LDN Stands For: Load Negative - Baby Function Code 2 (010)**
+### LDN Stands For: Load Negative - Baby Function Code 2 (010)
 
 This instruction uses a part of the computer called the Accumulator. The Accumulator is an extra memory location which can temporarily hold a single number to be used during an instruction. The LDN instruction causes a number value that is held in a particular line of the store to be read and negated, and the resulting number to be written into the Accumulator, replacing what was there before.
 
@@ -291,7 +291,7 @@ The instructions
 
 will load a value of 8 into the Accumulator, and -8 will remain stored on line 26.
 
-**STO Stands For: Store - Baby Function Code 3 (110)**
+### STO Stands For: Store - Baby Function Code 3 (110)
 
 This instruction causes the value currently held in the Accumulator to be copied and written into a specified line in the Store.
 
@@ -315,7 +315,7 @@ If the Accumulator holds 1234, and on line 6 of a program there is:
 
 The instruction will replace whatever was on store line 21 with the value corresponding to 1234. There will still be 1234 in the Accumulator.
 
-**SUB Stands For: Subtract - Baby Function Code 4 (001)**
+### SUB Stands For: Subtract - Baby Function Code 4 (001)
 
 This instruction causes the value currently held in the Accumulator to have subtracted from it the value that is held in the specified line in the main Store, with the result of the calculation being stored back in the Accumulator. The previous value held in the Accumulator is overwritten with the resulting value.
 
@@ -335,11 +335,11 @@ and on line 27 is:
 
 The instruction uses 27 as a store address, containing the number to be subtracted from that in the Accumulator, and it subtracts 123 (found on line 27) from the number currently in the Accumulator, leaving the number resulting from the calculation in the Accumulator.
 
-**STP Stands For: Stop - Baby Function Code 7 (111)**
+### STP Stands For: Stop - Baby Function Code 7 (111)
 
 This stops the program, so it will be the last instruction to be obeyed in the program (though not necessarily the last line of the program as displayed). The **Stop Light** comes on when it is reached.
 
-**CMP Stands For: Compare - Baby Function Code 6 (011)**
+### CMP Stands For: Compare - Baby Function Code 6 (011)
 
 This causes the program to check whether the number currently stored in the Accumulator has a negative value. If so, it causes the next instruction line in the program to be skipped, with the one on the line below that executed next instead.
 
@@ -362,7 +362,7 @@ b) *Assuming the Accumulator contains a value of -1*:
 
 When line 3 is executed, the CMP instruction causes a check of whether the Accumulator is negative (which it then is), and so the program next executes line 5 of the program, causing the value of -987 to be loaded into the Accumulator store.
 
-**Getting more familiar with the Disassembler**
+## Getting more familiar with the Disassembler
 
 When you load an existing program into the Disassembler window (either from the store, or from a file):
 
@@ -432,7 +432,7 @@ To load the lines typed into the Disassembler into the main Store ready for runn
 
 If you are typing in a set of instructions using the Disassembler, then you can type anything you like to the right of a semicolon. It will be ignored when later loading the code into the simulator’s store, or when it is saved to file from the simulator. Because of this, the usefulness of typing comments into the Disassembler is limited, because the comments can’t be saved. They will be lost whenever you close the window or refresh it (for example, by using the Load from store** option).
 
-**Adding numbers together**
+## Adding numbers together
 
 The purpose of the original Baby design was to test using Cathode Ray Tubes as computer memory. Everything was built using the least number of parts. Because of that, no instruction to add data numbers was provided, only the instructions to subtract, and to change a number to the negative of itself. The reason is that you can always add numbers using subtraction instructions as long as you can negate the answers, but you cannot subtract without an instruction to subtract.
 
@@ -466,7 +466,7 @@ We will add 136 to 478 (but any numbers could be used - as long as the result is
 
 
 
-**Preparing to type in and run a program on the simulator**
+## Preparing to type in and run a program on the simulator
 
 At the bottom of the control panel is a row of switches called key switches. The main ones used to run programs are shown in Fig. 8. When you click on one of these in the simulator, it flips down and then returns back up.
 
@@ -496,7 +496,7 @@ In order to load and run a program on the simulator, standard switch settings mu
 
 5. If the Stop Light is on now, use the **KC** switch to extinguish it, then **KCC** to reset the line counter.
 
-**An example program to add numbers**
+## An example program to add numbers
 
 After preparing the switch positions as above, we will now type in a program to add two numbers:
 
@@ -542,7 +542,7 @@ To perform another addition:
 
 If you add small numbers in this way (values less than 32), you will notice that on lines 10 and 11, what you entered as NUM is changed to JMP in the Disassembler window when you click **Load from store**. This happens with numbers between 0 and 31, as we explained earlier when explaining the Disassembler. It is safest though to type NUM whenever typing in a number yourself using the Disassembler, as a reminder that you are not inputting an instruction line.
 
-**An example program to subtract numbers**
+## An example program to subtract numbers
 
 In this example we subtract 36 from 89. Once again we will put the numbers in line 10 and 11.
 
@@ -571,7 +571,7 @@ Follow the process above that was used for the input and running of the addition
 11 NUM 36 ; The number to be subtracted from the first number.
 ```
 
-**Reviewing the main steps to type in, load and run programs**
+## Reviewing the main steps to type in, load and run programs
 
 1. Check that the switch positions are at the Normal Run setting:
 
@@ -595,7 +595,7 @@ Follow the process above that was used for the input and running of the addition
 9. When the **Stop Light** comes on switch the **STOP/RUN** switch to **STOP**.
 10. Click on **Load from store** in the Disassembler window to read the result.
 
-**Single-stepping programs**
+## Single-stepping programs
 
 We normally use the **STOP/RUN** switch to run straight through a program. However, it is also possible to step through a program one instruction at a time, and this is particularly helpful when we need to diagnose problems with programs, or problems with the actual Baby.
 
@@ -710,7 +710,7 @@ Other things to try:
 
 * Instead of using the **RUN** switch: Try single stepping through the program using the **KC** switch to compare what happens after the **Stop** line is reached, and when **KC** is then pressed again.
 
-**A look at the original 1948 Baby program**
+## A look at the original 1948 Baby program
 
 This program finds the highest factor of a number set in Store line 23, and writes the answer into Store line 27.
 
@@ -767,7 +767,7 @@ To run in the simulator:
 0031: **00000000000000000000000000000000**
 ```
 
-**Program Logic**
+### Program Logic
 
 Lines 1 - 4: Initialisation
 
@@ -847,9 +847,8 @@ Lines 25 – 27: Variable data written to during execution (initially all zero)
 
 ***** The answer is left displayed in store line 27 at end of run.
 
-**APPENDIX A: Setting up the free-standing Java applet version** - removed as Java Applets are long deprecated.
 
-**APPENDIX B: Baby control panel switch and button reference**
+## APPENDIX B: Baby control panel switch and button reference
 
 *Fig. 13 - The Main Baby Control Panel Buttons and Switches*
 
