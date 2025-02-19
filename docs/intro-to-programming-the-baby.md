@@ -1,8 +1,9 @@
-**A Technical Introduction To Programming The Baby Computer**
+# A Technical Introduction To Programming The Baby Computer
 
-**Creating and Modifying Programs for the Baby Computer Using the PC-based “Baby Simulator”**
+## Creating and Modifying Programs for the Baby Computer Using the PC-based “Baby Simulator”
 
 Version 0.10 (May 2013) Page 4 of 24 Author: NC, based on original work by JT.
+
 Converted from PDF to markdown by David Sharp (Feb 2025).
 
 *Fig. 1 - Photo of the real Baby control panel, as used in the PC-based Baby Simulator*
