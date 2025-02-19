@@ -37,7 +37,7 @@
 
     // Function to programmatically open file dialog and handle selection
     // Receives call from Java to trigger it
-    async function Java_com_ccs_baby_utils_CheerpJUtils_getFileForSimulator() {
+    async function Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator() {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.asm,.snp';
@@ -73,7 +73,7 @@
 
     // Assigns the Java application instance to window.myApplication.
     // Ensures continuous access by preventing the function from returning.
-    async function Java_com_ccs_baby_utils_CheerpJUtils_nativeSetApplication(
+    async function Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication(
         lib,
         myApplication
     ) {
@@ -135,8 +135,8 @@ manchesterbaby.com
             licenseKey:"v1-78XJpCYyasiWIQVMqUfwXea3tVk=", // license key from leaning technologies ltd, only for use on https://davidsharp.com/baby/online
             clipboardMode: "system",
             natives: {
-                Java_com_ccs_baby_utils_CheerpJUtils_getFileForSimulator,
-                Java_com_ccs_baby_utils_CheerpJUtils_nativeSetApplication
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator,
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication
             }
         });
         // set cheerpj size to be the same size as the window in Baby.java
