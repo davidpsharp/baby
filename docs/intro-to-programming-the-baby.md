@@ -2,8 +2,7 @@
 
 ## Creating and Modifying Programs for the Baby Computer Using the “Baby Simulator”
 
-Version 0.10 (May 2013) Page 4 of 24 Author: NC, based on original work by JT.
-
+Version 0.10 (May 2013) Author: Neil Croft, based on original work by JT.
 Converted from PDF to markdown by David Sharp (Feb 2025).
 
 ![main display](https://davidsharp.com/baby/github-refs/fig1-simulator-display.png)
