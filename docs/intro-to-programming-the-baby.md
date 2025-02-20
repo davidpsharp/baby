@@ -6,6 +6,8 @@ Version 0.10 (May 2013) Page 4 of 24 Author: NC, based on original work by JT.
 
 Converted from PDF to markdown by David Sharp (Feb 2025).
 
+![main display](https://davidsharp.com/baby/github-refs/fig1-simulator-display.png)
+
 *Fig. 1 - Photo of the real Baby control panel, as used in the PC-based Baby Simulator*
 
 
@@ -829,6 +831,8 @@ The answer is left displayed in store line 27 at end of run.
 
 
 ## APPENDIX B: Baby control panel switch and button reference
+
+![buttons and switches display](https://davidsharp.com/baby/github-refs/fig13-main-panel-buttons-and-switches.png)
 
 *Fig. 13 - The Main Baby Control Panel Buttons and Switches*
 
