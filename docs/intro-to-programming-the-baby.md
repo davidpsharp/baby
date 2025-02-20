@@ -79,15 +79,19 @@ The simulator behaves like the original Baby, but with an additional feature: Ra
 
 The Baby main memory is called the *Store*. The monitor in the Baby control panel is the circular display with green characters on it (see Fig. 1), and it shows what is happening in the Store whenever the red button labelled **Sc** at the bottom left of the control panel is pushed in (Fig. 2).
 
-*Fig. 2 - Monitor* Display Selector* Buttons*
+![Monitor select image](intro-to-programming-the-baby-images/fig2-monitor-select-buttons.png)
 
-*Fig. 3 - The Main Store Display*
+*Fig. 2 - Monitor* Display Selector* Buttons*
 
 The **Sc** button selection is the usual setting to see what is happening when programs are being loaded and run.
 
 It is also possible also to use the red buttons, labelled **A** and **C** (next to the **Sc** button), to change the monitor display to show two other special areas of memory in the Baby: the *Accumulator* (used to keep track of calculations currently in progress), and the *Control* (used to keep track of the current program line that is being executed).
 
 Referring now to the picture of the Main Store in Fig. 3:
+
+![Main display image](intro-to-programming-the-baby-images/fig3-main-store-display.png)
+
+*Fig. 3 - The Main Store Display*
 
 * There are 32 horizontal rows, and each row has 32 positions. In each position there is a dot or a dash. A dot represents a ‘0’ in the memory and a dash a ‘1’.
 * Each ‘0’ or 1’ in the memory is a *bit*, so there are 32 *bits* on each row. This group of 32 bits is a *word*, so each line on the screen is one *word*.
@@ -103,24 +107,31 @@ When the simulator is first loaded it automatically loads into the memory a demo
 
 To run the program: click on the switch, near the bottom left of the control panel, marked **STOP RUN** *(Fig***.\*** 4).
 
+![stop run image](intro-to-programming-the-baby-images/fig4-stop-run.png)
+
+*Fig. 4 – STOP* / RUN Switch*
+
 Each time you click on the switch, the lever position changes from **STOP** to **RUN** (switch down), or from **RUN** to **STOP** (switch up). Click the switch to set it to **RUN**, and the program draws a graph. When it has finished the **Stop Light** at the top left comes on (Fig. 5). Click on the switch again to move it back to **STOP**.
+
+![stop neon image](intro-to-programming-the-baby-images/fig5-stop-neon.png)
+
+*Fig. 5 - Stop* *Neon*
 
 Do not click on any of the other switches at this stage. Some do nothing, but others will stop a program from working. If things do seem to be going wrong, you may have accidentally clicked on a switch. Appendix B gives their functions, and says how they should be reset for normal operation. If you find you do need to reset the positions of any switches, manually reload the same program after doing so by choosing file ***diffeqt.asm\*** from the **Examples** menu (by following the procedure described below for ***Baby9.snp\*** and substituting ***diffeqt.asm\*** for ***Baby9.snp\***), then rerun the program by clicking on the **STOP**/**RUN** switch to change its position from **STOP** to **RUN**.
 
 To run another Example program:
 
 1. Click on **Examples** (the menu item just above the control panel) and then on ***Baby9.snp\*** in the window which opens.
-
-*Fig. 4 – STOP* / RUN Switch*
-
-*Fig. 5 - Stop* *Neon*
-
 2. Move the **STOP/RUN** switch to **RUN**.
 3. The program starts, and keeps running until you move the switch back to **STOP**.
 
 A version of this program (***slidex.snp\***) is often used on the Museum Baby to show that it is working.
 
 In 1948, the only way to program the actual Baby was by pressing the red buttons on the control pan (these are the 5 rows of 8 red buttons, as shown in Fig. 6).
+
+![typewriter image](intro-to-programming-the-baby-images/fig6-control-panel-typewriter.png)
+
+*Fig. 6 – The Control Panel Typewriter Buttons*
 
 It took a while to enter a new program into store one bit at a time by pressing individual buttons: If you look closely, you will see that these 40 buttons are numbered vertically in sets of 5. By pressing a button in the range 0 to 31, it is possible to change the setting of the corresponding bit on the line of store that is currently selected (the “Action Line”) once the machine switches have been set to the necessary positions to allow manual input on that store line.
 
@@ -134,19 +145,16 @@ To see the ***Baby9\*** example program loaded earlier in its assembly code form
 
 A window opens, like the one shown in Fig. 7. This is the program in assembly code. (You may have to drag the bottom of the window down to see all 31 lines of the program. Also, it is usually easiest, if possible, to move the Disassembler window so that it does not overlap the control panel image on your display.)
 
+![disassembler window](intro-to-programming-the-baby-images/fig7-disassembler.png)
+
+*Fig. 7 – The Simulator’s* Disassembler Window*
+
 From now on, we will refer to Disassembler rows as lines:
 
 * We can read anything after a semicolon as being a comment added by the Disassembler, and it does not directly affect the running of the program. So for now, we can completely ignore the top three lines in the display. Also, anything on the other lines in the Disassembler display after a semicolon is just documentary, so you can either ignore it or take note of the information there if it’s helpful. (We will see later that the comments on the lower lines can be helpful in giving alternative interpretations of what a line of store might be representing).
 * Each line starts with a number running from 0 to 31. This is the *address* of the program line in the store.
 * After this, there are spaces, followed by the 3 letter Assembler code instruction. If the instruction is NUM (standing for “a Number”), then what follows it is not an instruction, but data for the program to use. Otherwise, the 3 letter instruction in the Disassembler indicates one of the 7 functions or instructions that the Baby is able to perform.
 * Instructions that are not numbers are usually followed by a number between 0 and 31. This is the *address*, corresponding to a target line number elsewhere in Baby’s store that holds any extra information that the instruction will need to complete its task.
-
-*Fig. 7 – The Simulator’s* Disassembler Window*
-
-
-
-*Fig. 6 – The Control Panel Typewriter Buttons*
-
 * The Disassembler adds a semicolon and a comment to the right of it for each store line entry to indicate alternative interpretations of what the bits in that line of store *might* represent. This is particularly useful when the contents of the line may represent *either* a Number *or* a Program instruction, or (in some programs) where a line can be used as both at different times during program execution.
 
 We will return later to more advanced features of the Disassembler interface that help in programming the Baby simulator with Assembler instructions. But first, we will get familiar with the various Assembler instructions used in programs.
@@ -441,6 +449,8 @@ At the bottom of the control panel is a row of switches called key switches. The
 
 *(Appendix B has fuller details of switch functions and their locations on the control panel.)*
 
+![control panel switches](intro-to-programming-the-baby-images/fig8-control-panel-switches.png)
+
 *Fig. 8 - Control Panel Switches*
 
 In order to load and run a program on the simulator, standard switch settings must first be configured, as follows:
@@ -479,7 +489,9 @@ After preparing the switch positions as above, we will now type in a program to 
 
 4. When you have entered the program it should look like the image on the right, except for the details to the right of the semicolons.
 
-   *Fig. 9 - Example Program Lines in the*Disassembler*
+![example program in disassembler](intro-to-programming-the-baby-images/fig9-example-program-disassembler.png)
+
+*Fig. 9 - Example Program Lines in the *Disassembler*
 
 5. Click on **Save to store** at the top of the Disassembler window. This copies the program to the Baby simulator’s memory store.
 
