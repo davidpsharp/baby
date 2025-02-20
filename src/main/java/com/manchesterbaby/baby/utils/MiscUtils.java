@@ -3,8 +3,11 @@ package com.manchesterbaby.baby.utils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.jar.Manifest;
+import java.awt.Desktop;
 
 public class MiscUtils {
     
@@ -40,6 +43,17 @@ public class MiscUtils {
             System.out.println("error getting buildtime: " + MiscUtils.getStackTrace(ex));
         } 
         return buildTime;
+    } 
+
+    public static void launchUrlInBrowser(String url)
+    {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (URISyntaxException ex) {
+            System.err.println("Error opening download URL: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.err.println("Error opening download URL: " + ex.getMessage());
+        }
     }
         
 

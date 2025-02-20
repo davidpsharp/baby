@@ -100,16 +100,7 @@ public class FileMenu {
         }
         else {
             JMenuItem downloadSimulator = new JMenuItem("Download Simulator Java App");
-            downloadSimulator.addActionListener(e -> {
-                try {
-                    String downloadUrl = "https://davidsharp.com/baby/baby-" + Version.getVersion() + ".jar";
-                    Desktop.getDesktop().browse(new URI(downloadUrl));
-                } catch (URISyntaxException ex) {
-                    System.err.println("Error opening download URL: " + ex.getMessage());
-                } catch (Exception ex) {
-                    System.err.println("Error opening download URL: " + ex.getMessage());
-                }
-            });
+            downloadSimulator.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://davidsharp.com/baby/baby-" + Version.getVersion() + ".jar"));
             fileMenu.add(downloadSimulator);
         }
 
