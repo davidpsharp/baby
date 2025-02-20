@@ -20,7 +20,7 @@ Operation of Baby control panel switches in order to run the programs is also co
 
 If you do already have programming knowledge, you will find that the main ‘Reference Manual’ contains extra technical detail and programming tips – (see http://www.digital60.org/rebuild/50th/competition/ssemref.html).
 
-For others, this guide will serve as a primer, so that you can later refer to the detailed Reference Manual.
+For others, this guide will serve as a primer, so that you can later refer to the more detailed Reference Manual.
 
 ## Setting the scene
 
@@ -44,7 +44,7 @@ So, why is it useful to be able to create and modify Baby computer programs?
 
 The ability to run new or modified programs in this way relies on the ability to transfer code easily from the simulator into the actual Baby. This we can do, because programs from the PC simulator can be transferred to floppy disc, USB drive or CD, and these can then be used as the means of input to the Baby computer using the Baby support PC.
 
-Familiarity with the use of the simulator is therefore a pre-requisite for Baby volunteers to be able to demonstrate effectively, and to be capable of debugging operational problems. To that end, the following sections will guide the reader in Baby simulator operation, and in basic programming techniques using the simulator’s features.
+Familiarity with the use of the latest simulator is therefore a pre-requisite for Baby volunteers to be able to demonstrate effectively, and to be capable of debugging operational problems. To that end, the following sections will guide the reader in Baby simulator operation, and in basic programming techniques using the simulator’s features.
 
 ## Introducing the Baby simulator
 
