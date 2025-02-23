@@ -56,17 +56,20 @@ public class CrtControlPanel extends JPanel {
         // NOTE: The CS switch is called the stopRunSwitch switch
         stopRunSwitch = new ToggleSwitch("If switched down then continually executes instructions.");
         stopRunSwitch.addActionListener(e -> runCallback(onStopRunChange));
-
+        stopRunSwitch.setPreferredSize(new Dimension(50, 30));
 
         // displayControlButtons
         displayControlButton = new InterlockingPushButton("Displays the control on the monitor.");
         displayControlButton.addActionListener(e -> runCallback(onDisplayControlChange));
+        displayControlButton.setPreferredSize(new Dimension(40, 35));  
 
         displayAccumulatorButton = new InterlockingPushButton("Displays the accumulator on the monitor.");
         displayAccumulatorButton.addActionListener(e -> runCallback(onDisplayAccumulatorChange));
+        displayAccumulatorButton.setPreferredSize(new Dimension(40, 35));  
 
         displayStoreButton = new InterlockingPushButton("Displays the store on the monitor.");
         displayStoreButton.addActionListener(e -> runCallback(onDisplayStoreChange));
+        displayStoreButton.setPreferredSize(new Dimension(40, 35));  
 
         // Group display buttons to ensure mutual exclusivity
         ButtonGroup displayButtonGroup = new ButtonGroup();
@@ -154,37 +157,36 @@ public class CrtControlPanel extends JPanel {
         controlSwitchPanelConstraints.gridx = 0;
         controlSwitchPanelConstraints.gridy = 0;
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 42, 0, 223);
+        controlSwitchPanelConstraints.insets = new Insets(8, 32, 0, 223);  
         controlSwitchPanel.add(kspSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 115, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 105, 0, 0);  
         controlSwitchPanel.add(klcSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 152, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 142, 0, 0);  
         controlSwitchPanel.add(kscSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 187, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 177, 0, 0);  
         controlSwitchPanel.add(kacSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 226, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 216, 0, 0);  
         controlSwitchPanel.add(kbcSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 263, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 253, 0, 0);  
         controlSwitchPanel.add(kccSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 296, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 286, 0, 0);  
         controlSwitchPanel.add(kecSwitch, controlSwitchPanelConstraints);
 
-        controlSwitchPanelConstraints.insets = new Insets(0, 334, 0, 0);
+        controlSwitchPanelConstraints.insets = new Insets(8, 324, 0, 0);  
         controlSwitchPanel.add(kmcSwitch, controlSwitchPanelConstraints);
-
 
         // writeErasePanel
         JPanel writeErasePanel = new JPanel();
         writeErasePanel.setOpaque(false);
         writeErase = new ToggleSwitch("Selects whether typewriter erases or writes bits.");
         writeErasePanel.add(writeErase, BorderLayout.CENTER);
-
+        writeErasePanel.setPreferredSize(new Dimension(50, 37));  
 
         // set up panel with monitor select switches above and CS switch below
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -193,38 +195,38 @@ public class CrtControlPanel extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.insets = new Insets(15, 0, 0, 0);
+        gridBagConstraints.insets = new Insets(10, 0, 0, 0);
 
         add(displayControlButton, gridBagConstraints);
 
-        gridBagConstraints.insets = new Insets(15, 50, 0, 0);
+        gridBagConstraints.insets = new Insets(10, 50, 0, 0);
         add(displayAccumulatorButton, gridBagConstraints);
 
-        gridBagConstraints.insets = new Insets(15, 100, 0, 0);
+        gridBagConstraints.insets = new Insets(10, 100, 0, 0);
         add(displayStoreButton, gridBagConstraints);
-
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.insets = new Insets(0, 75, 0, 0);
-
-        add(stopRunSwitch, gridBagConstraints);
-
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 6;
-        gridBagConstraints.gridheight = 2;
-
-        gridBagConstraints.insets = new Insets(0, 0, 0, 0);
-
-        controlSwitchPanel.setPreferredSize(new Dimension(430, 50));
-        add(controlSwitchPanel, gridBagConstraints);
 
         gridBagConstraints.gridx = 8;
         gridBagConstraints.gridy = 0;
 
-        gridBagConstraints.insets = new Insets(0, 15, 30, 0);
+        gridBagConstraints.insets = new Insets(-3, 10, 0, 0);  
         add(writeErasePanel, gridBagConstraints);
+
+        // Position stop/run switch
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 1;  // Reduce width to prevent overlap
+        gridBagConstraints.insets = new Insets(9, 81, 0, 0);  
+        add(stopRunSwitch, gridBagConstraints);
+
+        // Position control switch panel after stop/run switch
+        gridBagConstraints.gridx = 2;  // Start after stop/run switch
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.insets = new Insets(0, 0, 0, 0);  // Restore original insets
+
+        controlSwitchPanel.setPreferredSize(new Dimension(430, 50));
+        add(controlSwitchPanel, gridBagConstraints);
 
         // set up default settings
         displayStoreButton.setSelected(true);    // default to display store on monitor
