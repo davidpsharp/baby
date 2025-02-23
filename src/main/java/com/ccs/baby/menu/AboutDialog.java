@@ -32,7 +32,8 @@ public class AboutDialog extends JFrame {
             "",
             "Licensed under the GPL 3.0",
             "",
-            "Thanks to Leaning Technologies for providing the <a href='https://cheerpj.com/'>CheerpJ</a> JVM to run the online version."
+            "Thanks to Leaning Technologies for providing the <a href='https://cheerpj.com/'>CheerpJ</a> JVM",
+            "to run the simulator in a browser."
     );
     private static final ImageIcon ICON = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
 

@@ -1,8 +1,10 @@
-;50th anniversary competition entry
-;The UK schools winner
-;Brendan Campbell wrote a program to do integer division, giving quotient and remainder.
-;This would have been an essential library routine in the early days. Note the ;personalisation of the program in the spare bits on the right:
-;source: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+; 50th anniversary competition entry
+; The UK schools winner
+; Brendan Campbell wrote a program to do integer division, giving quotient and remainder.
+; This would have been an essential library routine in the early days. Note the ;personalisation of the program in the spare bits on the right:
+; source: https://curation.cs.manchester.ac.uk/computer50/www.computer50.org/mark1/prog98/prizewinners.html
+; also: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+
 32
 0000:00000000000000000000011110000000
 0001:10111000000000100000010001000000

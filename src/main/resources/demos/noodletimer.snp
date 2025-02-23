@@ -1,10 +1,11 @@
-;50th anniversary competition entry
-;The winner
-;Yasuaki Watanabe from Japan provided the following description: "This is a three minutes timer program. 
-;If you want to eat instant noodles, use this program. Start the program after pour hot water into the 
-;cup. Open the cover and start to eat if the "Stop" indicator is illuminated. I promise you that the 
-;noodles taste good." On the day, a Japanese TV crew turned up and enacted this rather literally.
-;source: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+; 50th anniversary competition entry
+; The winner
+; Yasuaki Watanabe from Japan provided the following description: "This is a three minutes timer program. 
+; If you want to eat instant noodles, use this program. Start the program after pour hot water into the 
+; cup. Open the cover and start to eat if the "Stop" indicator is illuminated. I promise you that the 
+; noodles taste good." On the day, a Japanese TV crew turned up and enacted this rather literally.
+; source: https://curation.cs.manchester.ac.uk/computer50/www.computer50.org/mark1/prog98/prizewinners.html
+; also: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
 
 31
 0000:00000000000000000000000000000000

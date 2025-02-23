@@ -1,11 +1,12 @@
-;50th anniversary competition entry
-;Mediaeval analog clock
-;John Deane from Australia wrote a " Mediaeval analog clock which displays the hour as the number of 
-;zeroes counted from the left in location 30. The fraction of the hour is displayed in location 31 where 
-;each 0 from the left indicates 1/32 hour (about 2 minutes).
-;The basic algorithm for this program appeared in a few places, but this was judged the most imaginitive 
-;setting. The dog kennel on the right hand side is the University of Manchestger logo.
-;source: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+; 50th anniversary competition entry
+; Mediaeval analog clock
+; John Deane from Australia wrote a " Mediaeval analog clock which displays the hour as the number of 
+; zeroes counted from the left in location 30. The fraction of the hour is displayed in location 31 where 
+; each 0 from the left indicates 1/32 hour (about 2 minutes).
+; The basic algorithm for this program appeared in a few places, but this was judged the most imaginitive 
+; setting. The dog kennel on the right hand side is the University of Manchestger logo.
+; source: https://curation.cs.manchester.ac.uk/computer50/www.computer50.org/mark1/prog98/prizewinners.html
+; also: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
 
 31
 0001:11011000000000100000000010000000

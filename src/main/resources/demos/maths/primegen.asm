@@ -1,9 +1,11 @@
-;50th anniversary competition entry
-;Prime numbers
-;Bas Wijnen from Holland wrote a prime number generator, which was judged to be the best of the mathematical programs, a difficult choice among many possibilities.
-;This is about the most complex calculation which can be performed in the 32 instructions (the First Program was effectively a subcomponent of this program). When the
-;program stops having found a prime, it can be restarted and will go on to the next one.
-;source: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
+; 50th anniversary competition entry
+; Prime numbers
+; Calculate the sequence of prime numbers, next prime displayed in line 21. Stop, KC and Run after each calculation.
+; Bas Wijnen from Holland wrote a prime number generator, which was judged to be the best of the mathematical programs, a difficult choice among many possibilities.
+; This is about the most complex calculation which can be performed in the 32 instructions (the First Program was effectively a subcomponent of this program). When the
+; program stops having found a prime, it can be restarted and will go on to the next one.
+; source: https://curation.cs.manchester.ac.uk/computer50/www.computer50.org/mark1/prog98/prizewinners.html
+; also: https://web.archive.org/web/19991008021142/http://www.cs.man.ac.uk/prog98/prizewinners.html
 30
 0000 JMP 24
 0001 LDN 21
