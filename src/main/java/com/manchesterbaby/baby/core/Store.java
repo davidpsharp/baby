@@ -693,7 +693,12 @@ public class Store
 	
 	public String disassembleModern(int line)
 	{
-		return disassembleModern(line, false);
+		return disassembleModern(line, false, true);
+	}
+
+	public String disassembleModern(int line, boolean isNextInstruction)
+	{
+		return disassembleModern(line, isNextInstruction, true);
 	}
 
 	private String formatNUMoperand(int line)
@@ -723,7 +728,7 @@ public class Store
 
 	// takes a line and returns the NUM value or the mdoern mnemonic
 	// marks the line's comment if it's flagged as the next instruction to make it easy to spot on the disassembler
-	public String disassembleModern(int line, boolean isNextInstruction)
+	public String disassembleModern(int line, boolean isNextInstruction, boolean useNUMpseudoInstruction)
 	{	
 		String output = "";
 		
@@ -731,7 +736,7 @@ public class Store
 		String lineValueDec = Integer.toString(line);
 		
 		// if any bits other than 0-4 and 13-15 are set then decide it's a NUM
-		if( (line & (~0x0000E01F)) != 0)
+		if( (line & (~0x0000E01F)) != 0 && useNUMpseudoInstruction)
 		{
 			output = "NUM " + formatNUMoperand(line);
 		}
@@ -764,10 +769,10 @@ public class Store
 		// and the line the instruction references in bits 0-4 (1st & 2nd nibble)
 		// and teaches the hex-binary relationship and emphasizes that the bit order on the store's
 		// display is unusual in being least signiticant bit on the left.
-		output += String.format("%08x", line) + " : ";
+		output += getHexString(line) + " : ";
 		
 		// if any bits other than 0-4 and 13-15 are set then decide it's a NUM
-		if( (line & (~0x0000E01F)) != 0)
+		if( (line & (~0x0000E01F)) != 0 && useNUMpseudoInstruction)
 		{
 			output += disassembleModernMnemonic(line);
 		}
@@ -846,6 +851,11 @@ public class Store
 			output += "" + ((value >> bit) & 1);
 		}
 		return output;
+	}
+
+	public static String getHexString(int value)
+	{
+		return String.format("%08x", value);
 	}
 	
 	// as Integer.parseInt(x, 2) can't cope with negatives need this method

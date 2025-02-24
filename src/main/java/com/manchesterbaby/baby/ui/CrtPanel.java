@@ -69,13 +69,23 @@ public class CrtPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
                 int y = e.getY();
+
+                // Check if within horizontal bounds of the drawn line
+                // Lines start at DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING
+                // and extend for 32 bits * DEFAULT_BIT_LENGTH
+                boolean withinHorizontalBounds = 
+                    x >= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING) && 
+                    x <= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING + (32 * DEFAULT_BIT_LENGTH));
+                
                 // Reverse calculate line number from y coordinate
                 int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
                 
                 // Only show dialog if click is within valid line range
-                if (lineNumber >= 0 && lineNumber < 32) {
+                if (lineNumber >= 0 && lineNumber < 32 && withinHorizontalBounds) {
                     // TODO: consider setting switches to make this line the action line
+                    // maybe this should be a double click action and only when machine not running?
                     //                    JOptionPane.showMessageDialog(CrtPanel.this,
                     //                        "Line number: " + lineNumber + '\n',
                     //                        "Line Information",
@@ -102,7 +112,19 @@ public class CrtPanel extends JPanel {
                 int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
                 
                 if (lineNumber >= 0 && lineNumber < 32 && withinHorizontalBounds) {
-                    setToolTipText("Line " + lineNumber + ": " + store.disassembleModern(store.getLine(lineNumber)));
+                    switch (currentDisplay) {
+                        case STORE:
+                            setToolTipText("Store line " + lineNumber + ": " + store.disassembleModern(store.getLine(lineNumber), false, false));
+                            break;
+                        case ACCUMULATOR :
+                            int acc = control.getAccumulator();
+                            setToolTipText("Accumulator: " +  acc + ", disassembled: " + store.disassembleModern(acc, false, false) );
+                            break;
+                        case CONTROL :
+                            setToolTipText("Control Instruction: line " + control.getControlInstruction());
+                            // can't meaningfully display PI as doesn't exist unless running and then always changing
+                            break;
+                    }
                 } else {
                     setToolTipText(null);
                 }
