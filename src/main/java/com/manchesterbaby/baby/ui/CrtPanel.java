@@ -1,6 +1,12 @@
 package com.manchesterbaby.baby.ui;
 
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.ToolTipManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
@@ -55,6 +61,53 @@ public class CrtPanel extends JPanel {
     public CrtPanel(Store store, Control control) {
         this.store = store;
         this.control = control;
+
+        // Enable tooltips
+        ToolTipManager.sharedInstance().registerComponent(this);
+
+        // Add mouse click listener
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int y = e.getY();
+                // Reverse calculate line number from y coordinate
+                int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
+                
+                // Only show dialog if click is within valid line range
+                if (lineNumber >= 0 && lineNumber < 32) {
+                    // TODO: consider setting switches to make this line the action line
+                    //                    JOptionPane.showMessageDialog(CrtPanel.this,
+                    //                        "Line number: " + lineNumber + '\n',
+                    //                        "Line Information",
+                    //                        JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+
+        // Add mouse motion listener for tooltips
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                
+                // Check if within horizontal bounds of the drawn line
+                // Lines start at DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING
+                // and extend for 32 bits * DEFAULT_BIT_LENGTH
+                boolean withinHorizontalBounds = 
+                    x >= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING) && 
+                    x <= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING + (32 * DEFAULT_BIT_LENGTH));
+                
+                // Calculate line number
+                int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
+                
+                if (lineNumber >= 0 && lineNumber < 32 && withinHorizontalBounds) {
+                    setToolTipText("Line " + lineNumber + ": " + store.disassembleModern(store.getLine(lineNumber)));
+                } else {
+                    setToolTipText(null);
+                }
+            }
+        });
 
         render();
         repaint();
@@ -255,7 +308,6 @@ public class CrtPanel extends JPanel {
             }
         }
     }
-
 
     public DisplayType getCurrentDisplay() {
         return currentDisplay;
