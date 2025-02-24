@@ -220,8 +220,17 @@ public class Store
       
         // reset the store to empty
         reset();
+
+		// if already STP'd then reset stop/run switch to stop ready to start running next program
+		if(control.getStopFlag())
+		{
+			// set to Stop
+			crtControlPanelController.setStopRun(false);
+		}	
+
+		// resets Stop flag amongst other things
 		control.reset();
-        
+
         // Add to recent files
         recentFilesManager.addRecentFile(fileName, "snapshot:" + loadMethod);
            
@@ -471,6 +480,15 @@ public class Store
         
         // reset the store to empty
         reset();
+
+		// if already STP'd then reset stop/run switch to stop ready to start running next program
+		if(control.getStopFlag())
+		{
+			// set to Stop
+			crtControlPanelController.setStopRun(false);
+		}	
+
+		// this resets Stop flag too
 		control.reset();
         
         // Add to recent files

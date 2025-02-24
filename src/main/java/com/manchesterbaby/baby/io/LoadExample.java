@@ -39,6 +39,9 @@ public class LoadExample implements ActionListener {
                 throw new IOException("Unknown example file load, not .asm or .snp");
             }
 
+            // turns off the Stop lamp
+            // TODO: check as not sure stop lamp turned off consistently when load a file vs load an example
+            // TODO: shouldntneed to do this as control reset in loading file
             Baby.mainPanel.setTexture(false);
             crtPanelController.redrawCrtPanel();
             
