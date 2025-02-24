@@ -115,8 +115,10 @@ public class CrtPanel extends JPanel {
                     switch (currentDisplay) {
                         case STORE:
                             String tooltip = "Store line " + lineNumber + ": " + store.disassembleModern(store.getLine(lineNumber), false, false);
-                            if(lineNumber == actionLine)
-                                tooltip += " [Current Action Line]";
+                            if(lineNumber == control.getControlInstruction())
+                            {
+                                tooltip += " [Control Instruction line; one line *before* the next instruction]";
+                            }
                             setToolTipText(tooltip);
                             break;
                         case ACCUMULATOR :
