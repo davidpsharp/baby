@@ -117,7 +117,7 @@ public class CrtPanel extends JPanel {
                             String tooltip = "Store line " + lineNumber + ": " + store.disassembleModern(store.getLine(lineNumber), false, false);
                             if(lineNumber == control.getControlInstruction())
                             {
-                                tooltip += " [Control Instruction line; one line *before* the next instruction]";
+                                tooltip += " [CI line; line *before* next instruction]";
                             }
                             setToolTipText(tooltip);
                             break;
