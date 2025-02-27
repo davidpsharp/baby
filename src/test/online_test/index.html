@@ -230,24 +230,46 @@ manchesterbaby.com
 </div>
 
 <script>
-    // Override console.log to capture output
+    // Override console methods to capture output
     (function() {
         if(showDebug) {
-        const originalConsoleLog = console.log;
-        const consoleDiv = document.getElementById('console_output');
-        
-        console.log = function() {
-            const output = Array.from(arguments).join(' ');
-            if (consoleDiv) {
-                if (consoleDiv.style.display === 'none') {
-                    consoleDiv.style.display = 'block';
+            const consoleDiv = document.getElementById('console_output');
+            
+            function appendToConsole(message, color) {
+                if (consoleDiv) {
+                    if (consoleDiv.style.display === 'none') {
+                        consoleDiv.style.display = 'block';
+                    }
+                    const timestamp = new Date().toLocaleTimeString();
+                    consoleDiv.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span><br>`;
+                    consoleDiv.scrollTop = consoleDiv.scrollHeight;
                 }
-                consoleDiv.innerHTML += output + '<br>';
-                consoleDiv.scrollTop = consoleDiv.scrollHeight;
             }
-            originalConsoleLog.apply(console, arguments);
-        };
-    }})();
+
+            // Capture console.log
+            const originalConsoleLog = console.log;
+            console.log = function() {
+                const output = Array.from(arguments).join(' ');
+                appendToConsole(output, '#808080');
+                originalConsoleLog.apply(console, arguments);
+            };
+
+            // Capture console.error
+            const originalConsoleError = console.error;
+            console.error = function() {
+                const output = Array.from(arguments).join(' ');
+                appendToConsole('ERROR: ' + output, '#FF0000');
+                originalConsoleError.apply(console, arguments);
+            };
+
+            // Capture unhandled errors
+            window.onerror = function(message, source, lineno, colno, error) {
+                const errorDetail = `${message}\nAt: ${source}:${lineno}:${colno}`;
+                appendToConsole('UNHANDLED ERROR: ' + errorDetail, '#FF0000');
+                return false; // Let the error propagate
+            };
+        }
+    })();
 </script>
 
 </body>
