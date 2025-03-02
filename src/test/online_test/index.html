@@ -3,95 +3,17 @@
 <head>
     <meta charset="utf-8"/>
     <title>Manchester Baby Simulator - Cheerpj Test</title>
+    <script src="https://cjrtnc.leaningtech.com/3.1/cj3loader.js"></script>
     <script>
         // Get URL parameters or use defaults
         // Usage: index.html?cheerpj=3.1&jar=3.0.0-alpha.9
         // e.g. http://localhost:8081/index.html?cheerpj=3.0&jar=3.0.0-alpha.10
         const urlParams = new URLSearchParams(window.location.search);
-        const cheerpjVersion = urlParams.get('cheerpj') || '3.1';
+        const cheerpjVersion = '3.1';
         const jarVersion = urlParams.get('jar') || '3.0.0-alpha.10';
         const showDebug = urlParams.get('debug') || false;
-        const scriptElement = document.createElement('script');
-        scriptElement.src = `https://cjrtnc.leaningtech.com/${cheerpjVersion}/cj3loader.js`;
-        
-        // Function to detect browser and OS
-        function getSystemInfo() {
-            const userAgent = navigator.userAgent;
-            let browserInfo = "Unknown Browser";
-            let osInfo = "Unknown OS";
-            
-            // Detect OS
-            if (userAgent.includes("Windows")) osInfo = "Windows";
-            else if (userAgent.includes("Mac")) osInfo = "macOS";
-            else if (userAgent.includes("Linux")) osInfo = "Linux";
-            else if (userAgent.includes("Android")) osInfo = "Android";
-            else if (userAgent.includes("iOS")) osInfo = "iOS";
-            
-            // Detect Browser
-            if (userAgent.includes("Firefox/")) {
-                const version = userAgent.match(/Firefox\/([\d.]+)/);
-                browserInfo = `Firefox ${version ? version[1] : ''}`;
-            } else if (userAgent.includes("Chrome/")) {
-                const version = userAgent.match(/Chrome\/([\d.]+)/);
-                browserInfo = `Chrome ${version ? version[1] : ''}`;
-            } else if (userAgent.includes("Safari/") && !userAgent.includes("Chrome")) {
-                const version = userAgent.match(/Version\/([\d.]+)/);
-                browserInfo = `Safari ${version ? version[1] : ''}`;
-            } else if (userAgent.includes("Edge/")) {
-                const version = userAgent.match(/Edge\/([\d.]+)/);
-                browserInfo = `Edge ${version ? version[1] : ''}`;
-            }
-            
-            return { browserInfo, osInfo };
-        }
-
-        // Function to update system info display
-        function updateSystemInfo() {
-            const { browserInfo, osInfo } = getSystemInfo();
-            const systemInfoDiv = document.getElementById('system_info');
-            if (systemInfoDiv) {
-                systemInfoDiv.textContent = `os:${osInfo} | browser:${browserInfo} | cheerpj:${cheerpjVersion} | baby:${jarVersion}`;
-            }
-        }
-        
-        // Wait for the script to load before initializing CheerpJ
-        scriptElement.onload = async function() {
-            await cheerpjInit({
-                licenseKey:"v1-78XJpCYyasiWIQVMqUfwXea3tVk=",
-                clipboardMode: "system",
-                natives: {
-                    Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator,
-                    Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication
-                }
-            });
-            // set cheerpj size to be the same size as the window in Baby.java
-            cheerpjCreateDisplay(700, 950);
-
-            // Move footer & system_info div to be the last elements in the body - needs to be done in script as
-            // cheerpjCreateDisplay spews an iframe etc into the DOM after the footer otherwise
-            const system_info = document.getElementById('system_info');
-            if (system_info) {
-                document.body.appendChild(system_info);
-            }
-            const footer = document.getElementById('footer');
-            if (footer) {
-                document.body.appendChild(footer);
-            }
-            const console_output = document.getElementById('console_output');
-            if (console_output) {
-                document.body.appendChild(console_output);
-            }        
-
-            // Update system info after CheerpJ is initialized
-            updateSystemInfo();
-            
-            // Load the Java application using the specified jar file
-            // e.g. baby-3.0.0-alpha.10.jar
-            await cheerpjRunJar(`/app/baby-${jarVersion}.jar`);
-            
-        };
-        
-        document.head.appendChild(scriptElement);
+        //const scriptElement = document.createElement('script');
+        //scriptElement.src = `https://cjrtnc.leaningtech.com/${cheerpjVersion}/cj3loader.js`;
     </script>
     <link rel="icon" href="/classes/icons/baby.png">
     <style>
@@ -230,6 +152,85 @@ manchesterbaby.com
 </div>
 
 <script>
+
+     // Function to detect browser and OS
+     function getSystemInfo() {
+        const userAgent = navigator.userAgent;
+        let browserInfo = "Unknown Browser";
+        let osInfo = "Unknown OS";
+        
+        // Detect OS
+        if (userAgent.includes("Windows")) osInfo = "Windows";
+        else if (userAgent.includes("Mac")) osInfo = "macOS";
+        else if (userAgent.includes("Linux")) osInfo = "Linux";
+        else if (userAgent.includes("Android")) osInfo = "Android";
+        else if (userAgent.includes("iOS")) osInfo = "iOS";
+        
+        // Detect Browser
+        if (userAgent.includes("Firefox/")) {
+            const version = userAgent.match(/Firefox\/([\d.]+)/);
+            browserInfo = `Firefox ${version ? version[1] : ''}`;
+        } else if (userAgent.includes("Chrome/")) {
+            const version = userAgent.match(/Chrome\/([\d.]+)/);
+            browserInfo = `Chrome ${version ? version[1] : ''}`;
+        } else if (userAgent.includes("Safari/") && !userAgent.includes("Chrome")) {
+            const version = userAgent.match(/Version\/([\d.]+)/);
+            browserInfo = `Safari ${version ? version[1] : ''}`;
+        } else if (userAgent.includes("Edge/")) {
+            const version = userAgent.match(/Edge\/([\d.]+)/);
+            browserInfo = `Edge ${version ? version[1] : ''}`;
+        }
+        
+        return { browserInfo, osInfo };
+    }
+
+    // Function to update system info display
+    function updateSystemInfo() {
+        const { browserInfo, osInfo } = getSystemInfo();
+        const systemInfoDiv = document.getElementById('system_info');
+        if (systemInfoDiv) {
+            systemInfoDiv.textContent = `os:${osInfo} | browser:${browserInfo} | cheerpj:${cheerpjVersion} | baby:${jarVersion}`;
+        }
+    }
+    
+    // Wait for the script to load before initializing CheerpJ
+    (async function () {
+        await cheerpjInit({
+            licenseKey:"v1-78XJpCYyasiWIQVMqUfwXea3tVk=",
+            clipboardMode: "system",
+            natives: {
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator,
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication
+            }
+        });
+        // set cheerpj size to be the same size as the window in Baby.java
+        cheerpjCreateDisplay(700, 950);
+
+        // Move footer & system_info div to be the last elements in the body - needs to be done in script as
+        // cheerpjCreateDisplay spews an iframe etc into the DOM after the footer otherwise
+        const system_info = document.getElementById('system_info');
+        if (system_info) {
+            document.body.appendChild(system_info);
+        }
+        const footer = document.getElementById('footer');
+        if (footer) {
+            document.body.appendChild(footer);
+        }
+        const console_output = document.getElementById('console_output');
+        if (console_output) {
+            document.body.appendChild(console_output);
+        }        
+
+        // Update system info after CheerpJ is initialized
+        updateSystemInfo();
+        
+        // Load the Java application using the specified jar file
+        // e.g. baby-3.0.0-alpha.10.jar
+        await cheerpjRunJar(`/app/baby-${jarVersion}.jar`);
+    })();
+        
+     //document.head.appendChild(scriptElement);
+
     // Override console methods to capture output
     (function() {
         if(showDebug) {
