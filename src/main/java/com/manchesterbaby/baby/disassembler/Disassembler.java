@@ -34,7 +34,7 @@ public class Disassembler extends JDialog
 
 		// create frame
 		setTitle("Disassembler");
-		setSize(400, 700); // height 630 was fine on Mac, closer to 700 on Windows 10 to fit all text
+		setSize(450, 750); // height 630 was fine on Mac, closer to 700 on Windows 10 to fit all text
 		
 		setContentPane(panel);
 
