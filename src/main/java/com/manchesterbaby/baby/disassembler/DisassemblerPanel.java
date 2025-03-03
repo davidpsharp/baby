@@ -18,6 +18,7 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
     private final JTextArea textArea;
     private boolean updateAutomatically = true;
     private JCheckBox updateAutomaticallyCheckbox;
+    private StringBuilder sb = new StringBuilder();
 
     public DisassemblerPanel(Store store, Control control, CrtPanelController crtPanelController) {
         this.store = store;
@@ -79,28 +80,36 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
 
     public void updateTextArea()
 	{
-		String output = "";
+        sb.setLength(0);
 
 		int controlInstruction = control.getControlInstruction();
 		
-		output += "; CI: " + controlInstruction + "\n";
-		output += "; PI: " + store.disassembleModern(control.getPresentInstruction() ) + "\n";
-		output += "; ACC: " + control.getAccumulator() + "\n\n";
+		sb.append("; CI: ");
+        sb.append(controlInstruction);
+        sb.append("\n");
+		sb.append("; PI: ");
+        sb.append(store.disassembleModern(control.getPresentInstruction()));
+        sb.append("\n");
+		sb.append("; ACC: ");
+        sb.append(control.getAccumulator());
+        sb.append("\n\n");
 		// TODO: add disassembled instruction to accumulator (minus the comment and NUM stuff) so can see self modifying code getting built
 		
 		for(int lineNumber=0; lineNumber<32; lineNumber++)
 		{
-			String lineNumberS = "" + lineNumber;
-			// pad with preceeding 0's
-			while(lineNumberS.length() < 2)
-				lineNumberS = "0" + lineNumberS;
+            // pad with preceeding 0's
+            if(lineNumber <10)
+                sb.append("0");
+            sb.append(lineNumber);
 			
 			// identify if the line being written is the next one to be executed so it can be marked, recall that CI increments
 			// immediately before executing the next instruction (hence why JMPing to line 0 executes the instriction on line 1).
-			output += lineNumberS + "  " + store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction+1) ) + "\n";
+            sb.append("  ");
+            sb.append(store.disassembleModern( store.getLine(lineNumber), (lineNumber==controlInstruction+1) ));
+            sb.append("\n");
 		}
 		
-		textArea.setText(output);
+		textArea.setText(sb.toString());
 	}
 
     private void updateStore() {
