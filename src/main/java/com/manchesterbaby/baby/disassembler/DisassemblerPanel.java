@@ -8,8 +8,10 @@ import javax.swing.*;
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
+import com.manchesterbaby.baby.event.StopFlagListener;
+import com.manchesterbaby.baby.event.FileLoadedListener;
 
-public class DisassemblerPanel extends JPanel {
+public class DisassemblerPanel extends JPanel implements StopFlagListener, FileLoadedListener {
     private final Store store;
     private final Control control;
     private final CrtPanelController crtPanelController;
@@ -50,12 +52,17 @@ public class DisassemblerPanel extends JPanel {
         
         backPanel.add(controlsPanel, BorderLayout.NORTH);
         backPanel.add(scrollPane, BorderLayout.CENTER);
-    
+        
         add(backPanel);
 
         updateAutomatically.setSelected(this.updateAutomatically);
 
         updateTextArea();
+
+        // Register as a stop flag listener
+        control.addStopFlagListener(this);
+        // Register as a file loaded listener
+        store.addFileLoadedListener(this);
     }
 
     public void updateDisassembler() {
@@ -124,4 +131,16 @@ public class DisassemblerPanel extends JPanel {
             updateTextArea();
     }
 
+    @Override
+    public void onStopFlagChanged(boolean newState) {
+        if (newState) {
+            // Only update when the stop flag is set to true
+            updateDisassembler();
+        }
+    }
+
+    @Override
+    public void onFileLoaded() {
+        updateDisassembler();
+    }
 }

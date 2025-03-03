@@ -15,11 +15,10 @@ import com.manchesterbaby.baby.controller.CrtControlPanelController;
 import com.manchesterbaby.baby.utils.AppSettings;
 import com.manchesterbaby.baby.utils.MiscUtils;
 import com.manchesterbaby.baby.utils.RecentFilesManager;
+import com.manchesterbaby.baby.event.FileLoadedListener;
 
 public class Store
 {
-	
-
 	// actual data in the store
 	private int line[];
 
@@ -42,6 +41,35 @@ public class Store
         return recentFilesManager;
     }
 	
+	private final List<FileLoadedListener> fileLoadedListeners = new ArrayList<>();
+
+	/**
+	 * Add a listener to be notified when a file is loaded
+	 * @param listener the listener to add
+	 */
+	public void addFileLoadedListener(FileLoadedListener listener) {
+		if (!fileLoadedListeners.contains(listener)) {
+			fileLoadedListeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove a file loaded listener
+	 * @param listener the listener to remove
+	 */
+	public void removeFileLoadedListener(FileLoadedListener listener) {
+		fileLoadedListeners.remove(listener);
+	}
+
+	/**
+	 * Notify all listeners that a file has been loaded
+	 */
+	private void notifyFileLoaded() {
+		for (FileLoadedListener listener : fileLoadedListeners) {
+			listener.onFileLoaded();
+		}
+	}
+
 	public Store()
 	{
 		// set up default data
@@ -303,6 +331,7 @@ public class Store
 					setLine(lineNumber, lineData);
             }                
         }        
+        
     }
 	
 	/**
@@ -425,6 +454,7 @@ public class Store
 					// and redraw the CRT panel as the panel will need redrawing
 					crtControlPanelController.redrawCrtPanel();
 				}
+				notifyFileLoaded();
 			}).start();
 		}
 		else
@@ -439,27 +469,28 @@ public class Store
 			} catch(IOException e) {
 				System.err.println("Error loading assembly file: " + e.getMessage());
 			}
+			notifyFileLoaded();
 		}
     }
 
     private void processModernAssembly(String fileName, String loadMethod) throws IOException {
         int numberOfLines = -1;
-		BufferedReader in;
+        BufferedReader in;
 
-		if(loadMethod == "URL")
-		{
-			// load URL from JAR, Zip etc. (typically an Example program)
-			InputStream assemblyReader = openFile(fileName);
-			in = new BufferedReader(new InputStreamReader(assemblyReader));
-		}
-		else
-		{
-			// load plain file path (loadModernAssembly)
-			File assemblyFile = new File(fileName);
-			FileReader assemblyReader = new FileReader(assemblyFile);
-			in = new BufferedReader(assemblyReader);
-		}
-        
+        if(loadMethod == "URL")
+        {
+            // load URL from JAR, Zip etc. (typically an Example program)
+            InputStream assemblyReader = openFile(fileName);
+            in = new BufferedReader(new InputStreamReader(assemblyReader));
+        }
+        else
+        {
+            // load plain file path (loadModernAssembly)
+            File assemblyFile = new File(fileName);
+            FileReader assemblyReader = new FileReader(assemblyFile);
+            in = new BufferedReader(assemblyReader);
+        }
+
         // while lines to read and we haven't yet read the number of lines value
         while (in.ready() && (numberOfLines == -1)) {        
             // read number of lines in snapshot
@@ -476,8 +507,8 @@ public class Store
                     }
                 }
             }
-        }
-        
+		}
+      
         // reset the store to empty
         reset();
 
@@ -490,12 +521,12 @@ public class Store
 
 		// this resets Stop flag too
 		control.reset();
-        
+
         // Add to recent files
         recentFilesManager.addRecentFile(fileName, "assembly:" + loadMethod);
            
         int lineCounter = 1;
-                
+        
         // while more lines to read
         while (in.ready()) {
             lineCounter++;
@@ -504,7 +535,7 @@ public class Store
             String fileLine = (in.readLine()).trim();
             
             assembleModernToStore(fileLine, lineCounter);
-        }
+		}
     }
 	
 	// actually assemble an individual line of text

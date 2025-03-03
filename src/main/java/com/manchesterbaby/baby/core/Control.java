@@ -3,6 +3,9 @@ package com.manchesterbaby.baby.core;
 import com.manchesterbaby.baby.controller.CrtControlPanelController;
 import com.manchesterbaby.baby.controller.StaticisorPanelController;
 import com.manchesterbaby.baby.manager.LampManager;
+import com.manchesterbaby.baby.event.StopFlagListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Control
 {
@@ -48,8 +51,7 @@ public class Control
 	public static final int FUNC_CMP = 6;
 	public static final int FUNC_STP = 7;
 
-
-
+	private final List<StopFlagListener> stopFlagListeners = new ArrayList<>();
 
 	public Control(Store aStore, LampManager lampManager)
 	{
@@ -150,8 +152,15 @@ public class Control
 
 	public void setStopFlag(boolean value)
 	{
+		boolean oldValue = stopFlag;
 		stopFlag = value;
 		lampManager.updateStopLamp(value);
+		if (oldValue != value) {
+			// Notify listeners only if the value actually changed
+			for (StopFlagListener listener : stopFlagListeners) {
+				listener.onStopFlagChanged(value);
+			}
+		}
 	}
 
 	// approximately executes 700 instructions and counts number of store changes in order to enable
@@ -526,4 +535,11 @@ public class Control
 		return ((value >> 13) & 0x07);
 	}
 
+	public void addStopFlagListener(StopFlagListener listener) {
+		stopFlagListeners.add(listener);
+	}
+
+	public void removeStopFlagListener(StopFlagListener listener) {
+		stopFlagListeners.remove(listener);
+	}
 }
