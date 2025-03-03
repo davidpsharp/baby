@@ -180,7 +180,7 @@ public class CrtControlPanelController {
             staticisorPanelController.updateActionLineListeners();
             crtPanelController.redrawCrtPanel();
 
-            disassembler.updateDisassemblerOnStep();
+            disassembler.updateDisassembler();
         } else {
             // perform single instruction from line and function switches
             control.executeManual();

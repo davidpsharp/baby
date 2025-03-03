@@ -52,11 +52,11 @@ public class Disassembler extends JDialog
         return tabPanel;
     }
 
-	public void updateDisassemblerOnStep()
+	public void updateDisassembler()
 	{
-		panel.updateDisassemblerOnStep();
+		panel.updateDisassembler();
         if (tabPanel != null) {
-            ((DisassemblerPanel)tabPanel).updateDisassemblerOnStep();
+            ((DisassemblerPanel)tabPanel).updateDisassembler();
         }
 	}
 

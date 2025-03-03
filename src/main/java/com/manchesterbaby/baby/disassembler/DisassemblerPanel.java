@@ -14,7 +14,7 @@ public class DisassemblerPanel extends JPanel {
     private final Control control;
     private final CrtPanelController crtPanelController;
     private final JTextArea textArea;
-    private boolean updateOnStep = true;
+    private boolean updateAutomatically = true;
 
     public DisassemblerPanel(Store store, Control control, CrtPanelController crtPanelController) {
         this.store = store;
@@ -28,7 +28,7 @@ public class DisassemblerPanel extends JPanel {
         JButton singleStep = new JButton("Step");
         JButton loadFromStore = new JButton("Load from store");
         JButton saveToStore = new JButton("Save to store");
-        JCheckBox updateOnStep = new JCheckBox("Update");
+        JCheckBox updateAutomatically = new JCheckBox("Update");
         
         textArea = new JTextArea();
         textArea.setEditable(true);
@@ -37,7 +37,7 @@ public class DisassemblerPanel extends JPanel {
         singleStep.addActionListener(e -> control.singleStep());
         loadFromStore.addActionListener(e -> updateTextArea());
         saveToStore.addActionListener(e -> updateStore());
-        updateOnStep.addActionListener(e -> this.updateOnStep = updateOnStep.isSelected());
+        updateAutomatically.addActionListener(e -> this.updateAutomatically = updateAutomatically.isSelected());
         
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(100, 100));
@@ -46,20 +46,20 @@ public class DisassemblerPanel extends JPanel {
         controlsPanel.add(singleStep);
         controlsPanel.add(loadFromStore);
         controlsPanel.add(saveToStore);
-        controlsPanel.add(updateOnStep);
+        controlsPanel.add(updateAutomatically);
         
         backPanel.add(controlsPanel, BorderLayout.NORTH);
         backPanel.add(scrollPane, BorderLayout.CENTER);
     
         add(backPanel);
 
-        updateOnStep.setSelected(this.updateOnStep);
+        updateAutomatically.setSelected(this.updateAutomatically);
 
         updateTextArea();
     }
 
-    public void updateDisassemblerOnStep() {
-        if (updateOnStep) {
+    public void updateDisassembler() {
+        if (updateAutomatically) {
             updateTextArea();
         }
     }
