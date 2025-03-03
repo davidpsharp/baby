@@ -54,20 +54,20 @@ public class CrtControlPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         // NOTE: The CS switch is called the stopRunSwitch switch
-        stopRunSwitch = new ToggleSwitch("If switched down then continually executes instructions.");
+        stopRunSwitch = new ToggleSwitch("If switched down then continually executes instructions. (Press F5/shift+F5)");
         stopRunSwitch.addActionListener(e -> runCallback(onStopRunChange));
         stopRunSwitch.setPreferredSize(new Dimension(50, 30));
 
         // displayControlButtons
-        displayControlButton = new InterlockingPushButton("Displays the control on the monitor.");
+        displayControlButton = new InterlockingPushButton("Displays the control on the monitor. (Press Ctrl+Alt+C)");
         displayControlButton.addActionListener(e -> runCallback(onDisplayControlChange));
         displayControlButton.setPreferredSize(new Dimension(40, 35));  
 
-        displayAccumulatorButton = new InterlockingPushButton("Displays the accumulator on the monitor.");
+        displayAccumulatorButton = new InterlockingPushButton("Displays the accumulator on the monitor. (Press Ctrl+Alt+A)");
         displayAccumulatorButton.addActionListener(e -> runCallback(onDisplayAccumulatorChange));
         displayAccumulatorButton.setPreferredSize(new Dimension(40, 35));  
 
-        displayStoreButton = new InterlockingPushButton("Displays the store on the monitor.");
+        displayStoreButton = new InterlockingPushButton("Displays the store on the monitor. (Press Ctrl+Alt+S)");
         displayStoreButton.addActionListener(e -> runCallback(onDisplayStoreChange));
         displayStoreButton.setPreferredSize(new Dimension(40, 35));  
 
@@ -82,7 +82,7 @@ public class CrtControlPanel extends JPanel {
         controlSwitchPanel.setOpaque(false);
         controlSwitchPanel.setLayout(new GridBagLayout());
 
-        kspSwitch = new KeySwitch("Executes a single instruction.", KeySwitch.KeyColour.GREY);    // KC == KSP
+        kspSwitch = new KeySwitch("Executes a single instruction. (Press F10)", KeySwitch.KeyColour.GREY);    // KC == KSP
         kspSwitch.addActionListener(e -> runCallback(onKspPressed));
 
         KeySwitch klcSwitch = new KeySwitch("Clears the current action line of the store.", KeySwitch.KeyColour.WHITE);
