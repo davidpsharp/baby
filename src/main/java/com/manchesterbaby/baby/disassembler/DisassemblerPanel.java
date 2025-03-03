@@ -10,8 +10,9 @@ import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
 import com.manchesterbaby.baby.event.StopFlagListener;
 import com.manchesterbaby.baby.event.FileLoadedListener;
+import com.manchesterbaby.baby.event.CrtPanelRedrawListener;
 
-public class DisassemblerPanel extends JPanel implements StopFlagListener, FileLoadedListener {
+public class DisassemblerPanel extends JPanel implements StopFlagListener, FileLoadedListener, CrtPanelRedrawListener {
     private final Store store;
     private final Control control;
     private final CrtPanelController crtPanelController;
@@ -63,6 +64,8 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
         control.addStopFlagListener(this);
         // Register as a file loaded listener
         store.addFileLoadedListener(this);
+        // Register as a CRT panel redraw listener
+        crtPanelController.addRedrawListener(this);
     }
 
     public void updateDisassembler() {
@@ -141,6 +144,11 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
 
     @Override
     public void onFileLoaded() {
+        updateDisassembler();
+    }
+
+    @Override
+    public void onCrtPanelRedrawn() {
         updateDisassembler();
     }
 }

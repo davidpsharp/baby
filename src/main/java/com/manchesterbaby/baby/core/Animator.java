@@ -87,6 +87,7 @@ public class Animator extends Thread {
                 // Render and repaint
                 crtPanelController.renderCurrentDisplay();
                 crtPanelController.efficientRepaint();
+
                 control.incCycleCount();
 
                 // Calculate elapsed time
