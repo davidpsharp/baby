@@ -376,7 +376,11 @@ public class Baby extends JFrame {
         //   System.setProperty("sun.java2d.uiScale","1.5");
         // or alternatively can specify on the command line if not overridden in code here, e.g.
         //   java -Dsun.java2d.uiScale=1.5 -jar target/baby-3.0-SNAPSHOT-jar-with-dependencies.jar
-        // If done in code may want to not execute that command so that command line params can override it.
+        if(!CheerpJUtils.onCheerpj()) {
+            if(!AppSettings.getInstance().getUiScaleSetting().equals("default")) {
+                System.setProperty("sun.java2d.uiScale", AppSettings.getInstance().getUiScaleSetting());
+            }
+        }
 
         if (args.length > 0) {
             // parse args

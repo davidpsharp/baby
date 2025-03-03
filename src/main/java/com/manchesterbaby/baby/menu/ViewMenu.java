@@ -4,6 +4,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Baby;
@@ -109,6 +111,63 @@ public class ViewMenu {
         }
 
         viewDebugPanel.setSelected(AppSettings.getInstance().isShowDebugPanel());
+
+        // Add zoom submenu if desktop app
+        if(!CheerpJUtils.onCheerpj()) {
+        
+            JMenu zoomMenu = new JMenu("Zoom on next start");
+            String[] zoomLevels;
+            boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
+            
+            if (isWindows) {
+                zoomLevels = new String[]{"0.5", "0.75", "default", "1.25", "1.5", "2", "2.5", "3"};
+            } else {
+                zoomLevels = new String[]{"default", "2", "3"};
+            }
+            
+            String currentZoom = AppSettings.getInstance().getUiScaleSetting();
+            ButtonGroup zoomGroup = new ButtonGroup();
+
+            for (String level : zoomLevels) {
+                JCheckBoxMenuItem zoomItem = new JCheckBoxMenuItem(level);
+                zoomItem.setSelected(level.equals(currentZoom));
+                zoomItem.addActionListener(e -> {
+                    AppSettings.getInstance().setUiScaleSetting(level);
+                    int choice = JOptionPane.showConfirmDialog(
+                        _parentFrame,
+                        "Zoom will take effect when the simulator is next started. Restart it now?",
+                        "Restart Required",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                    );
+                    
+                    if (choice == JOptionPane.YES_OPTION) {
+                        // Get the current jar path
+                        String jarPath = System.getProperty("java.class.path");
+                        // Start a new instance
+                        try {
+                            ProcessBuilder pb = new ProcessBuilder("java", "-jar", jarPath);
+                            pb.start();
+                            // Exit the current instance
+                            System.exit(0);
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(
+                                _parentFrame,
+                                "Failed to restart simulator: " + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
+                });
+                zoomGroup.add(zoomItem);
+                zoomMenu.add(zoomItem);
+            }
+            viewMenu.addSeparator();
+            viewMenu.add(zoomMenu);
+        }
+
+        
 
         return viewMenu;
     }
