@@ -15,6 +15,7 @@ import com.manchesterbaby.baby.controller.CrtControlPanelController;
 import com.manchesterbaby.baby.utils.AppSettings;
 import com.manchesterbaby.baby.utils.MiscUtils;
 import com.manchesterbaby.baby.utils.RecentFilesManager;
+import com.manchesterbaby.baby.event.FileLoadedListener;
 
 public class Store
 {
@@ -40,6 +41,34 @@ public class Store
         return recentFilesManager;
     }
 	
+	private final List<FileLoadedListener> fileLoadedListeners = new ArrayList<>();
+
+	/**
+	 * Add a listener to be notified when a file is loaded
+	 * @param listener the listener to add
+	 */
+	public void addFileLoadedListener(FileLoadedListener listener) {
+		if (!fileLoadedListeners.contains(listener)) {
+			fileLoadedListeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove a file loaded listener
+	 * @param listener the listener to remove
+	 */
+	public void removeFileLoadedListener(FileLoadedListener listener) {
+		fileLoadedListeners.remove(listener);
+	}
+
+	/**
+	 * Notify all listeners that a file has been loaded
+	 */
+	private void notifyFileLoaded() {
+		for (FileLoadedListener listener : fileLoadedListeners) {
+			listener.onFileLoaded();
+		}
+	}
 
 	public Store()
 	{
@@ -425,6 +454,7 @@ public class Store
 					// and redraw the CRT panel as the panel will need redrawing
 					crtControlPanelController.redrawCrtPanel();
 				}
+				notifyFileLoaded();
 			}).start();
 		}
 		else
@@ -439,6 +469,7 @@ public class Store
 			} catch(IOException e) {
 				System.err.println("Error loading assembly file: " + e.getMessage());
 			}
+			notifyFileLoaded();
 		}
     }
 

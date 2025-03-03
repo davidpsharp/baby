@@ -8,10 +8,12 @@ import javax.swing.*;
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
+import com.manchesterbaby.baby.event.StopFlagListener;
+import com.manchesterbaby.baby.event.FileLoadedListener;
 import com.manchesterbaby.baby.event.CrtPanelRedrawListener;
 import com.manchesterbaby.baby.utils.AppSettings;
 
-public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener {
+public class DisassemblerPanel extends JPanel implements StopFlagListener, FileLoadedListener, CrtPanelRedrawListener {
     private final Store store;
     private final Control control;
     private final CrtPanelController crtPanelController;
@@ -62,6 +64,10 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
 
         updateTextArea();
 
+        // Register as a stop flag listener
+        control.addStopFlagListener(this);
+        // Register as a file loaded listener
+        store.addFileLoadedListener(this);
         // Register as a CRT panel redraw listener
         crtPanelController.addRedrawListener(this);
     }
@@ -142,6 +148,19 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
         // update when assembled instruction alters them
         if(!assemblyErrors)
             updateTextArea();
+    }
+
+    @Override
+    public void onStopFlagChanged(boolean newState) {
+        if (newState) {
+            // Only update when the stop flag is set to true
+            updateDisassembler();
+        }
+    }
+
+    @Override
+    public void onFileLoaded() {
+        updateDisassembler();
     }
 
     @Override
