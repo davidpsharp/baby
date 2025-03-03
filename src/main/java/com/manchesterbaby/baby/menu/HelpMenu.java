@@ -27,6 +27,14 @@ public class HelpMenu {
         // TODO: probably move reference manual to a web browser launch and include a quick start guide embedded instead
         // anyone who wants to program the baby will need to invest some time and do some reading which doesn't have to be embedded in the simulator
 
+        JMenuItem quickStartGuide = new JMenuItem("Quick Start Guide");
+        quickStartGuide.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://github.com/davidpsharp/baby/blob/main/docs/quick-start-guide.md") );
+        helpMenu.add(quickStartGuide);
+
+        JMenuItem introToProgramming = new JMenuItem("Intro to Programming Baby");
+        introToProgramming.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://github.com/davidpsharp/baby/blob/main/docs/intro-to-programming-the-baby.md") );
+        helpMenu.add(introToProgramming);
+
         if(CheerpJUtils.onCheerpj()) {
 
             JCheckBoxMenuItem viewReferenceManualTab = new JCheckBoxMenuItem("View Reference Manual Tab");
@@ -55,16 +63,11 @@ public class HelpMenu {
             helpMenu.add(refManual);
         }
 
-        JMenuItem introToProgramming = new JMenuItem("Intro to Programming Baby");
-        introToProgramming.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://github.com/davidpsharp/baby/blob/main/docs/intro-to-programming-the-baby.md") );
-        
-
         // Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
         helpMenu.setMnemonic(KeyEvent.VK_H); // Alt + H
+        quickStartGuide.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK )); // Ctrl + Shift + H
         about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK )); // Ctrl + Alt + A
 
-        // Add items to the menu
-        helpMenu.add(introToProgramming);
         helpMenu.add(about);
 
         return helpMenu;
