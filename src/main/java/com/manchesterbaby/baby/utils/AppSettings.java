@@ -16,6 +16,7 @@ public class AppSettings {
     public static final String KEY_SHOW_DISCONNECTED_BUTTONS = "show_disconnected_buttons";
     public static final String KEY_NUM_DISS_FORMAT = "num_diss_format";
     public static final String KEY_UI_SCALE_SETTING = "ui_scale_setting";
+    public static final String KEY_DISASSEMBLER_AUTO_UPDATE = "disassembler_auto_update";
     
     // Default values
     public static final boolean DEFAULT_SHOW_FPS = true;
@@ -28,6 +29,7 @@ public class AppSettings {
     public static final boolean DEFAULT_SHOW_DISCONNECTED_BUTTONS = true;
     public static final String DEFAULT_NUM_DISS_FORMAT = "dec";
     public static final String DEFAULT_UI_SCALE_SETTING = "default";
+    public static final boolean DEFAULT_DISASSEMBLER_AUTO_UPDATE = true;
 
     private static AppSettings instance;
     private final PreferencesService prefs;
@@ -93,6 +95,10 @@ public class AppSettings {
         return prefs.getPreference(KEY_UI_SCALE_SETTING, DEFAULT_UI_SCALE_SETTING);
     }
 
+    public boolean isDisassemblerAutoUpdate() {
+        return prefs.getBooleanPreference(KEY_DISASSEMBLER_AUTO_UPDATE, DEFAULT_DISASSEMBLER_AUTO_UPDATE);
+    }
+
     // Setter methods
     public void setShowFps(boolean value) {
         prefs.setBooleanPreference(KEY_SHOW_FPS, value);
@@ -132,6 +138,10 @@ public class AppSettings {
 
     public void setUiScaleSetting(String value) {
         prefs.setPreference(KEY_UI_SCALE_SETTING, value);
+    }
+
+    public void setDisassemblerAutoUpdate(boolean value) {
+        prefs.setBooleanPreference(KEY_DISASSEMBLER_AUTO_UPDATE, value);
     }
     
 }

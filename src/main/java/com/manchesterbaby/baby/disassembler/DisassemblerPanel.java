@@ -9,6 +9,7 @@ import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
 import com.manchesterbaby.baby.event.CrtPanelRedrawListener;
+import com.manchesterbaby.baby.utils.AppSettings;
 
 public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener {
     private final Store store;
@@ -16,6 +17,7 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
     private final CrtPanelController crtPanelController;
     private final JTextArea textArea;
     private boolean updateAutomatically = true;
+    private JCheckBox updateAutomaticallyCheckbox;
 
     public DisassemblerPanel(Store store, Control control, CrtPanelController crtPanelController) {
         this.store = store;
@@ -29,16 +31,19 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
         JButton singleStep = new JButton("Step");
         JButton loadFromStore = new JButton("Load from store");
         JButton saveToStore = new JButton("Save to store");
-        JCheckBox updateAutomatically = new JCheckBox("Update");
+        updateAutomaticallyCheckbox = new JCheckBox("Update");
         
         textArea = new JTextArea();
         textArea.setEditable(true);
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         
+        updateAutomatically = AppSettings.getInstance().isDisassemblerAutoUpdate();
+        updateAutomaticallyCheckbox.setSelected(updateAutomatically);
+
         singleStep.addActionListener(e -> control.singleStep());
         loadFromStore.addActionListener(e -> updateTextArea());
         saveToStore.addActionListener(e -> updateStore());
-        updateAutomatically.addActionListener(e -> this.updateAutomatically = updateAutomatically.isSelected());
+        updateAutomaticallyCheckbox.addActionListener(e -> setAutoUpdateSetting());
         
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(100, 100));
@@ -47,19 +52,23 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
         controlsPanel.add(singleStep);
         controlsPanel.add(loadFromStore);
         controlsPanel.add(saveToStore);
-        controlsPanel.add(updateAutomatically);
+        controlsPanel.add(updateAutomaticallyCheckbox);
         
         backPanel.add(controlsPanel, BorderLayout.NORTH);
         backPanel.add(scrollPane, BorderLayout.CENTER);
         
-        add(backPanel);
-
-        updateAutomatically.setSelected(this.updateAutomatically);
+        add(backPanel);  
 
         updateTextArea();
 
         // Register as a CRT panel redraw listener
         crtPanelController.addRedrawListener(this);
+    }
+
+    private void setAutoUpdateSetting() {
+        updateAutomatically = updateAutomaticallyCheckbox.isSelected();
+        AppSettings.getInstance().setDisassemblerAutoUpdate(updateAutomatically);
+        updateDisassembler();
     }
 
     public void updateDisassembler() {
@@ -71,8 +80,6 @@ public class DisassemblerPanel extends JPanel implements CrtPanelRedrawListener 
     public void updateTextArea()
 	{
 		String output = "";
-
-		// TODO: would be cool if this updated as interactive loading goes on for each line loaded so can see program getting entered
 
 		int controlInstruction = control.getControlInstruction();
 		
