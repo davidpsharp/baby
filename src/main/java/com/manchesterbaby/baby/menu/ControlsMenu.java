@@ -34,7 +34,7 @@ public class ControlsMenu {
         JMenu controlsMenu = new JMenu("Controls");  // is 'Run' or 'Start' better for first time users
 
         // Create menu items
-        JMenuItem stepItem = new JMenuItem("Single Step");
+        JMenuItem stepItem = new JMenuItem("Single Step (F10)");
         JMenuItem runItem = new JMenuItem("Run");
         JMenuItem stopItem = new JMenuItem("Stop");
 
