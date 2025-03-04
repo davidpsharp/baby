@@ -29,11 +29,16 @@ In the run up to the 50th anniversary of the original machine, a team at Manches
 
 The machine only has 6 instructions and you can either program it very slowly, exactly as the original machine was, using the typewriter buttons and switches on the control panel.
 
-Alternatively you can write a program to run on the simulator in modern-style assembly language in any text editor and these programs can also be run on the real replica!
+Alternatively you can write a program to run on the simulator in modern-style assembly language in any text editor and these programs can also be run on the real replica! Source code for the example programs included with the simulator is available [here](https://github.com/davidpsharp/baby/tree/main/src/main/resources/demos).
 
 See the [Introduction to Programming the Baby Computer](intro-to-programming-the-baby.md) for details.
 
 https://github.com/user-attachments/assets/0ca0b138-82f5-4c3f-b1c6-e3c3020eb196
 
+## Running the simulator as an application
 
+The simulator is written in Java meaning it can be run on any computer or architecture; Windows, Mac or Linux, including Raspberry Pi and doesn't require a web browser or Internet access.
 
+Download the [latest release](https://github.com/davidpsharp/baby/releases) to run offline on your computer. You may need to install a Java Runtime if you don't already have one installed, version 8 or later is required.
+
+Full [source code](https://github.com/davidpsharp/baby) for the simulator is available on github and contributions are welcome.
