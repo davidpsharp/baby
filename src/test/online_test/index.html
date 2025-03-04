@@ -174,8 +174,8 @@ manchesterbaby.com
         } else if (userAgent.includes("Safari/") && !userAgent.includes("Chrome")) {
             const version = userAgent.match(/Version\/([\d.]+)/);
             browserInfo = `Safari ${version ? version[1] : ''}`;
-        } else if (userAgent.includes("Edge/")) {
-            const version = userAgent.match(/Edge\/([\d.]+)/);
+        } else if (userAgent.includes("Edg/")) {
+            const version = userAgent.match(/Edg\/([\d.]+)/);
             browserInfo = `Edge ${version ? version[1] : ''}`;
         }
         
