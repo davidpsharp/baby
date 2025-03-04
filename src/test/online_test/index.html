@@ -31,6 +31,40 @@
 </head>
 <body>
 
+<script>
+    // Handle iframe focus
+    function setupIframeFocus() {
+        const iframe = document.querySelector('iframe[name="cheerpjDisplay"]');
+        if (iframe) {
+            // Focus the iframe initially
+            iframe.focus();
+            
+            // Handle clicks anywhere on the document
+            document.addEventListener('click', () => {
+                // Small delay to let other click handlers complete
+                setTimeout(() => {
+                    iframe.focus();
+                }, 10);
+            });
+
+            // Ensure iframe gets focus back when window gets focus
+            window.addEventListener('focus', () => {
+                iframe.focus();
+            });
+
+            return true;
+        }
+        return false;
+    }
+
+    // Check periodically for the iframe until it exists
+    const checkForIframe = setInterval(() => {
+        if (setupIframeFocus()) {
+            clearInterval(checkForIframe);
+        }
+    }, 100);
+</script>
+
         
 <div id="simulator">    
 <script>
@@ -211,6 +245,30 @@ Visit the&nbsp;<a href='https://www.scienceandindustrymuseum.org.uk/whats-on/mee
         });
         // set cheerpj size to be the same size as the window in Baby.java
         cheerpjCreateDisplay(700, 950);
+
+        // Wait for iframe to be created and set up focus handling
+        const checkForIframe = setInterval(() => {
+            const iframe = document.querySelector('iframe[name="cheerpjDisplay"]');
+            if (iframe) {
+                clearInterval(checkForIframe);
+                
+                // Focus the iframe initially
+                iframe.focus();
+                
+                // Handle clicks anywhere on the document
+                document.addEventListener('click', () => {
+                    // Small delay to let other click handlers complete
+                    setTimeout(() => {
+                        iframe.focus();
+                    }, 10);
+                });
+
+                // Ensure iframe gets focus back when window gets focus
+                window.addEventListener('focus', () => {
+                    iframe.focus();
+                });
+            }
+        }, 100);
 
         // Move footer & system_info div to be the last elements in the body - needs to be done in script as
         // cheerpjCreateDisplay spews an iframe etc into the DOM after the footer otherwise
