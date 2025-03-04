@@ -7,15 +7,21 @@ import com.manchesterbaby.baby.controller.StaticisorPanelController;
 import com.manchesterbaby.baby.core.Animator;
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.SimulationSpeedTracker;
+import com.manchesterbaby.baby.event.AnimationStopListener;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-
+/**
+ * Manager for animation of the Baby computer.
+ */
 public class AnimationManager {
 
     private final Control control;
     private final CrtPanelController crtPanelController;
     private final StaticisorPanelController staticisorPanelController;
+    private final List<AnimationStopListener> stopListeners = new ArrayList<>();
 
     // timer for counting number of instructions executed each second to give speed
     private final Timer fpsTimer;
@@ -43,6 +49,22 @@ public class AnimationManager {
         fpsTimer.setInitialDelay(0);
     }
 
+    public void addAnimationStopListener(AnimationStopListener listener) {
+        if (!stopListeners.contains(listener)) {
+            stopListeners.add(listener);
+        }
+    }
+
+    public void removeAnimationStopListener(AnimationStopListener listener) {
+        stopListeners.remove(listener);
+    }
+
+    private void notifyAnimationStopped() {
+        for (AnimationStopListener listener : stopListeners) {
+            listener.onAnimationStopped();
+        }
+    }
+
     // start running animation
     public synchronized void startAnimation() {
 
@@ -68,6 +90,8 @@ public class AnimationManager {
 
         // repaint so that control with the PI can be drawn if necessary
         crtPanelController.redrawCrtPanel();
+
+        notifyAnimationStopped();
     }
 
 

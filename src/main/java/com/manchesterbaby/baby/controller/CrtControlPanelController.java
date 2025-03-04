@@ -179,6 +179,8 @@ public class CrtControlPanelController {
             control.executeAutomatic();
             staticisorPanelController.updateActionLineListeners();
             crtPanelController.redrawCrtPanel();
+
+            disassembler.updateDisassembler();
         } else {
             // perform single instruction from line and function switches
             control.executeManual();

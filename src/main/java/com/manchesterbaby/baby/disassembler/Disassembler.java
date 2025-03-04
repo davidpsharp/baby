@@ -8,6 +8,7 @@ import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
 import com.manchesterbaby.baby.menu.ControlsMenu;
+import com.manchesterbaby.baby.manager.AnimationManager;
 
 import java.util.*;
 
@@ -17,20 +18,22 @@ public class Disassembler extends JDialog
 	Store store;
 	Control control;
 	CrtPanelController crtPanelController;
+	AnimationManager animationManager;
 
 	private final DisassemblerPanel panel;
     private static Disassembler instance;
     private static JPanel tabPanel;
 
-	public Disassembler(Store store, Control control, CrtPanelController crtPanelController, JFrame parentFrame)
+	public Disassembler(Store store, Control control, CrtPanelController crtPanelController, AnimationManager animationManager, JFrame parentFrame)
 	{
 		super(parentFrame);
 
 		this.store = store;
 		this.control = control;
 		this.crtPanelController = crtPanelController;
+		this.animationManager = animationManager;
 
-		panel = new DisassemblerPanel(store, control, crtPanelController);
+		panel = new DisassemblerPanel(store, control, crtPanelController, animationManager);
 
 		// create frame
 		setTitle("Disassembler");
@@ -47,7 +50,7 @@ public class Disassembler extends JDialog
 
 	public JPanel getTabPanel() {
         if (tabPanel == null) {
-            tabPanel = new DisassemblerPanel(store, control, crtPanelController);
+            tabPanel = new DisassemblerPanel(store, control, crtPanelController, animationManager);
         }
         return tabPanel;
     }

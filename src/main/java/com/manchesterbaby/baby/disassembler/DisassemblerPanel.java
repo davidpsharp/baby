@@ -8,12 +8,14 @@ import javax.swing.*;
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Control;
 import com.manchesterbaby.baby.core.Store;
+import com.manchesterbaby.baby.event.CrtPanelRedrawListener;
+import com.manchesterbaby.baby.event.AnimationStopListener;
 import com.manchesterbaby.baby.event.StopFlagListener;
 import com.manchesterbaby.baby.event.FileLoadedListener;
-import com.manchesterbaby.baby.event.CrtPanelRedrawListener;
 import com.manchesterbaby.baby.utils.AppSettings;
+import com.manchesterbaby.baby.manager.AnimationManager;
 
-public class DisassemblerPanel extends JPanel implements StopFlagListener, FileLoadedListener, CrtPanelRedrawListener {
+public class DisassemblerPanel extends JPanel implements StopFlagListener, FileLoadedListener, CrtPanelRedrawListener, AnimationStopListener {
     private final Store store;
     private final Control control;
     private final CrtPanelController crtPanelController;
@@ -21,8 +23,9 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
     private boolean updateAutomatically = true;
     private JCheckBox updateAutomaticallyCheckbox;
     private StringBuilder sb = new StringBuilder();
+    private int crtRedrawCount = 0;
 
-    public DisassemblerPanel(Store store, Control control, CrtPanelController crtPanelController) {
+    public DisassemblerPanel(Store store, Control control, CrtPanelController crtPanelController, AnimationManager animationManager) {
         this.store = store;
         this.control = control;
         this.crtPanelController = crtPanelController;
@@ -60,7 +63,7 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
         backPanel.add(controlsPanel, BorderLayout.NORTH);
         backPanel.add(scrollPane, BorderLayout.CENTER);
         
-        add(backPanel);  
+        add(backPanel);
 
         updateTextArea();
 
@@ -70,6 +73,8 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
         store.addFileLoadedListener(this);
         // Register as a CRT panel redraw listener
         crtPanelController.addRedrawListener(this);
+        // Register as an animation stop listener
+        animationManager.addAnimationStopListener(this);
     }
 
     private void setAutoUpdateSetting() {
@@ -165,6 +170,17 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
 
     @Override
     public void onCrtPanelRedrawn() {
+        crtRedrawCount++;
+        // don't redraw disassembler every time monitor redraws as excessive
+        if(crtRedrawCount > 5)
+        {
+            crtRedrawCount = 0;
+            updateDisassembler();
+        }
+    }
+
+    @Override
+    public void onAnimationStopped() {
         updateDisassembler();
     }
 }
