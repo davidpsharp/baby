@@ -37,7 +37,7 @@ public class HelpMenu {
 
         if(CheerpJUtils.onCheerpj()) {
 
-            JCheckBoxMenuItem viewReferenceManualTab = new JCheckBoxMenuItem("View Reference Manual Tab");
+            JCheckBoxMenuItem viewReferenceManualTab = new JCheckBoxMenuItem("Programmer's Reference Manual");
             viewReferenceManualTab.setMnemonic(KeyEvent.VK_V); // Alt + V
             viewReferenceManualTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)); // Ctrl + Alt + V
 
@@ -63,11 +63,17 @@ public class HelpMenu {
             helpMenu.add(refManual);
         }
 
+        JMenuItem sourceCode = new JMenuItem("Source Code");
+        sourceCode.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://github.com/davidpsharp/baby/") );
+        helpMenu.add(sourceCode);
+
         // Set mnemonics (keyboard shortcuts) for macOS, Windows, and Linux
         helpMenu.setMnemonic(KeyEvent.VK_H); // Alt + H
         quickStartGuide.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK )); // Ctrl + Shift + H
         about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK )); // Ctrl + Alt + A
 
+
+        helpMenu.addSeparator();
         helpMenu.add(about);
 
         return helpMenu;
