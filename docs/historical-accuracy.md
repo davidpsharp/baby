@@ -2,9 +2,10 @@
 
  
 
-## Historical Accuracy of the Manchester Baby Simulator
+# Narration on the Historical Accuracy of the Manchester Baby Simulator
 
 By David Sharp, 11th January 2001
+Based on [v1.0](https://github.com/davidpsharp/baby/releases/tag/v1.0.0) of the simulator.
 
 ### Recent background
 
@@ -90,87 +91,16 @@ Corruption of the control and store was not just possible but likely if parts of
 
 In concluding, the accuracy of the program execution is extremely good, much better than any other known simulator. In fact the simulator is such a marked improvement over previous efforts that Christopher Burton has suggested that the Manchester Computer Conservation Society might like to feature this simulator in their demonstrations.
 
-### Sources
 
-While many sources obtained in the writing of this simulator date from the late 1940s, most of those proved fairly impenetrable and at a lower level than required i.e. circuit diagrams. As a result, modern information from the rebuild has also been used in interpreting the historical sources and producing the simulator.
-
-One of the main sources used in the rebuild was the copy of the circuit diagrams that D.B.G. Edwards and A.A. Robinson made into their notebooks upon joining the team in November 1948 (although many developments had been made since June). Geoff Tootill’s notebook was also available, as were several photos of the Baby in various stages of development after June 1948. It is precisely this continued development of the same machine immediately after 21st June that has caused myself and others so many problems in accurately determining the original set up.
-
-Sources used in the research of this simulator are outlined below. All Internet URLs are verified correct as of 10/1/01.
-
- 
-
-#### Web
-
-Burton, C., *The Programmers Reference Manual*  http://www.cs.man.ac.uk/prog98/ssemref.html
-
-Burton, Christopher, P., ‘Baby’s Legacy - The Early Manchester Mainframes’**,** ftp://ftp.cs.man.ac.uk/pub/CCS-Archive/misc/
-
-Some programs are available as the winners from the 1998 programming competition: http://www.cs.man.ac.uk/prog98/prizewinners.html
-
-Other programs historic programs were made available by Chris Burton. See the ‘Programs provided’ section at the end of the User Guide for details.
-
- Molyneux, Andrew, “M1SIM”. The simulator used for the programming competition though does not simulate the switch panel anything like correctly. http://www.cs.man.ac.uk/prog98/alt_simulators.html
-
- 
-
-#### Bibliography
-
-Burton, Christopher, P., ‘Rebuilding the First Manchester Computer’, pp. 379-386, *The First Computers – History and Architecture*, eds. Rojas, Raul and Hashagen, Ulf, Massachusetts Institute of Technology, 2000.
-
-Campbell-Kelly, Martin, ‘Past into Present: The EDSAC Simulator’, pp. 397-416, *The First Computers – History and Architecture*, eds. Rojas, Raul and Hashagen, Ulf, Massachusetts Institute of Technology, 2000.
-
-Campbell-Kelly, Martin and Aspray, William, *Computer – A history of the information machine*, BasicsBook, 1996, p. 100, 106, 126.
-
-Lavington, Simon, *Early British Computer – The story of vintage computers and the people who built them*, Manchester University Press, 1980, pp. 36-43.
-
- 
-
-#### Articles
-
-Williams, F. C., Kilburn, T. and Tootill, G. C., ‘Universal High-speed digital computers: a small-scale experimental machine’, IEE, *The proceedings of the institution*, vol. 98, part II, no. 61, February 1951. The version used is that transcribed to electronic format by Chris Burton, particular reference was made to figure 9.
-
- In depth discussions via email with Christopher P. Burton who led the team building the replica of the Baby, see Appendix.
-
- The Computer that Changed the World* CD ROM, produced by Europress for the University of Manchester. Available from http://www.computer50.org/mark1/cd.html
-
-Referenced CD material:
-
-Lavington, Simon, *A History of Manchester Computers*.
-
-Video presentations by Christopher Burton, Geoff C. Tootill and Tom Kilburn.
-
-Kilburn, Tom, ‘From Cathode Ray Tube to Ferranti Mark 1’, *The Bulletin of the Computer Conservation Society*, vol. 1, no. 2, Autumn 1990.
-
-Williams, F. C. and Kilburn, T., ‘Electronic Digital Computers’, *Nature*, 3rd August 1948, no. 162, 487.
 
  
 
  
 
- 
 
- 
 
  
-
- 
-
- 
-
- 
-
- 
-
- 
-
-The entire program is written by David Sharp, the only other credit due is for some of the graphical icons which have been borrowed from M1SIM. Thanks must also go to Christopher Burton for all the help and advice with historical accuracy, providing me with invaluable photos, giving good suggestions and testing the simulator.
-
-
-
-
-
-### Appendix
+## Appendix - Discussions with Chris Burton on the details of the Baby's behaviour
 
 Extracts from emails between David Sharp (simulator author) and Christopher Burton (Baby replica team leader) between 27/12/00 and 10/1/01, reproduced with permission. This is present for completeness since it highlights my attempts to get every detail as accurate as possible and several obscure features that I could find no documentation about.
 
@@ -367,6 +297,64 @@ A. That's OK. In fact we sometimes frig the real machine so PI persists to make 
 Q 26). Do you mean that I should keep incrementing the CI every time a manual instruction is executed at run?
 
 A. I think so. I will have to check the logic. May be several days as I probably will have to consult a colleague. Tell your supervisor that it is an arcane point which is still under investigation!
+
+
+## Sources
+
+While many sources obtained in the writing of this simulator date from the late 1940s, most of those proved fairly impenetrable and at a lower level than required i.e. circuit diagrams. As a result, modern information from the rebuild has also been used in interpreting the historical sources and producing the simulator.
+
+One of the main sources used in the rebuild was the copy of the circuit diagrams that D.B.G. Edwards and A.A. Robinson made into their notebooks upon joining the team in November 1948 (although many developments had been made since June). Geoff Tootill’s notebook was also available, as were several photos of the Baby in various stages of development after June 1948. It is precisely this continued development of the same machine immediately after 21st June that has caused myself and others so many problems in accurately determining the original set up.
+
+Sources used in the research of this simulator are outlined below. All Internet URLs are verified correct as of 10/1/01.
+
+ 
+
+#### Web
+
+Burton, C., *The Programmers Reference Manual*  http://www.cs.man.ac.uk/prog98/ssemref.html
+
+Burton, Christopher, P., ‘Baby’s Legacy - The Early Manchester Mainframes’**,** ftp://ftp.cs.man.ac.uk/pub/CCS-Archive/misc/
+
+Some programs are available as the winners from the 1998 programming competition: http://www.cs.man.ac.uk/prog98/prizewinners.html
+
+Other programs historic programs were made available by Chris Burton. See the ‘Programs provided’ section at the end of the User Guide for details.
+
+ Molyneux, Andrew, “M1SIM”. The simulator used for the programming competition though does not simulate the switch panel anything like correctly. http://www.cs.man.ac.uk/prog98/alt_simulators.html
+
+ 
+
+#### Bibliography
+
+Burton, Christopher, P., ‘Rebuilding the First Manchester Computer’, pp. 379-386, *The First Computers – History and Architecture*, eds. Rojas, Raul and Hashagen, Ulf, Massachusetts Institute of Technology, 2000.
+
+Campbell-Kelly, Martin, ‘Past into Present: The EDSAC Simulator’, pp. 397-416, *The First Computers – History and Architecture*, eds. Rojas, Raul and Hashagen, Ulf, Massachusetts Institute of Technology, 2000.
+
+Campbell-Kelly, Martin and Aspray, William, *Computer – A history of the information machine*, BasicsBook, 1996, p. 100, 106, 126.
+
+Lavington, Simon, *Early British Computer – The story of vintage computers and the people who built them*, Manchester University Press, 1980, pp. 36-43.
+
+ 
+
+#### Articles
+
+Williams, F. C., Kilburn, T. and Tootill, G. C., ‘Universal High-speed digital computers: a small-scale experimental machine’, IEE, *The proceedings of the institution*, vol. 98, part II, no. 61, February 1951. The version used is that transcribed to electronic format by Chris Burton, particular reference was made to figure 9.
+
+ In depth discussions via email with Christopher P. Burton who led the team building the replica of the Baby, see Appendix.
+
+ The Computer that Changed the World* CD ROM, produced by Europress for the University of Manchester. Available from http://www.computer50.org/mark1/cd.html
+
+Referenced CD material:
+
+Lavington, Simon, *A History of Manchester Computers*.
+
+Video presentations by Christopher Burton, Geoff C. Tootill and Tom Kilburn.
+
+Kilburn, Tom, ‘From Cathode Ray Tube to Ferranti Mark 1’, *The Bulletin of the Computer Conservation Society*, vol. 1, no. 2, Autumn 1990.
+
+Williams, F. C. and Kilburn, T., ‘Electronic Digital Computers’, *Nature*, 3rd August 1948, no. 162, 487.
+
+
+
 
 ------
 
