@@ -17,13 +17,12 @@ The display presented by the simulator is a stylized version of the original Jun
 
 The similarities between the original machine and the simulator interface are shown below in Figure 1. It would be easy for someone to learn to operate the original machine from the simulator.
 
+![original baby](historical-accuracy-images/narration-original-Dec1948-baby.jpg)
+![original baby](historical-accuracy-images/narration-replica-switch-panel.jpg)
+![original baby](historical-accuracy-images/narration-original-Dec1948-baby)
 
 
-
-
-
-
-Figure 1: The original Baby’s (above), the replica’s (above right) and the simulator’s (right) interfaces.
+Figure 1: The original Baby’s (top), the replica’s (middle) and the v1.0 simulator’s (bottom) interfaces.
 
  
 
