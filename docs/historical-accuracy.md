@@ -18,8 +18,8 @@ The display presented by the simulator is a stylized version of the original Jun
 The similarities between the original machine and the simulator interface are shown below in Figure 1. It would be easy for someone to learn to operate the original machine from the simulator.
 
 ![original baby](historical-accuracy-images/narration-original-Dec1948-baby.jpg)
-![original baby](historical-accuracy-images/narration-replica-switch-panel.jpg)
-![original baby](historical-accuracy-images/narration-original-Dec1948-baby)
+![replica baby](historical-accuracy-images/narration-replica-switch-panel.jpg)
+![simulator v1.0](historical-accuracy-images/narration-simulator-1-0-switch-panel.gif)
 
 
 Figure 1: The original Baby’s (top), the replica’s (middle) and the v1.0 simulator’s (bottom) interfaces.
@@ -46,19 +46,17 @@ What appears to be Sc on the button to select store to be displayed is, accordin
 
 The colours for the maroon typewriter buttons are sampled from the scanned photo (Figure 1) of the replica. I have attempted to make them appear slightly concave as the originals were.
 
-![img](file:////Users/david/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image007.png)
-
 The position and size of the stop lamp on the original is not clear so it has been placed to the left of the display monitor (mainly to reduce the size of the window). On the replica it is to the left of the CRT at about 10 o clock near the upright of the rack[[5\]](#_ftn5), see Figure 2 (“Both Geoff Tootill and Tom Kilburn have agreed that it is a plausible place though they can't guarantee it.” – Chris Burton).
 
- 
-
- 
-
- 
-
- 
+![original baby](historical-accuracy-images/narration-crt-on-replica.jpg)
 
 Figure 2: The display monitor on the replica.
+ 
+
+
+ 
+
+
 
 The three display select buttons are part of a unit where pushing one locks it in and releases the others, this is simulated when by pressing a button, the previously pressed button is released. Switches which were unconnected in June 1948, KBC, KEC (which clears all storage) and KMC (which clears a multiplier tube, added later) have been left on the diagram since their absence would cause the central black panel not to be representative of the original. In fact, even more true to the original than the replica (which has colours them inaccurately[[6\]](#_ftn6)) the colours of these black, grey and red switches is correct on the simulator. I have purposely positioned the STAT switch separated from the F staticisor switches as it was on the original.
 
