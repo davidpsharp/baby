@@ -13,7 +13,7 @@ https://github.com/user-attachments/assets/6170ac36-9b82-4353-8d0a-30ec6b2b64e3
 
 ## What can it do
 
-Despite only have 32 lines each of 32 bits (for 128 bytes of total memory), all visible on it's Cathode Ray Tube monitor. The Manchester Small Scale Experimental Machine or 'Baby' as it was nicknamed could run some impressive programs including animations.
+Despite only having 32 lines each of 32 bits (for 128 bytes of total memory), all visible on it's Cathode Ray Tube monitor, the Manchester Small Scale Experimental Machine or 'Baby' as it was nicknamed could run some impressive programs including animations.
 
 https://github.com/user-attachments/assets/5bee8e28-9e64-421c-967b-f34361fcd4cf
 
@@ -51,6 +51,6 @@ The simulator is written in Java meaning it can be run on any computer or archit
 
 Download the [latest release](https://github.com/davidpsharp/baby/releases) to run offline on your computer. You may need to install a Java Runtime if you don't already have one installed, version 8 or later is required.
 
-The version at [manchesterbaby.com](https://manchesterbaby.com) is exactly the same simulator, just running on a browser-based java runtime called cheerpj. The simulator has a few minor chnages in behaviour when running in that environment.
+The version at [manchesterbaby.com](https://manchesterbaby.com) is exactly the same simulator, just running on a browser-based java runtime called cheerpj. The simulator has a few minor changes in behaviour when running in that environment.
 
 Full [source code](https://github.com/davidpsharp/baby) for the simulator is available on github and contributions are welcome.
