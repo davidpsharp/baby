@@ -22,7 +22,7 @@ The similarities between the original machine and the simulator interface are sh
 ![simulator v1.0](historical-accuracy-images/narration-simulator-1-0-switch-panel.gif)
 
 
-Figure 1: The original Baby’s (top), the replica’s (middle) and the v1.0 simulator’s (bottom) interfaces.
+Figure 1: The original Baby’s (top), the replica’s circa 2000 (middle) and the v1.0 simulator’s (bottom) interfaces.
 
  
 
@@ -90,56 +90,48 @@ In concluding, the accuracy of the program execution is extremely good, much bet
 
 
 
- 
+## Discussions with Chris Burton on the details of the Baby's behaviour
 
- 
+Extracts from emails between David Sharp (simulator author) and Christopher Burton (Baby replica team leader) between 27/12/00 and 10/1/01, reproduced with permission. This is present for completeness since it highlights my attempts when writing the simulator to get every detail as accurate as possible and several obscure features that I could find no documentation about.
 
 
-
- 
-## Appendix - Discussions with Chris Burton on the details of the Baby's behaviour
-
-Extracts from emails between David Sharp (simulator author) and Christopher Burton (Baby replica team leader) between 27/12/00 and 10/1/01, reproduced with permission. This is present for completeness since it highlights my attempts to get every detail as accurate as possible and several obscure features that I could find no documentation about.
-
- 
-
-Q 1) I have been reading your reference manual with some interest but am curious about the sources of the information (is it just the IEE paper?).
+**Q 1) I have been reading your reference manual with some interest but am curious about the sources of the information (is it just the IEE paper?).**
 
 A. The IEE paper is the primary source. It has been verified by examination of the actual circuits in the machine, which clarify the operation of the switches. Other verification, or perhaps better to say, confirmation, comes from Geoff Tootill's notebook in the Manchester Museum of Science and Industry. But I would say that the latter is not needed to get an accurate simulation.
 
  
 
-Q 2) When you say that the IEE paper was 'verified by examination of the actual circuits in the machine', what do you mean?
+**Q 2) When you say that the IEE paper was 'verified by examination of the actual circuits in the machine', what do you mean?**
 
  A. Many of the relevant circuit diagrams exist in notebooks kept by DBG Edwards and AA Robinson. The logic structure is so simple that it is easy to make sure that the circuit diagrams and the programming definition are identical.
 
  
 
-Q 3). Is there any way to get a look at Geoff Tootill's notebook or a copy of it?
+**Q 3). Is there any way to get a look at Geoff Tootill's notebook or a copy of it?**
 
  A. The Museum of Science and industry in Manchester could make you a photocopy, but would charge you for it. You could probably examine the original by appointment. My own copy is very worn and uncopyable (I know, someone else asked.) Several of the pages are in facsimile on the CD-ROM "The Computer that Changed the World". Several are also in a paper by Brian Shelburne and me in Annals of the History of Computing July/September 1998.
 
  
 
-Q 4). I note from the old competition website that this simulator was deemed officially representative of the baby, was this done methodically or just by a certain amount of experimentation?
+**Q 4). I note from the old competition website that this simulator was deemed officially representative of the baby, was this done methodically or just by a certain amount of experimentation?**
 
  A. Methodically. The author wrote a version. When we tried a few examples, we found that there were various errors, mainly in the Man Machine Interface. I wrote the Programmers Reference, confirming with colleagues that it correctly represented the way the circuits worked (by this time the replica was working), then Andy used that to correct M1SIM.
 
 
 
- Q 5). According to your programmers reference manual, if a typewriter key is pressed when the machine is not running then the action line (which i deduce from m1sim to be the line selected by the switches on the panel) is updated accordingly. However if the machine is running, then "operation of the Typewriter will affect all the Action Lines encountered while the button is pressed". Does this mean that every line that is loaded into the PI while the button is pressed is adjusted. 
+**Q 5). According to your programmers reference manual, if a typewriter key is pressed when the machine is not running then the action line (which i deduce from m1sim to be the line selected by the switches on the panel) is updated accordingly. However if the machine is running, then "operation of the Typewriter will affect all the Action Lines encountered while the button is pressed". Does this mean that every line that is loaded into the PI while the button is pressed is adjusted.**
 
  A. Yes. An action line is one that is accessed, either to get the instruction or as an operand, either reading or writing. Every line that is accessed while the button is pressed will be affected, either a one or a zero written into that place, depending on the position of the write/erase switch. Exercise. Devise a program which makes use of this, eg a reaction time program.
 
  
 
-Q 6). I notice that m1sim stops the machine running if a typewriter key is pressed, I take it this isn't correct behaviour?
+**Q 6). I notice that m1sim stops the machine running if a typewriter key is pressed, I take it this isn't correct behaviour?** 
 
 A. Incorrect behaviour - one of the reasons we want to change M1SIM.
 
  
 
-Q 7). I also notice that from the docs, the accumulator and CI and PI should be repeated all the way down the monitor, but again m1sim doesn't do this, is there any particular reason for that?
+**Q 7). I also notice that from the docs, the accumulator and CI and PI should be repeated all the way down the monitor, but again m1sim doesn't do this, is there any particular reason for that?**
 
 A. Misunderstanding by the author of M1SIM. Another reason we want to change it.
 
@@ -147,7 +139,7 @@ You said you have some of the competition entries. Did you get those from the we
 
  
 
-Q 8). Sorry to really nit-pick but is the action line overwritten before or after it's accessed, i.e. is it corrupted immediately or does the first access work ok and corruption occur afterwards? I would presume it's overwritten before/during fetching and hence reads corrupt words.
+**Q 8). Sorry to really nit-pick but is the action line overwritten before or after it's accessed, i.e. is it corrupted immediately or does the first access work ok and corruption occur afterwards? I would presume it's overwritten before/during fetching and hence reads corrupt words.**
 
 Therefore, and here's the complication, the value fetched into the present instruction would be corrupted and could therefore affect the operand which is to be corrupted, can you confirm? 
 
@@ -157,13 +149,13 @@ Therefore, and here's the complication, the value fetched into the present instr
 
  
 
-Q 9). Would pressing and holding the KLC switch while running corrupt the present instruction also?
+**Q 9). Would pressing and holding the KLC switch while running corrupt the present instruction also?**
 
  A. Yes.
 
  
 
-Q 10). The other question on this would be, are manual instructions taken from the line and function switches also corrupted in the same way?
+**Q 10). The other question on this would be, are manual instructions taken from the line and function switches also corrupted in the same way?**
 
  A. No. Manual instructions are not affected by the typewiter. See Fig 9.
 
@@ -171,7 +163,7 @@ Q 10). The other question on this would be, are manual instructions taken from t
 
  
 
-Q 11). For an instruction where the action line is not used, such as STOP and TEST, would the action line get corrupted by a key being held down - i.e. is the action line fetched irrespective of whether the instruction needs it or not?
+**Q 11). For an instruction where the action line is not used, such as STOP and TEST, would the action line get corrupted by a key being held down - i.e. is the action line fetched irrespective of whether the instruction needs it or not?**
 
  A. An Action line is any line being addressed in the store which is not a Scan line. There are two action lines in an ordinary instruction - one to fetch the instruction, and one to fetch or write the operand. So even STOP has an action line to get the STOP instruction into PI. It also addresses the line specified in its L-bits - there is nothing to stop it, though the data goes nowhere of course as the OTG will be closed (see Fig 11b [of the IEE paper]).
 
@@ -179,37 +171,37 @@ Q 11). For an instruction where the action line is not used, such as STOP and TE
 
  
 
-Q 12). What do the M and B buttons next to the A,C,Sc selectors do?
+**Q 12). What do the M and B buttons next to the A,C,Sc selectors do?**
 
  A. Could be considered a point of non-authenticity! The panels are based on photos taken 15th December 1948, by which time the machine had been fitted with Multiplier and B-tube. Strictly speaking they should be unused at 21st June 1948.
 
  
 
-Q 13). What type of buttons are the M and B buttons?
+**Q 13). What type of buttons are the M and B buttons?**
 
  A. The five buttons are a unit where pushing in one button locks it, and releases any button already in. (This mechanism is removed in the typewriter of course). So any one of the three CRTs can be selected for display on the monitor. You may choose to leave five buttons in the GUI but only have 3 do anything. (In fact, pressing those will leave the store displayed). The switches used originally had two types of plastic button, either a top hat shape, or else a plain cylinder. I could only obtain the cylinder type, so had the top hat shape made specially. When I counted up how many to have made, I forgot to include the two spare button positions. You can choose whether to represent the original SSEM or the replica! By the way, when you get the CD-ROM, there is a 1949 BBC newsreel film which shows operation of the typewriter quite clearly, though the resolution is not as good as the real film.
 
  
 
-Q 14). What does the subscript c on the store selector, 'Sc', stand for?
+**Q 14). What does the subscript c on the store selector, 'Sc', stand for?**
 
  A. Actually it is S subscript 0, for store tube zero. A bit of masking tape has covered half of it. Again, by December 1948 they were just putting in extra storage tubes, and the control panel below was prepared for another bank of five switches.
 
  
 
-Q 15). Why is the MAN AUTO labels in a different place to the STAT switch on the modern picture?
+**Q 15). Why is the MAN AUTO labels in a different place to the STAT switch on the modern picture?**
 
  A. The replica panels were made before I had obtained that black and white picture, and was the best estimate I could make of what it was like derived from other photos. I probably ought to repaint the control panel. The Stat switch should be labelled MAN/AUTO as described in the PRM. I think we have just done it in ball point pen on the replica!
 
  
 
-Q 16). Is there any chance of an image of the location of the stop lamp relative to the monitor?
+**Q 16). Is there any chance of an image of the location of the stop lamp relative to the monitor?**
 
  A. No original photo is convincing. I placed it hanging down behind the chassis just above the monitor panel at the left. Both Geoff Tootill and Tom Kilburn have agreed that it is a plausible place though they can't guarantee it. It is just a little 1/4" dia neon bulb hanging down. Nothing like M1SIM. It is a little to the right of the four holes in a square in the panel I am pointing at in the picture. [Figure 2] … I am not pointing at the neon lamp, but at the chassis behind which the neon lamp hangs. The neon lamp is much further to the left near the upright of the rack.
 
  
 
-Q 17). Can you tell me what the other switches are next to the line and function switches? Inparticular the furthest left, labelled 'c'?
+**Q 17). Can you tell me what the other switches are next to the line and function switches? Inparticular the furthest left, labelled 'c'?**
 
  A. Again, when the address range and function range had increased by December 1948, more switches were used. There are quite likely to have always been 7 line switches from the experiments in 1947 when they were trying as many lines as they could. These are the ones labelled 0, 1 etc above the switch. On the replica, only 0 to 4 are wired in. "C" was added later in 1948 when they increased the word length to 40 bits and put two instructions in one word. It defines which half of a word. We don't use it.
 
@@ -219,7 +211,7 @@ Q 17). Can you tell me what the other switches are next to the line and function
 
  
 
-Q 18). Why don't the light grey KLC, KSC, KAC in the modern photo appear to be the same ones that are light grey in the old photo?
+**Q 18). Why don't the light grey KLC, KSC, KAC in the modern photo appear to be the same ones that are light grey in the old photo?**
 
  An error. We ought to put them right. Thanks for pointing it out. In fact, looking again at the old photo they may have been white, but grubby with use. You should try to be authentic. Starting with KC, I suggest:
 
@@ -231,19 +223,19 @@ black, -  grey, red, grey, grey, grey, red, red - .
 
  
 
-Q 19). I take it the KAC was unattached as I've not seen it mentioned elsewhere?
+**Q 19). I take it the KAC was unattached as I've not seen it mentioned elsewhere?**
 
  A. No, KAC was Key Accumulator Clear and was in use June '48.
 
  
 
-Q 20). You say that 'Only KP spring returns', I can't see a KP switch, do you mean KSP i.e. KC?
+**Q 20). You say that 'Only KP spring returns', I can't see a KP switch, do you mean KSP i.e. KC?**
 
  A. I meant KC. They originally called the pulse which starts an instuction the "Completion Pulse" and by June 1948 were just changing over to call it the "Prepulse". The key meant "Key Completion" in typical GPO telephone exchange nomenclature. Geoff Tootill was fond of telephone exchange circuits and no doubt that is why he used that nomenclature. The IEE paper was based on Geoff Tootill's MSc thesis, and was published later. So there is a mixture of names for the same key. KSP was not used in June 1948.
 
  
 
-Q 21). I'm trying to work out whether write or erase should be at the top on the switch since sources conflict:
+**Q 21). I'm trying to work out whether write or erase should be at the top on the switch since sources conflict:**
 
 modern photo = write at top
 
@@ -257,13 +249,13 @@ A. Old photo and M1SIM.
 
  
 
-Q 22). Were the M & B buttons were actually present in June 1948 or not?
+**Q 22). Were the M & B buttons were actually present in June 1948 or not?**
 
  A. The buttons come in banks of five - they were present but unused.
 
  
 
-Q 23). When the Baby is in manual mode and is running, does the instruction encoded on the Lstat and Fstat switches appear as the present instruction on when the control is displayed?
+**Q 23). When the Baby is in manual mode and is running, does the instruction encoded on the Lstat and Fstat switches appear as the present instruction on when the control is displayed?**
 
  A. The C tube only has a PI on it during the execution of an instruction - on Single Shot there is a single fleeting view of PI.
 
@@ -277,7 +269,7 @@ Q 23). When the Baby is in manual mode and is running, does the instruction enco
 
  
 
-Q 24). Can I just confirm that if the write/erase switch is set to erase when running then all action lines get blanked? I think I got that from your PRM A3.3.3 "Should it be left in the "Erase" position, then all action lines would be corrupted." ?
+**Q 24). Can I just confirm that if the write/erase switch is set to erase when running then all action lines get blanked? I think I got that from your PRM A3.3.3 "Should it be left in the "Erase" position, then all action lines would be corrupted." ?**
 
 A. I can't confirm or deny that, because I can't remember the mechanism at the moment. According to Fig 9 it should have no effect unless you press a typewriter button. But I must have written the sentence in the PRM for some reason. Can we leave it an open question pro tem?
 
@@ -285,13 +277,13 @@ The C tube only has a PI on it during the execution of an instruction - on Singl
 
  
 
-Q 25). I've taken a look at how I could do this but it would be very awkward and probably wouldn't work too well (i.e. would be displayed for too long to be realistic) so won't implement it.
+**Q 25). I've taken a look at how I could do this but it would be very awkward and probably wouldn't work too well (i.e. would be displayed for too long to be realistic) so won't implement it.**
 
 A. That's OK. In fact we sometimes frig the real machine so PI persists to make life easier when debugging faults. Perfectly acceptable to mention that you know how it _should_ work but that it is an implementation detail to fix it!
 
  
 
-Q 26). Do you mean that I should keep incrementing the CI every time a manual instruction is executed at run?
+**Q 26). Do you mean that I should keep incrementing the CI every time a manual instruction is executed at run?**
 
 A. I think so. I will have to check the logic. May be several days as I probably will have to consult a colleague. Tell your supervisor that it is an arcane point which is still under investigation!
 
