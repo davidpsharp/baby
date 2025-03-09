@@ -6,7 +6,7 @@ For more details, background information, and user documentation, please visit [
 
 If you just want to run the simulator in a browser, visit [manchesterbaby.com](https://manchesterbaby.com) and follow the 3 step [quick start guide](docs/quick-start-guide.md).
 
-You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application on your Java Runtime (Java 8 or later).
+You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available to download as a Windows executable or MacOS DMG package both of which come with an in-built Java Runtime. If you already have java you can just grab the small Java JAR file which requires an existing Java Runtime v8 or later.
 
 If you want to build the simulator yourself, read on...
 
@@ -100,8 +100,8 @@ This will:
 5. Clean up the downloaded JRE
 
 The build produces:
-- `target/Manchester Baby.app` - macOS application bundle
-- `target/Manchester Baby-3.0.0.dmg` - DMG installer (when using `verify`)
+- `target/baby.app` - macOS application bundle
+- `target/baby-3.0.0.dmg` - DMG installer (when using `verify`)
 
 Requirements:
 - ImageMagick (for icon conversion): `brew install imagemagick`
@@ -120,7 +120,7 @@ java -jar target/baby.jar
 
 ### CheerpJ Web Application
 
-To run the web version (which uses CheerpJ), execute the provided shell script:
+To run the browser version (which uses the CheerpJ JRE), execute the provided shell script:
 
 ```bash
 ./src/test/online_test/online_test.sh
