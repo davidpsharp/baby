@@ -13,8 +13,6 @@
 
     <build>
         <plugins>
-
-
             <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,7 +45,6 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <!-- fix jar filename to not contain version number-->
                     <appendAssemblyId>false</appendAssemblyId>
                     <finalName>baby</finalName>
                     <archive>
@@ -72,58 +69,85 @@
                 </executions>
             </plugin>
 
-            <!-- Create the JAR first -->
+            <!-- JAR Plugin -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>baby</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <finalName>baby</finalName>
+                </configuration>
             </plugin>
-
         </plugins>
 
         <resources>
-            <!-- Properties files with filtering -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.txt</include>
                 </includes>
             </resource>
-            <!-- All other resources without filtering -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
                 <excludes>
                     <exclude>**/*.properties</exclude>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.txt</exclude>
                     <exclude>**/baby_fullsize.png</exclude>
+                    <exclude>**/baby.ico</exclude>
                 </excludes>
             </resource>
         </resources>
     </build>
 
-      
+    <repositories>
+        <repository>
+            <id>adoptium</id>
+            <url>https://packages.adoptium.net/artifactory/jdk8u-windows-x64-jre/</url>
+        </repository>
+    </repositories>
 
     <profiles>
-         <!-- Profile for creating Windows distribution with bundled JRE -->
+        <!-- Profile for creating Windows distribution with bundled JRE -->
         <profile>
             <id>windows-dist</id>
+            <properties>
+                <jre.version>8u392</jre.version>
+                <jre.build>b08</jre.build>
+            </properties>
             <build>
                 <plugins>
+                    <!-- Download and unpack JRE -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-jre</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <mkdir dir="${project.build.directory}/jre-download"/>
+                                        <get src="https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u392-b08/OpenJDK8U-jre_x64_windows_hotspot_8u392b08.zip"
+                                             dest="${project.build.directory}/jre-download/jre.zip"
+                                             skipexisting="true"/>
+                                        <unzip src="${project.build.directory}/jre-download/jre.zip"
+                                               dest="${project.basedir}/jre">
+                                            <cutdirsmapper dirs="1"/>
+                                        </unzip>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <!-- Launch4j plugin to create Windows executable -->
                     <plugin>
                         <groupId>com.akathist.maven.plugins.launch4j</groupId>
@@ -132,7 +156,7 @@
                         <executions>
                             <execution>
                                 <id>create-windows-exe</id>
-                                <phase>prepare-package</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>launch4j</goal>
                                 </goals>
@@ -189,6 +213,31 @@
                                     </descriptors>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <finalName>baby-windows</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Clean up JRE directory after build -->
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.3.2</version>
+                        <executions>
+                            <execution>
+                                <id>clean-jre</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/jre</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                        </fileset>
+                                    </filesets>
                                 </configuration>
                             </execution>
                         </executions>

@@ -67,14 +67,21 @@ This will create `target/baby.jar`.
 ### Windows Distribution
 To create the Windows distribution with bundled JRE:
 
-1. Place your JRE in the `jre` directory at the project root
-2. Run:
 ```bash
 mvn clean verify -P windows-dist
 ```
-This will create:
+
+This will:
+1. Download and unpack a compatible JRE into the `jre` directory
+2. Create the Windows executable
+3. Package everything into a distribution zip
+4. Clean up the downloaded JRE
+
+The build produces:
 - `target/baby.exe` - Windows executable
 - `target/baby-windows.zip` - Complete distribution package including the executable and JRE
+
+Note: The JRE directory is automatically excluded from git via `.gitignore`.
 
 ## Run
 

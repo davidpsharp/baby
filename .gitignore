@@ -11,7 +11,6 @@ target/
 # Temp caddy_storage
 src/test/online_test/caddy_storage/
 
-
 ### JAVA ###
 
 # Compiled class file
@@ -39,6 +38,8 @@ src/test/online_test/caddy_storage/
 hs_err_pid*
 replay_pid*
 
+# Ignore JRE directory
+jre/
 
 ### MACOS ###
 
