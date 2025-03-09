@@ -174,7 +174,7 @@ Visit the&nbsp;<a href='https://www.scienceandindustrymuseum.org.uk/whats-on/mee
 
 <div id="sub_header_links" style="text-align: center; width: 700px; margin: 0 auto; font-family: Arial, sans-serif; color: #606060; font-size: 12px; display: flex; align-items: center; justify-content: center; min-height: 40 px;">
 <a href='https://github.com/davidpsharp/baby/blob/main/docs/quick-start-guide.md' target='_blank' rel='noopener noreferrer'>Get Started</a> &nbsp;|
-&nbsp; <a href='baby/baby.jar'>Download Simulator Application</a> &nbsp;|
+&nbsp; <a href='/baby/baby.jar'>Download Simulator Application</a> &nbsp;|
 &nbsp; <a href='https://github.com/davidpsharp/baby' target='_blank' rel='noopener noreferrer'>Source Code</a>
 </div>
 
@@ -291,6 +291,7 @@ Visit the&nbsp;<a href='https://www.scienceandindustrymuseum.org.uk/whats-on/mee
         
         // Load the Java application using the specified jar file
         // e.g. baby.jar
+        // if running on davidsharp.com this need amending to /app/baby/baby.jar as no longer in route of webserver folder
         await cheerpjRunJar(`/app/baby.jar`);
     })();
 
