@@ -245,6 +245,153 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- Profile for creating macOS distribution with bundled JRE -->
+        <profile>
+            <id>macos-dist</id>
+            <build>
+                <plugins>
+                    <!-- Download and unpack JRE -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-jre</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <mkdir dir="${project.build.directory}/jre-download"/>
+                                        <get src="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.10%2B7/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.10_7.tar.gz"
+                                             dest="${project.build.directory}/jre-download/jre.tar.gz"
+                                             verbose="true"/>
+                                        <untar src="${project.build.directory}/jre-download/jre.tar.gz"
+                                               dest="${project.basedir}/jre"
+                                               compression="gzip">
+                                            <cutdirsmapper dirs="1"/>
+                                        </untar>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-icns</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <chmod file="${project.basedir}/src/main/packaging/macos/create-icns.sh" perm="755"/>
+                                        <exec executable="${project.basedir}/src/main/packaging/macos/create-icns.sh"
+                                              dir="${project.basedir}/src/main/packaging/macos"
+                                              failonerror="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Create app bundle -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>create-app-bundle</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>/usr/bin/jpackage</executable>
+                                    <arguments>
+                                        <argument>--name</argument>
+                                        <argument>baby</argument>
+                                        <argument>--app-version</argument>
+                                        <argument>${project.version}</argument>
+                                        <argument>--input</argument>
+                                        <argument>target</argument>
+                                        <argument>--main-jar</argument>
+                                        <argument>baby.jar</argument>
+                                        <argument>--main-class</argument>
+                                        <argument>com.manchesterbaby.baby.core.Baby</argument>
+                                        <argument>--type</argument>
+                                        <argument>app-image</argument>
+                                        <argument>--icon</argument>
+                                        <argument>src/main/packaging/macos/baby.icns</argument>
+                                        <argument>--java-options</argument>
+                                        <argument>-Xms128m -Xmx512m</argument>
+                                        <argument>--dest</argument>
+                                        <argument>/tmp/baby-build</argument>
+                                        <argument>--runtime-image</argument>
+                                        <argument>jre</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-dmg</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>/usr/bin/jpackage</executable>
+                                    <arguments>
+                                        <argument>--name</argument>
+                                        <argument>baby</argument>
+                                        <argument>--app-version</argument>
+                                        <argument>${project.version}</argument>
+                                        <argument>--app-image</argument>
+                                        <argument>/tmp/baby-build/baby.app</argument>
+                                        <argument>--type</argument>
+                                        <argument>dmg</argument>
+                                        <argument>--dest</argument>
+                                        <argument>target</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Clean up JRE directory -->
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.3.2</version>
+                        <executions>
+                            <execution>
+                                <id>clean-jre</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.basedir}/jre</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                        </fileset>
+                                        <fileset>
+                                            <directory>/tmp/baby-build</directory>
+                                            <includes>
+                                                <include>**/*</include>
+                                            </includes>
+                                        </fileset>
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
     </profiles>
 
     <dependencies>

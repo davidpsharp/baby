@@ -81,6 +81,32 @@ The build produces:
 - `target/baby.exe` - Windows executable
 - `target/baby-windows.zip` - Complete distribution package including the executable and JRE
 
+### macOS Distribution
+To create the macOS app bundle and DMG:
+
+```bash
+# Create just the .app bundle
+mvn clean package -P macos-dist
+
+# Create both .app bundle and .dmg installer
+mvn clean verify -P macos-dist
+```
+
+This will:
+1. Download and unpack a compatible JRE
+2. Create an .icns icon file from the existing PNG
+3. Create a macOS .app bundle with the bundled JRE
+4. Optionally create a .dmg installer
+5. Clean up the downloaded JRE
+
+The build produces:
+- `target/Manchester Baby.app` - macOS application bundle
+- `target/Manchester Baby-3.0.0.dmg` - DMG installer (when using `verify`)
+
+Requirements:
+- ImageMagick (for icon conversion): `brew install imagemagick`
+- JDK 14 or later (for jpackage tool): `brew install openjdk@17`
+
 Note: The JRE directory is automatically excluded from git via `.gitignore`.
 
 ## Run
