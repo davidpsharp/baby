@@ -8,6 +8,7 @@ For more details, background information, and user documentation, please visit [
 
 ## Table of Contents
 
+- [Starting](#starting)
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
 - [Build](#build)
@@ -15,6 +16,14 @@ For more details, background information, and user documentation, please visit [
 - [Contributing](#contributing)
 - [License](#license)
 
+
+## Starting
+
+If you just want to run the simulator in a browser, follow the 3 step [quick start guide](docs/quick-start-guide.md).
+
+Alternatively you can download the JAR file for the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application on your Java Runtime (Java 8 or later).
+
+If you want to build the simulator yourself, read on...
 
 ## Prerequisites
 
@@ -65,7 +74,7 @@ After a successful build, the JAR file (with all dependencies bundled) will be a
 
 Start the simulator with the following command:
 ```bash
-java -jar target/baby-3.0.0-alpha.4-jar-with-dependencies.jar
+java -jar target/baby.jar
 ```
 
 ### CheerpJ Web Application
