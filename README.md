@@ -16,7 +16,7 @@ If you want to build the simulator yourself, read on...
 
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
-- [Build](#build)
+- [Building from Source](#building-from-source)
 - [Run](#run)
 - [Contributing](#contributing)
 - [License](#license)
@@ -55,15 +55,26 @@ cd baby
 mvn dependency:resolve
 ```
 
-## Build
+## Building from Source
 
-To compile and package the project into a runnable JAR file, execute:
-
+### Basic Build (JAR only)
+To build just the JAR file:
 ```bash
 mvn clean package
 ```
+This will create `target/baby.jar`.
 
-After a successful build, the JAR file (with all dependencies bundled) will be available in the target directory.
+### Windows Distribution
+To create the Windows distribution with bundled JRE:
+
+1. Place your JRE in the `jre` directory at the project root
+2. Run:
+```bash
+mvn clean verify -P windows-dist
+```
+This will create:
+- `target/baby.exe` - Windows executable
+- `target/baby-windows.zip` - Complete distribution package including the executable and JRE
 
 ## Run
 
