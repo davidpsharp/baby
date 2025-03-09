@@ -100,7 +100,7 @@ public class FileMenu {
         }
         else {
             JMenuItem downloadSimulator = new JMenuItem("Download Simulator Java App");
-            downloadSimulator.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://davidsharp.com/baby/baby-" + Version.getVersion() + ".jar"));
+            downloadSimulator.addActionListener(e -> MiscUtils.launchUrlInBrowser("https://davidsharp.com/baby/baby.jar"));
             fileMenu.add(downloadSimulator);
         }
 

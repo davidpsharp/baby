@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.manchesterbaby</groupId>
     <artifactId>baby</artifactId>
-    <version>3.0.0-RC.0</version>
+    <version>3.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,6 +45,9 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <!-- fix jar filename to not contain version number-->
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <finalName>baby</finalName>
                     <archive>
                         <manifest>
                             <mainClass>com.manchesterbaby.baby.core.Baby</mainClass>
@@ -52,6 +55,7 @@
                         </manifest>
                         <manifestEntries>
                             <Implementation-Title>Manchester Baby Simulator</Implementation-Title>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
                     </archive>
                 </configuration>

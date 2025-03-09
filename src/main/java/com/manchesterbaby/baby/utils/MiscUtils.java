@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.jar.Manifest;
+import com.manchesterbaby.baby.core.Baby;
 import java.awt.Desktop;
 
 public class MiscUtils {
@@ -20,30 +21,28 @@ public class MiscUtils {
 
     /** Return date/time the JAR was built, taken from the JAR manifest */
     public static String getBuildTime() {
-        // TODO: inside cheerpj this method returns null, suspect no manifests found but TBC.
-        
-        String buildTime = "";
-        try
-        {                                   
-            Enumeration<java.net.URL> manifests = MiscUtils.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
-
-            // should only return 1 but...
-            while(manifests.hasMoreElements())
-            {
-                java.net.URL url = manifests.nextElement();
-                Manifest manifest = new Manifest(url.openStream());
-                java.util.jar.Attributes attributes = manifest.getMainAttributes();
-                buildTime = attributes.getValue("Build-Time");
-                break;
+        String buildTime = null;
+        try {
+            // Get the URL of the Baby class to find its containing jar
+            String babyClassPath = Baby.class.getResource("Baby.class").toString();
+            
+            // Find the manifest in the same jar as the Baby class
+            String manifestPath;
+            if (babyClassPath.startsWith("jar:")) {
+                // When running from jar, convert jar:file:/path/to/baby.jar!/com/... to jar:file:/path/to/baby.jar!/META-INF/MANIFEST.MF
+                manifestPath = babyClassPath.substring(0, babyClassPath.indexOf("!")) + "!/META-INF/MANIFEST.MF";
+            } else {
+                // When running from IDE/classes, look for manifest in classpath
+                manifestPath = Baby.class.getClassLoader().getResource("META-INF/MANIFEST.MF").toString();
             }
-                
+
+            Manifest manifest = new Manifest(new java.net.URL(manifestPath).openStream());
+            buildTime = manifest.getMainAttributes().getValue("Build-Time");
+        } catch (Exception ex) {
+            System.err.println("Error reading manifest: " + ex.getMessage());
         }
-        catch (IOException ex)
-        {            
-            System.out.println("error getting buildtime: " + MiscUtils.getStackTrace(ex));
-        } 
         return buildTime;
-    } 
+    }
 
     public static void launchUrlInBrowser(String url)
     {
