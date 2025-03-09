@@ -355,6 +355,20 @@
                                     </arguments>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>rename-dmg</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>mv</executable>
+                                    <arguments>
+                                        <argument>target/baby-${project.version}.dmg</argument>
+                                        <argument>target/baby.dmg</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
 

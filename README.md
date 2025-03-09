@@ -101,7 +101,7 @@ This will:
 
 The build produces:
 - `target/baby.app` - macOS application bundle
-- `target/baby-3.0.0.dmg` - DMG installer (when using `verify`)
+- `target/baby.dmg` - DMG installer (when using `verify`)
 
 Requirements:
 - ImageMagick (for icon conversion): `brew install imagemagick`
