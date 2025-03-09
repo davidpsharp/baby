@@ -70,26 +70,95 @@
                 </executions>
             </plugin>
 
-            <!-- Maven JAR Plugin -->
+            <!-- Create the JAR first -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.manchesterbaby.baby.core.Baby</mainClass>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Title>Manchester Baby Simulator</Implementation-Title>
-                            <Build-Time>${maven.build.timestamp}</Build-Time>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>baby</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
+            <!-- Launch4j plugin to create Windows executable -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <id>create-windows-exe</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <dontWrapJar>false</dontWrapJar>
+                            <headerType>gui</headerType>
+                            <outfile>target/baby.exe</outfile>
+                            <jar>target/baby.jar</jar>
+                            <errTitle>Manchester Baby Simulator</errTitle>
+                            <icon>src/main/resources/icons/baby.ico</icon>
+                            <classPath>
+                                <mainClass>com.manchesterbaby.baby.core.Baby</mainClass>
+                            </classPath>
+                            <jre>
+                                <path>jre</path>
+                                <requiresJdk>false</requiresJdk>
+                                <requires64Bit>true</requires64Bit>
+                                <minVersion>1.8.0</minVersion>
+                                <initialHeapSize>128</initialHeapSize>
+                                <maxHeapSize>512</maxHeapSize>
+                                <opts>
+                                    <opt>-Dfile.encoding=UTF-8</opt>
+                                </opts>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>${project.version}.0</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileDescription>Manchester Baby Simulator</fileDescription>
+                                <copyright>David Sharp</copyright>
+                                <productVersion>${project.version}.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productName>Manchester Baby Simulator</productName>
+                                <internalName>baby</internalName>
+                                <originalFilename>baby.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <!-- Assembly plugin to create a bundled distribution -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-bundled-distribution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/bundled-distribution.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>baby-windows</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            
         </plugins>
 
         <resources>
