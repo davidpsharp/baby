@@ -4,7 +4,7 @@
 
 1. Download `baby.zip` from the latest release
 2. Extract the zip file to a location of your choice
-3. Double-click `baby-bundled.exe` to run the simulator
+3. Double-click `baby.exe` to run the simulator
 
 The executable includes its own Java Runtime Environment (JRE), so you don't need to install Java separately.
 
@@ -24,7 +24,7 @@ mvn clean package
 ```
 
 3. The Windows executable and distribution package will be created in the `target` directory:
-   - `baby-bundled.exe` - The Windows executable
+   - `baby.exe` - The Windows executable
    - `baby.zip` - Complete distribution package including the executable and JRE
 
 ## System Requirements
@@ -51,4 +51,4 @@ If you encounter any issues or have questions, please:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the terms of the [GNU General Public License v3](LICENSE).
