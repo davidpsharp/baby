@@ -112,6 +112,6 @@ public class BabyAsmSyntaxHighlighter {
 
     private static void debugMatcher(int group, Matcher matcher, StyledDocument doc) throws BadLocationException
     {
-        System.out.println(group + " " + matcher.group(group) + ": start:" + matcher.start(0) + " end:" + matcher.end(0) + " substr:" + doc.getText(matcher.start(0), matcher.end(0) - matcher.start(0)));
+        //System.out.println(group + " " + matcher.group(group) + ": start:" + matcher.start(0) + " end:" + matcher.end(0) + " substr:" + doc.getText(matcher.start(0), matcher.end(0) - matcher.start(0)));
     }
 }

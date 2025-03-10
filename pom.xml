@@ -197,6 +197,32 @@
                         </executions>
                     </plugin>
 
+                    <!-- JSign plugin for code signing -->
+                    <!--
+                    <plugin>
+                        <groupId>net.jsign</groupId>
+                        <artifactId>jsign-maven-plugin</artifactId>
+                        <version>6.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-windows-exe</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.build.directory}/baby.exe</file>
+                                    <name>Manchester Baby Simulator</name>
+                                    <url>https://github.com/davidpsharp/baby</url>
+                                    <keystore>${env.WINDOWS_KEYSTORE}</keystore>
+                                    <alias>${env.WINDOWS_KEYSTORE_ALIAS}</alias>
+                                    <storepass>${env.WINDOWS_KEYSTORE_PASSWORD}</storepass>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    -->
+
                     <!-- Assembly plugin to create Windows distribution -->
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>

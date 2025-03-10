@@ -76,7 +76,7 @@ public class Baby extends JFrame {
                     setIconImageMethod.invoke(taskbarObj, icon);
                 }
             } catch (Exception e) {
-                System.err.println("Could not load application icon, only works on JRE 9 and later: " + e);
+                // Could not load application icon, only works on JRE 9 and later.
             }
 
             currentDir = System.getProperty("user.home");

@@ -109,7 +109,7 @@ public class Debugger extends JFrame implements ActionListener
 
             int caretIndex = textPane.getCaretPosition();
 
-            System.out.println("current line:" + getCurrentLine(textPane));
+            //System.out.println("current line:" + getCurrentLine(textPane));
 
             // highlight line with caret currently on it (using style or highlighter TBC ???)
             //setStyleForCurrentLine(textPane);
@@ -119,7 +119,7 @@ public class Debugger extends JFrame implements ActionListener
         catch(Exception ex)
         {
             // and this is why java is out of fashion....
-            System.out.println(ex.toString());
+            //System.out.println(ex.toString());
         }
 
         // set up updates to syntax highlighting
@@ -215,7 +215,7 @@ public class Debugger extends JFrame implements ActionListener
 			}
 			catch (BadLocationException ex) 
 			{
-				System.err.println("Get current line from editor error: " + ex.getMessage());
+				//System.err.println("Get current line from editor error: " + ex.getMessage());
 			}
 		}
 		return null;
@@ -267,18 +267,16 @@ public class Debugger extends JFrame implements ActionListener
             // TODO: does this require syntax highlighting update, possibly not???
             // this fires 81 times for every keypress, presumably due to all doc style changes from the insert/update?
             //updateCount++;
-            //System.out.println("changedUpdate:" + updateCount + " time:" + System.currentTimeMillis() );
             //updateHighlighting();
             //throw new UnsupportedOperationException("Unimplemented method 'changedUpdate'");
         }
 
         @Override
         public void insertUpdate(DocumentEvent e) {
-            System.out.println("insertUpdate");
+            //System.out.println("insertUpdate");
             // TODO: make much more efficient, surely only needs to update current line and possibly the previous OR next if enter is pressed
             // does that assumption still hold if a big block is pasted in or deleted?
             // would reduce changedUpdate firing
-            //System.out.println("offset:" + e.getOffset() + " length:" + e.getLength() );
             
             updateHighlighting();
             //throw new UnsupportedOperationException("Unimplemented method 'insertUpdate'");
@@ -286,7 +284,7 @@ public class Debugger extends JFrame implements ActionListener
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            System.out.println("removeUpdate");
+            //System.out.println("removeUpdate");
             updateHighlighting();
             //throw new UnsupportedOperationException("Unimplemented method 'removeUpdate'");
         }
