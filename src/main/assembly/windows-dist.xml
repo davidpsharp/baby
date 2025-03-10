@@ -11,7 +11,7 @@
     <files>
         <!-- Include the executable -->
         <file>
-            <source>${project.build.directory}/baby.exe</source>
+            <source>${project.build.directory}/Manchester Baby.exe</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <!-- Include the JAR file -->

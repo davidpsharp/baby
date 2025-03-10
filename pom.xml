@@ -163,7 +163,7 @@
                                 <configuration>
                                     <dontWrapJar>true</dontWrapJar>
                                     <headerType>gui</headerType>
-                                    <outfile>target/baby.exe</outfile>
+                                    <outfile>target/Manchester Baby.exe</outfile>
                                     <jar>baby.jar</jar>
                                     <errTitle>Manchester Baby Simulator</errTitle>
                                     <icon>src/main/resources/icons/baby.ico</icon>
@@ -190,7 +190,7 @@
                                         <txtProductVersion>${project.version}</txtProductVersion>
                                         <productName>Manchester Baby Simulator</productName>
                                         <internalName>baby</internalName>
-                                        <originalFilename>baby.exe</originalFilename>
+                                        <originalFilename>Manchester Baby.exe</originalFilename>
                                     </versionInfo>
                                 </configuration>
                             </execution>
