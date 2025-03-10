@@ -8,9 +8,9 @@ For more details, background information, and user documentation, please explore
 
 If you just want to quickly run the simulator in a browser, visit [manchesterbaby.com](https://manchesterbaby.com) and follow the 3 step [quick start guide](docs/quick-start-guide.md) to get started.
 
-You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available to download as a standalone macOS app in a DMG package (with an in-built Java Runtime), or if you are on another platform you can download the Java JAR file which requires an existing Java Runtime to be installed, v8 or later.
+You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available as a standalone Windows or macOS app with an in-built Java Runtime so there is nothing for you to configure. If you are on another platform such as Linux, you can download the Java Jar file which requires an existing Java Runtime to be installed, version 8 or later.
 
-If you want to build the simulator from source code yourself, read on...
+Or you can build the simulator yourself from source code...
 
 ![Photo of this simulator running next to the replica machine at the Science and Industry Museum, Manchester, England](https://davidsharp.com/baby/makerfaire.jpg)
 
