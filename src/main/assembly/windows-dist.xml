@@ -37,5 +37,10 @@
             </includes>
             <outputDirectory>/</outputDirectory>
         </fileSet>
+        <!-- Include docs folder -->
+        <fileSet>
+            <directory>${project.basedir}/docs</directory>
+            <outputDirectory>docs</outputDirectory>
+        </fileSet>
     </fileSets>
 </assembly>
