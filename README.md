@@ -1,14 +1,16 @@
 # Manchester Baby Simulator
 
-The Manchester Baby Simulator is a Java-based simulator that emulates the Manchester Baby computer—the world’s first stored-program computer. This project offers an interactive way to explore one of computing history’s most significant machines.
+The Manchester Baby Simulator is a Java-based simulator that emulates the Manchester Baby computer; the world’s first stored-program computer. This project offers an interactive way to explore one of computing history’s most significant machines. The simulator is used by volunteers at the Science and Industry Museum in Manchester, England to train and help debug the working replica of the Baby!
 
-For more details, background information, and user documentation, please visit [davidsharp.com/baby](https://davidsharp.com/baby).
+For more details, background information, and user documentation, please explore the [docs](docs/) folder.
 
-If you just want to run the simulator in a browser, visit [manchesterbaby.com](https://manchesterbaby.com) and follow the 3 step [quick start guide](docs/quick-start-guide.md).
+## Running the simulator
 
-You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available to download as a Windows executable or MacOS DMG package both of which come with an in-built Java Runtime. If you already have java you can just grab the small Java JAR file which requires an existing Java Runtime v8 or later.
+If you just want to quickly run the simulator in a browser, visit [manchesterbaby.com](https://manchesterbaby.com) and follow the 3 step [quick start guide](docs/quick-start-guide.md) to get started.
 
-If you want to build the simulator yourself, read on...
+You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available to download as a standalone macOS app in a DMG package (with an in-built Java Runtime), or if you are on another platform and already have Java you can just get the Java JAR file which requires an existing Java Runtime to be installed, v8 or later.
+
+If you want to build the simulator from source code yourself, read on...
 
 ![Photo of this simulator running next to the replica machine at the Science and Industry Museum, Manchester, England](https://davidsharp.com/baby/makerfaire.jpg)
 
@@ -126,7 +128,9 @@ To run the browser version (which uses the CheerpJ JRE), execute the provided sh
 ./src/test/online_test/online_test.sh
 ```
 
-This script launches a local Caddy server to serve the CheerpJ files and automatically opens your default web browser.
+This script launches a local Caddy server to serve the files for Cheerpj and automatically
+opens your default web browser with some HTML/Javascript which downloads the Cheerpj
+runtime and starts the simulator.
 
 ## Contributing
 
