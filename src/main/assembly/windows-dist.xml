@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+    <id>windows-dist</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    
+    <files>
+        <!-- Include the executable -->
+        <file>
+            <source>${project.build.directory}/baby.exe</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <!-- Include the JAR file -->
+        <file>
+            <source>${project.build.directory}/baby.jar</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>baby.jar</destName>
+        </file>
+    </files>
+    
+    <fileSets>
+        <!-- Include the JRE -->
+        <fileSet>
+            <directory>${project.basedir}/jre</directory>
+            <outputDirectory>jre</outputDirectory>
+        </fileSet>
+        <!-- Include documentation -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <includes>
+                <include>README*.md</include>
+                <include>LICENSE</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

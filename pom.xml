@@ -161,10 +161,10 @@
                                     <goal>launch4j</goal>
                                 </goals>
                                 <configuration>
-                                    <dontWrapJar>false</dontWrapJar>
+                                    <dontWrapJar>true</dontWrapJar>
                                     <headerType>gui</headerType>
                                     <outfile>target/baby.exe</outfile>
-                                    <jar>target/baby.jar</jar>
+                                    <jar>baby.jar</jar>
                                     <errTitle>Manchester Baby Simulator</errTitle>
                                     <icon>src/main/resources/icons/baby.ico</icon>
                                     <classPath>
@@ -229,16 +229,16 @@
                         <executions>
                             <execution>
                                 <id>create-bundled-distribution</id>
-                                <phase>verify</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
                                     <descriptors>
-                                        <descriptor>src/main/assembly/bundled-distribution.xml</descriptor>
+                                        <descriptor>src/main/assembly/windows-dist.xml</descriptor>
                                     </descriptors>
-                                    <appendAssemblyId>false</appendAssemblyId>
                                     <finalName>baby-windows</finalName>
+                                    <appendAssemblyId>false</appendAssemblyId>
                                 </configuration>
                             </execution>
                         </executions>
