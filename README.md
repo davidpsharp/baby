@@ -8,7 +8,9 @@ For more details, background information, and user documentation, please explore
 
 If you just want to quickly run the simulator in a browser, visit [manchesterbaby.com](https://manchesterbaby.com) and follow the 3 step [quick start guide](docs/quick-start-guide.md) to get started.
 
-You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available as a standalone Windows or macOS app with an in-built Java Runtime so there is nothing for you to configure. If you are on another platform such as Linux, you can download the Java Jar file which requires an existing Java Runtime to be installed, version 8 or later.
+You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available as a standalone Windows or macOS app with an in-built Java Runtime so there is nothing for you to configure.
+
+If you are on another platform such as Linux, you can download the Java .jar file which requires an existing Java Runtime to be installed, version 8 or later.
 
 Or you can build the simulator yourself from source code...
 
@@ -80,8 +82,11 @@ This will:
 4. Clean up the downloaded JRE
 
 The build produces:
-- `target/baby.exe` - Windows executable
+- `target/Manchester Baby.exe` - Windows executable
 - `target/baby-windows.zip` - Complete distribution package including the executable and JRE
+
+Requirements:
+- Launch4j (for exe packaging)
 
 ### macOS Distribution
 To create the macOS app bundle and DMG:
@@ -102,8 +107,8 @@ This will:
 5. Clean up the downloaded JRE
 
 The build produces:
-- `target/baby.app` - macOS application bundle
-- `target/baby.dmg` - DMG installer (when using `verify`)
+- `target/Manchester Baby.app` - macOS application bundle
+- `target/baby-mac.dmg` - DMG installer (when using `verify`)
 
 Requirements:
 - ImageMagick (for icon conversion): `brew install imagemagick`
@@ -115,7 +120,7 @@ Note: The JRE directory is automatically excluded from git via `.gitignore`.
 
 ### Standalone Java Application
 
-Start the simulator with the following command:
+If you already have a Java runtime installed, start the simulator with the following command:
 ```bash
 java -jar target/baby.jar
 ```
