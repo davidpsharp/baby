@@ -8,7 +8,7 @@ For more details, background information, and user documentation, please explore
 
 If you just want to quickly run the simulator in a browser, visit [manchesterbaby.com](https://manchesterbaby.com) and follow the 3 step [quick start guide](docs/quick-start-guide.md) to get started.
 
-You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available to download as a standalone macOS app in a DMG package (with an in-built Java Runtime), or if you are on another platform and already have Java you can just get the Java JAR file which requires an existing Java Runtime to be installed, v8 or later.
+You can also download the [latest release](https://github.com/davidpsharp/baby/releases) and run it offline as a desktop application. It is available to download as a standalone macOS app in a DMG package (with an in-built Java Runtime), or if you are on another platform you can download the Java JAR file which requires an existing Java Runtime to be installed, v8 or later.
 
 If you want to build the simulator from source code yourself, read on...
 
