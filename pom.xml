@@ -337,7 +337,7 @@
                                     <executable>/usr/bin/jpackage</executable>
                                     <arguments>
                                         <argument>--name</argument>
-                                        <argument>baby</argument>
+                                        <argument>Manchester Baby</argument>
                                         <argument>--app-version</argument>
                                         <argument>${project.version}</argument>
                                         <argument>--input</argument>
@@ -369,11 +369,11 @@
                                     <executable>/usr/bin/jpackage</executable>
                                     <arguments>
                                         <argument>--name</argument>
-                                        <argument>baby</argument>
+                                        <argument>Manchester Baby</argument>
                                         <argument>--app-version</argument>
                                         <argument>${project.version}</argument>
                                         <argument>--app-image</argument>
-                                        <argument>/tmp/baby-build/baby.app</argument>
+                                        <argument>/tmp/baby-build/Manchester Baby.app</argument>
                                         <argument>--type</argument>
                                         <argument>dmg</argument>
                                         <argument>--dest</argument>
@@ -390,8 +390,8 @@
                                 <configuration>
                                     <executable>mv</executable>
                                     <arguments>
-                                        <argument>target/baby-${project.version}.dmg</argument>
-                                        <argument>target/baby.dmg</argument>
+                                        <argument>target/Manchester Baby-${project.version}.dmg</argument>
+                                        <argument>target/baby-mac.dmg</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
