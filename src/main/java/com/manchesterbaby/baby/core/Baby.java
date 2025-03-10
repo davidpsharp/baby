@@ -45,6 +45,13 @@ public class Baby extends JFrame {
 
         try {
 
+            try {
+                // Set native look and feel for the file chooser
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                // Fallback to default look and feel if system L&F fails
+            }
+
             // turn off window title bar on CheerpJ
             if(CheerpJUtils.onCheerpj())
                 this.setUndecorated(true);
