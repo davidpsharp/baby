@@ -69,14 +69,14 @@ mvn clean package
 This will create `target/baby.jar`.
 
 ### Windows Distribution
-To create the Windows distribution with bundled JRE:
+To create the Windows distribution with bundled Java Runtime (JRE):
 
 ```bash
 mvn clean verify -P windows-dist
 ```
 
 This will:
-1. Download and unpack a compatible JRE into the `jre` directory
+1. Download and unpack a compatible JRE ([Adoptium Temurin](https://adoptium.net/)) into the `jre` directory
 2. Create the Windows executable
 3. Package everything into a distribution zip
 4. Clean up the downloaded JRE
@@ -89,7 +89,7 @@ Requirements:
 - Launch4j (for exe packaging)
 
 ### macOS Distribution
-To create the macOS app bundle and DMG:
+To create the macOS app containing a Java Runtime (JRE), inside a DMG:
 
 ```bash
 # Create just the .app bundle
@@ -100,7 +100,7 @@ mvn clean verify -P macos-dist
 ```
 
 This will:
-1. Download and unpack a compatible JRE
+1. Download and unpack a compatible JRE, ([Adoptium Temurin](https://adoptium.net/))
 2. Create an .icns icon file from the existing PNG
 3. Create a macOS .app bundle with the bundled JRE
 4. Optionally create a .dmg installer
@@ -133,9 +133,18 @@ To run the browser version (which uses the CheerpJ JRE), execute the provided sh
 ./src/test/online_test/online_test.sh
 ```
 
-This script launches a local Caddy server to serve the files for Cheerpj and automatically
+Cheerpj requires an HTTP server, it will not work without one. This script launches a local
+Caddy server to serve the files for Cheerpj and automatically
 opens your default web browser with some HTML/Javascript which downloads the Cheerpj
 runtime and starts the simulator.
+
+If you're on Windows and don't have Caddy, you can create a basic HTTP server for the simulator
+on port 8080 using Python3 (if you have it) by running this batch script:
+
+```
+src\test\online_test\simple_test.bat
+```
+
 
 ## Contributing
 
