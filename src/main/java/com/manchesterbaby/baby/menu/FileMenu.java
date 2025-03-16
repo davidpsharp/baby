@@ -57,16 +57,23 @@ public class FileMenu {
             loadLocalSnapshotAssembly.addActionListener(e -> CheerpJUtils.getFileForSimulator());
             fileMenu.add(loadLocalSnapshotAssembly);
         }
+
+
         recentFilesMenu = new JMenu("Load Recent");
         updateRecentFilesMenu(store, frame, crtPanelController);
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
+        JMenuItem saveAsURL = new JMenuItem("Save as URL");
+
         JMenuItem close = new JMenuItem("Close");
 
         // Add action listeners for each item
         loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanelController));
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
+        saveAsURL.addActionListener(e -> System.out.println("URL param: " + store.toBase64url()));
+        //JOptionPane.showMessageDialog(frame.getContentPane(), "URL param: " + store.toBase64url(), "Error", JOptionPane.INFORMATION_MESSAGE)); // truncates!
+        
         close.addActionListener(e -> System.exit(0));
 
         // Set mnemonics (keyboard shortcuts)
@@ -91,6 +98,7 @@ public class FileMenu {
         fileMenu.addSeparator();
         fileMenu.add(saveSnapshot);
         fileMenu.add(saveAssembly);
+        fileMenu.add(saveAsURL);
         
         fileMenu.addSeparator();
 

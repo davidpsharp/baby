@@ -956,6 +956,19 @@ public class Store
 		return result;
 	}	
 	
+
+	/**
+	 * Takes a program from a URL param and attempts to load it into the store
+	 * @param program The program to load in whatever encoding we get
+	 */
+	public void loadFromURLparam(String program)
+	{
+		
+		// assume base64url encoding for now
+		this.fromBase64url(program);
+
+	}
+
 	/**
 	 * Encodes the store's line array into a base64url encoded string
 	 * @return A base64url encoded string representing the store's contents

@@ -216,10 +216,24 @@ public class Baby extends JFrame {
 
             // Load an initial program
             try {
+ 
+                boolean urlParamProgramLoaded = false;
+                if(CheerpJUtils.onCheerpj())
+                {
+                    String program  = CheerpJUtils.getURLparam("program");
+                    if(program != null)
+                    {
+                        store.loadFromURLparam(program);
+                        urlParamProgramLoaded = true;
+                    }
+                }
                 
-                String defaultFile = settings.getInitialExample();
-                String uriString = LoadExample.getUriStringForResource(defaultFile);
-                store.loadLocalModernAssembly(uriString);
+                if(!urlParamProgramLoaded)
+                {
+                    String defaultFile = settings.getInitialExample();
+                    String uriString = LoadExample.getUriStringForResource(defaultFile);
+                    store.loadLocalModernAssembly(uriString);
+                }
                 
                 // render and display the CRT display
                 crtPanelController.redrawCrtPanel();

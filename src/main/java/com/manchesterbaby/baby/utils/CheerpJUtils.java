@@ -12,6 +12,9 @@ public class CheerpJUtils {
     // ask javascript to have user select a file
     public static native void getFileForSimulator();
 
+    // ask javascript to return the URL params
+    public static native String getURLparam(String paramName);
+
     public CheerpJUtils(Baby baby) {
         _baby = baby;
     }

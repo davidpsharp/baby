@@ -12,6 +12,7 @@
         // TODO: move to query jar version from the java interface
         const jarVersion = urlParams.get('jar') || '3.0.0';
         const showDebug = urlParams.get('debug') || false;
+        const program = urlParams.get('program') || 'none';
     </script>
     <!-- "/classes/icons/baby.png" if running in caddy locally or just "baby.png" if on website -->
     <link rel="icon" href="baby.png">
@@ -79,6 +80,7 @@
         const response = await window.myApplication.openFile(fileName);
     }
 
+    // Called from Java 
     // Function to programmatically open file dialog and handle selection
     // Receives call from Java to trigger it
     async function Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator() {
@@ -115,6 +117,15 @@
         input.click();
     }
 
+    // Called from java
+    // Requests URL params
+    // Recall first param is always CJ3Library hence lib as first param, per https://cheerpj.com/docs/guides/implementing-native-methods.html
+    async function Java_com_manchesterbaby_baby_utils_CheerpJUtils_getURLparam(lib, paramName) {
+        console.log("Java requested URL param:", paramName);
+        return urlParams.get(paramName);
+    }
+
+    // Called from Java
     // Assigns the Java application instance to window.myApplication.
     // Ensures continuous access by preventing the function from returning.
     async function Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication(
@@ -242,7 +253,8 @@ Visit the&nbsp;<a href='https://www.scienceandindustrymuseum.org.uk/whats-on/mee
             clipboardMode: "system",
             natives: {
                 Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator,
-                Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication,
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_getURLparam
             }
         });
         // set cheerpj size to be the same size as the window in Baby.java
