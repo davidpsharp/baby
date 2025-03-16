@@ -3,6 +3,7 @@ package com.manchesterbaby.baby.core;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -954,4 +955,45 @@ public class Store
 
 		return result;
 	}	
+	
+	/**
+	 * Encodes the store's line array into a base64url encoded string
+	 * @return A base64url encoded string representing the store's contents
+	 */
+	public String toBase64url() {
+		// Create a ByteBuffer to hold all the integers (4 bytes each)
+		ByteBuffer buffer = ByteBuffer.allocate(line.length * 4);
+		
+		// Write all integers to the buffer
+		for (int value : line) {
+			buffer.putInt(value);
+		}
+		
+		// Convert to base64url
+		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(buffer.array());
+	}
+
+	/**
+	 * Decodes a base64url encoded string and loads it into the store's line array
+	 * @param base64 The base64url encoded string to decode
+	 * @throws IllegalArgumentException if the input string is invalid or doesn't contain the correct number of integers
+	 */
+	public void fromBase64url(String base64) {
+		// Decode the base64url string
+		byte[] bytes = java.util.Base64.getUrlDecoder().decode(base64);
+		
+		// Check if the byte array length is valid (must be multiple of 4 since each int is 4 bytes)
+		if (bytes.length % 4 != 0 || bytes.length != line.length * 4) {
+			throw new IllegalArgumentException("Invalid base64url string length");
+		}
+		
+		// Create a ByteBuffer to read the integers
+		ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		
+		// Read integers into the line array
+		for (int i = 0; i < line.length; i++) {
+			line[i] = buffer.getInt();
+			isLineAltered[i] = true;
+		}
+	}
 }
