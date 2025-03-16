@@ -43,6 +43,7 @@ import javax.swing.ImageIcon;
  */
 public class FileMenu {
     private static JMenu recentFilesMenu;
+    private static CrtPanelController _crtPanelController;
 
     /**
      * Creates the File menu.
@@ -59,6 +60,7 @@ public class FileMenu {
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
+        JMenuItem loadURL = new JMenuItem("Load URL");
 
         // if on cheerpj add special menu item to ask javascript to show an open file dialog for host machine file system
         if(CheerpJUtils.onCheerpj())
@@ -69,8 +71,9 @@ public class FileMenu {
             fileMenu.add(loadLocalSnapshotAssembly);
         }
 
-
+        _crtPanelController = crtPanelController;
         recentFilesMenu = new JMenu("Load Recent");
+
         updateRecentFilesMenu(store, frame, crtPanelController);
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
@@ -80,6 +83,58 @@ public class FileMenu {
 
         // Add action listeners for each item
         loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanelController));
+        loadURL.addActionListener(e -> {
+            String message = "Enter the Manchester Baby URL to load:";
+            String title = "Paste in URL to Load";
+            
+            // Create a text area for URL input
+            JTextArea textArea = new JTextArea();
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setBackground(Color.WHITE);
+            
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(500, 100));
+            
+            // Load and scale the baby icon
+            ImageIcon originalIcon = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
+            Image scaled = originalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(scaled);
+            
+            int result = JOptionPane.showConfirmDialog(
+                frame,
+                scrollPane,
+                title,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                icon
+            );
+            
+            if (result == JOptionPane.OK_OPTION) {
+                String url = textArea.getText().trim();
+                if (!url.isEmpty()) {
+                    try {
+                        // Extract the program parameter from the URL
+                        URI uri = new URI(url);
+                        String query = uri.getQuery();
+                        if (query != null && query.startsWith("program=")) {
+                            String base64Program = query.substring(8); // Remove "program="
+                            store.loadFromURLparam(base64Program);
+                            _crtPanelController.redrawCrtPanel();
+                        } else {
+                            throw new URISyntaxException(url, "Missing program parameter");
+                        }
+                    } catch (URISyntaxException | IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(
+                            frame,
+                            "Invalid URL format: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                }
+            }
+        });
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
         saveAsURL.addActionListener(e -> {
@@ -141,6 +196,7 @@ public class FileMenu {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             // MacOS specific mnemonics
             loadSnapshotAssembly.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.META_DOWN_MASK)); // Cmd + L
+            loadURL.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.META_DOWN_MASK)); // Cmd + U
             saveSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.META_DOWN_MASK)); // Cmd + S
             saveAssembly.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK)); // Cmd + A
             close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.META_DOWN_MASK)); // Cmd + W
@@ -148,6 +204,7 @@ public class FileMenu {
             // Windows/Linux specific mnemonics
             fileMenu.setMnemonic(KeyEvent.VK_F); // Alt + F
             loadSnapshotAssembly.setMnemonic(KeyEvent.VK_L); // Alt + L
+            loadURL.setMnemonic(KeyEvent.VK_U); // Alt + U
             saveSnapshot.setMnemonic(KeyEvent.VK_S); // Alt + S
             saveAssembly.setMnemonic(KeyEvent.VK_A); // Alt + A
             close.setMnemonic(KeyEvent.VK_C); // Alt + C
@@ -155,6 +212,7 @@ public class FileMenu {
 
         // Add items to the file menu
         fileMenu.add(loadSnapshotAssembly);
+        fileMenu.add(loadURL);
         fileMenu.add(recentFilesMenu);
         fileMenu.addSeparator();
         fileMenu.add(saveSnapshot);
