@@ -71,9 +71,10 @@ public class FileMenu {
         loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanelController));
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
-        saveAsURL.addActionListener(e -> System.out.println("URL param: " + store.toBase64url()));
-        //JOptionPane.showMessageDialog(frame.getContentPane(), "URL param: " + store.toBase64url(), "Error", JOptionPane.INFORMATION_MESSAGE)); // truncates!
-        
+        //saveAsURL.addActionListener(e -> System.out.println("URL param: " + store.toBase64url()));
+        //saveAsURL.addActionListener(e -> JOptionPane.showMessageDialog(frame.getContentPane(), "URL param: " + store.toBase64url(), "Manchester Baby URL", JOptionPane.INFORMATION_MESSAGE)); // truncates!
+        saveAsURL.addActionListener(e -> new AboutDialog(frame, "https://manchesterbaby.com?program=" + store.toBase64url()).displayAboutDialog());
+
         close.addActionListener(e -> System.exit(0));
 
         // Set mnemonics (keyboard shortcuts)

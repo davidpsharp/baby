@@ -12,7 +12,8 @@
         // TODO: move to query jar version from the java interface
         const jarVersion = urlParams.get('jar') || '3.0.0';
         const showDebug = urlParams.get('debug') || false;
-        const program = urlParams.get('program') || 'none';
+        // note, other params may be requested from java side using getURLparam()
+        // e.g. program
     </script>
     <!-- "/classes/icons/baby.png" if running in caddy locally or just "baby.png" if on website -->
     <link rel="icon" href="baby.png">

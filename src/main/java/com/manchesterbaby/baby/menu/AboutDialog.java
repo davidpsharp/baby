@@ -42,12 +42,16 @@ public class AboutDialog extends JFrame {
     private JButton okButton;
 
     public AboutDialog(JFrame parent) {
+        this(parent, ABOUT_MESSAGE);
+    }
+
+    public AboutDialog(JFrame parent, String altMessage) {
         super(ABOUT_TITLE);
 
         // Create HTML pane for the about message
         JEditorPane messagePane = new JEditorPane();
         messagePane.setContentType("text/html");
-        messagePane.setText("<html><div style='text-align: center;'>" + ABOUT_MESSAGE + "</div></html>");
+        messagePane.setText("<html><div style='text-align: center;'>" + altMessage + "</div></html>");
         messagePane.setEditable(false);
         messagePane.setBackground(UIManager.getColor("Panel.background"));
 
@@ -92,6 +96,7 @@ public class AboutDialog extends JFrame {
         setResizable(false);
         pack();
         setLocationRelativeTo(parent);
+
     }
 
     public void displayAboutDialog() {
