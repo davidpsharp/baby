@@ -4,6 +4,19 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Store;
@@ -15,15 +28,13 @@ import com.manchesterbaby.baby.utils.MiscUtils;
 import com.manchesterbaby.baby.utils.Version;
 import com.manchesterbaby.baby.utils.RecentFilesManager.FileLocation;
 import com.manchesterbaby.baby.utils.RecentFilesManager.RecentFileEntry;
+import com.manchesterbaby.baby.menu.AboutDialog;
 
 import javax.swing.JOptionPane;
 
-import java.awt.event.KeyEvent;
-import java.util.List;
-import java.io.File;
+import java.awt.Color;
 import java.awt.Desktop;
-import java.net.URI;
-import java.net.URISyntaxException;
+import javax.swing.ImageIcon;
 
 /**
  * Creates the File menu.
@@ -71,7 +82,58 @@ public class FileMenu {
         loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanelController));
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
-        saveAsURL.addActionListener(e -> new AboutDialog(frame, "https://manchesterbaby.com?program=" + store.toBase64url()).displayAboutDialog());
+        saveAsURL.addActionListener(e -> {
+            String url = "https://manchesterbaby.com?program=" + store.toBase64url();
+            JTextArea textArea = new JTextArea(url);
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setBackground(Color.WHITE);
+            
+            // Set preferred size for wrapping
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(500, 100));
+            
+            // Create custom buttons
+            Object[] options = {
+                "Open URL",
+                "Copy to Clipboard",
+                "Close"
+            };
+            
+            // Load and scale the baby icon
+            ImageIcon originalIcon = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
+            Image scaled = originalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(scaled);
+            
+            int choice = JOptionPane.showOptionDialog(
+                frame,
+                scrollPane,
+                "Manchester Baby URL",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                icon,
+                options,
+                options[2] // Default to Close button
+            );
+            
+            if (choice == 0) { // Open URL
+                try {
+                    Desktop.getDesktop().browse(new URI(url));
+                } catch (IOException | URISyntaxException ex) {
+                    JOptionPane.showMessageDialog(
+                        frame,
+                        "Failed to open URL: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } else if (choice == 1) { // Copy to Clipboard
+                Toolkit.getDefaultToolkit()
+                    .getSystemClipboard()
+                    .setContents(new StringSelection(url), null);
+            }
+        });
 
         close.addActionListener(e -> System.exit(0));
 

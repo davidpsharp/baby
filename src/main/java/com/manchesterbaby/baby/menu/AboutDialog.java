@@ -54,6 +54,7 @@ public class AboutDialog extends JFrame {
         messagePane.setText("<html><div style='text-align: center;'>" + altMessage + "</div></html>");
         messagePane.setEditable(false);
         messagePane.setBackground(UIManager.getColor("Panel.background"));
+        
 
         // Add hyperlink listener
         messagePane.addHyperlinkListener(e -> {
