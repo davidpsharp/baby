@@ -975,12 +975,17 @@ public class Store
 	 */
 	public String toBase64url() {
 		// Create a ByteBuffer to hold all the integers (4 bytes each)
-		ByteBuffer buffer = ByteBuffer.allocate(line.length * 4);
+		// add 2 so can store Accumulator and CI registers so programs can be copied mid-execution
+		ByteBuffer buffer = ByteBuffer.allocate((line.length+2) * 4);
 		
 		// Write all integers to the buffer
 		for (int value : line) {
 			buffer.putInt(value);
 		}
+		
+		// Write Accumulator and CI registers
+		buffer.putInt(control.getAccumulator());
+		buffer.putInt(control.getControlInstruction());
 		
 		// Convert to base64url
 		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(buffer.array());
@@ -996,7 +1001,8 @@ public class Store
 		byte[] bytes = java.util.Base64.getUrlDecoder().decode(base64);
 		
 		// Check if the byte array length is valid (must be multiple of 4 since each int is 4 bytes)
-		if (bytes.length % 4 != 0 || bytes.length != line.length * 4) {
+		// add 2 for Accumulator and CI registers
+		if (bytes.length % 4 != 0 || bytes.length != (line.length + 2) * 4) {
 			throw new IllegalArgumentException("Invalid base64url string length");
 		}
 		
@@ -1008,5 +1014,9 @@ public class Store
 			line[i] = buffer.getInt();
 			isLineAltered[i] = true;
 		}
+		
+		// Read Accumulator and CI registers
+		control.setAccumulator(buffer.getInt());
+		control.setControlInstruction(buffer.getInt());
 	}
 }
