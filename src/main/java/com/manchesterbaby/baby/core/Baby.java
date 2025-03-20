@@ -220,7 +220,7 @@ public class Baby extends JFrame {
                 boolean urlParamProgramLoaded = false;
                 if(CheerpJUtils.onCheerpj())
                 {
-                    String program  = CheerpJUtils.getURLparam("program");
+                    String program  = CheerpJUtils.getURLparam("s");
                     if(program != null)
                     {
                         store.loadFromURLparam(program);

@@ -1,22 +1,32 @@
 package com.manchesterbaby.baby.core;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.manchesterbaby.baby.controller.CrtControlPanelController;
+import com.manchesterbaby.baby.event.FileLoadedListener;
 import com.manchesterbaby.baby.utils.AppSettings;
 import com.manchesterbaby.baby.utils.MiscUtils;
 import com.manchesterbaby.baby.utils.RecentFilesManager;
-import com.manchesterbaby.baby.event.FileLoadedListener;
 
 public class Store
 {
@@ -964,9 +974,151 @@ public class Store
 	public void loadFromURLparam(String program)
 	{
 		
-		// assume base64url encoding for now
-		this.fromBase64url(program);
+		// TODO: add support for a run-lengh compressed encoding
+		// start with a bit map with 1 bit for each line to denote whether for that line to store
+		// only bits 0-4 and 13-15 (a v common pattern which avoids lots of zeroes and only takes 8 bits rather than 32 -  sadly 2 base64
+		// characters unless can do a bitstream rather than a bytestream) OR whether all 32 bits should be represented 
+		// for that line. Should reduce number of bits needed by 75% for probably 60% of program lines for many progs. If true would reduce from 1088 (inc CI & ACC)->631 bits.
+		// actually may be able to just use byte buffer as will always write just 8 bits, or 32 bits and let base64 encoding do the rest.
 
+		// assume base64url encoding for now
+		this.fromCompressedBase64url(program);
+
+	}
+
+	public String saveToURLparam()
+	{
+		return this.toCompressedBase64url();
+	}
+
+	/**
+	 * Encodes the store's line array into a compressed thenbase64url encoded string
+	 * @return A base64url compressed encoded string representing the store's contents
+	 */
+	public String toCompressedBase64url() {
+		// Create a ByteBuffer to hold all the store line integers (4 bytes each)
+		// add 1*4 so can store Accumulator registers so programs can be copied mid-execution
+		// add 1*4 so can store bitmap to represent line compression map across the store
+		// add 1 byte at the end for the CI register that can only be 5 bits.
+
+		ByteBuffer buffer = ByteBuffer.allocate(((line.length+1+1) * 4)+1);
+
+		int bytesWritten = 0;
+		
+		// clear the map of store lines that can do 8 bit representation versus needing full 32 bit representation.
+		int storeEncodingBitmap = 0;
+		buffer.putInt(storeEncodingBitmap); // push this in at start to make sure can read it back first when decoding
+		bytesWritten += 4;
+
+		// Write all store lines to the buffer
+		for(int lineCount=0; lineCount < line.length; lineCount++)
+		{
+			int value = line[lineCount];
+			// if some bits other than 0-4 and 13-15 are set so store the whole 32 bit line
+			if((value & ~0x0000E01F) != 0)
+			{
+				buffer.putInt(value);
+				bytesWritten += 4;
+				// don't need to update storeEncodingBitmap as 0 will represent uncompressed line.
+			}
+			else
+			{
+				// only store bits 0-4 and 13-15 in a single byte
+				byte compressedLineValue = (byte)((value & 0x1F) | ((value & 0xE000) >> 8));
+				buffer.put(compressedLineValue);
+				bytesWritten += 1;
+				storeEncodingBitmap |= 1 << lineCount; // set the bit map for this line to show compressed to 8 bits
+			}
+		}
+
+		// now go back to the start of the buffer and poke the updated storeEncodingBitmap over those first 4 bytes
+		// so it's available for decoding the store lines when reading back
+		buffer.array()[0] = (byte)(storeEncodingBitmap >> 24);
+		buffer.array()[1] = (byte)(storeEncodingBitmap >> 16);
+		buffer.array()[2] = (byte)(storeEncodingBitmap >> 8);
+		buffer.array()[3] = (byte)storeEncodingBitmap;
+		// no need to increment bytesWritten as already done at start
+
+		int accumulator = control.getAccumulator();
+
+		// only need bits 0-4 in this byte for CI so use bit 5 to represent whether to compress the accumulator too
+		byte compCI = (byte)control.getControlInstruction();
+		
+		// if some bits other than 0-4 and 13-15 are set so store the whole 32 bit accumulator
+		if((accumulator & ~0x0000E01F) != 0)
+		{
+			// don't need to set bit in compCI as 0 will represent uncompressed accumulator
+			buffer.put(compCI);
+			bytesWritten += 1;
+
+			buffer.putInt(accumulator);
+			bytesWritten += 4;
+		}
+		else
+		{
+			compCI |= 0x20; // set bit 5 to show compressed accumulator
+			buffer.put(compCI);
+			bytesWritten += 1;
+
+			byte compressedAccumulator = (byte)((accumulator & 0x1F) | ((accumulator & 0xE000) >> 8));
+			buffer.put(compressedAccumulator);
+			bytesWritten += 1;
+		}		
+		
+		// can't resize ByteBuffer so create a new byte array of correct size
+		byte[] byteArray = new byte[bytesWritten];
+		buffer.rewind();
+		buffer.get(byteArray);
+
+		// Convert to base64url
+		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(byteArray);
+	}
+
+	/**
+	 * Decodes a compressed base64url encoded string and loads it into the store's line array
+	 * Sidenote, this method including comments was 100% generated by codeium windsurf just by prompting it to:
+	 *  'create a fromCompressedBase64url method in store that takes a string and reverses the compression operations performed by toCompresedBase64url'
+	 * AI is magical.
+	 * @param base64 The base64url encoded string to decode
+	 */
+	public void fromCompressedBase64url(String base64) {
+		// Decode base64url string to byte array
+		byte[] bytes = java.util.Base64.getUrlDecoder().decode(base64);
+		ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		
+		// Read the compression bitmap first (it's at the start of the buffer)
+		int storeEncodingBitmap = buffer.getInt();
+		
+		// Read store lines using the bitmap to determine format
+		for(int lineCount = 0; lineCount < line.length; lineCount++) {
+			if((storeEncodingBitmap & (1 << lineCount)) != 0) {
+				// This line is compressed to 8 bits
+				byte compressedValue = buffer.get();
+				
+				// Extract bits 0-4 and 13-15 from compressed format
+				int value = (compressedValue & 0x1F) | ((compressedValue & 0xE0) << 8);
+				line[lineCount] = value;
+			} else {
+				// This line is stored as full 32 bits
+				line[lineCount] = buffer.getInt();
+			}
+		}
+		
+		// Read CI register and check if accumulator is compressed
+		byte compCI = buffer.get();
+		control.setControlInstruction((byte)(compCI & 0x1F)); // Only use bits 0-4 for CI
+		
+		// Check bit 5 to see if accumulator is compressed
+		if((compCI & 0x20) != 0) {
+			// Accumulator is compressed to 8 bits
+			byte compressedAccumulator = buffer.get();
+			// Extract bits 0-4 and 13-15 from compressed format
+			int accumulator = (compressedAccumulator & 0x1F) | ((compressedAccumulator & 0xE0) << 8);
+			control.setAccumulator(accumulator);
+		} else {
+			// Accumulator is stored as full 32 bits
+			control.setAccumulator(buffer.getInt());
+		}
 	}
 
 	/**
@@ -975,8 +1127,9 @@ public class Store
 	 */
 	public String toBase64url() {
 		// Create a ByteBuffer to hold all the integers (4 bytes each)
-		// add 2 so can store Accumulator and CI registers so programs can be copied mid-execution
-		ByteBuffer buffer = ByteBuffer.allocate((line.length+2) * 4);
+		// add 1*4 so can store Accumulator registers so programs can be copied mid-execution
+		// then add 1 byte at the end for the CI register that can only be 5 bits.
+		ByteBuffer buffer = ByteBuffer.allocate(((line.length+1) * 4)+1);
 		
 		// Write all integers to the buffer
 		for (int value : line) {
@@ -985,12 +1138,12 @@ public class Store
 		
 		// Write Accumulator and CI registers
 		buffer.putInt(control.getAccumulator());
-		buffer.putInt(control.getControlInstruction());
+		buffer.put((byte)control.getControlInstruction());
 		
 		// Convert to base64url
 		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(buffer.array());
 	}
-
+	
 	/**
 	 * Decodes a base64url encoded string and loads it into the store's line array
 	 * @param base64 The base64url encoded string to decode
@@ -1017,6 +1170,8 @@ public class Store
 		
 		// Read Accumulator and CI registers
 		control.setAccumulator(buffer.getInt());
-		control.setControlInstruction(buffer.getInt());
+		control.setControlInstruction(buffer.get());
 	}
+
+	
 }

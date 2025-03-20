@@ -44,8 +44,7 @@ import javax.swing.ImageIcon;
 public class FileMenu {
     private static JMenu recentFilesMenu;
     private static CrtPanelController _crtPanelController;
-    private static final int expectedBase64Len = (int)Math.ceil((((32+2)*32)/6.0)); // calc num of base64 chars expected for store + CI + Acc
-
+    
     /**
      * Creates the File menu.
      *
@@ -119,25 +118,21 @@ public class FileMenu {
                         // TODO: move this logic all into standard URL loading code
                         URI uri = new URI(url);
                         String query = uri.getQuery();
-                        if (query != null && query.indexOf("program=") != -1) {
-                            int programParamIndex = query.indexOf("program=");
-                            String base64Program = query.substring(programParamIndex + 8, programParamIndex + 8 + expectedBase64Len); // Remove "program="
+                        // if is a wellformed query and found 's='' param name
+                        if (query != null && query.indexOf("s=") != -1) {
+                            int programParamIndex = query.indexOf("s=");
+                            int endOfProgramIndex = query.indexOf("&", programParamIndex); // look for end pam
+                            if(endOfProgramIndex == -1)
+                            {
+                                endOfProgramIndex = query.length();
+                            }
+                            String base64Program = query.substring(programParamIndex +2, endOfProgramIndex); // Remove "s=" and any trailing parameters
                             store.loadFromURLparam(base64Program);
                             _crtPanelController.redrawCrtPanel();
                         } else {
-                            int urlLength = url.length();
-                            
-                            if(urlLength == expectedBase64Len)
-                            {
-                                // correct length, but not a URL or no program parameter
-                                // see if it's just the base64url section and try and load it
-                                store.loadFromURLparam(url);
-                                _crtPanelController.redrawCrtPanel();
-                            }
-                            else
-                            {
-                                throw new URISyntaxException(url, "Missing program parameter");
-                            }
+                            // just try and load it
+                            store.loadFromURLparam(url);
+                            _crtPanelController.redrawCrtPanel();
                         }
                     } catch (URISyntaxException | IllegalArgumentException ex) {
                         JOptionPane.showMessageDialog(
@@ -153,7 +148,7 @@ public class FileMenu {
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
         saveAsURL.addActionListener(e -> {
-            String url = "https://manchesterbaby.com?program=" + store.toBase64url();
+            String url = "https://manchesterbaby.com?s=" + store.saveToURLparam();
             JTextArea textArea = new JTextArea(url);
             textArea.setEditable(false);
             textArea.setLineWrap(true);
