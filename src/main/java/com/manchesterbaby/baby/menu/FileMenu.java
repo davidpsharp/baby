@@ -1,40 +1,24 @@
 package com.manchesterbaby.baby.menu;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Store;
-import com.manchesterbaby.baby.io.LoadSnapshotAssembly;
-import com.manchesterbaby.baby.io.SaveAssembly;
-import com.manchesterbaby.baby.io.SaveSnapshot;
-import com.manchesterbaby.baby.utils.CheerpJUtils;
-import com.manchesterbaby.baby.utils.MiscUtils;
-import com.manchesterbaby.baby.utils.Version;
-import com.manchesterbaby.baby.utils.RecentFilesManager.FileLocation;
-import com.manchesterbaby.baby.utils.RecentFilesManager.RecentFileEntry;
-import com.manchesterbaby.baby.menu.AboutDialog;
+import com.manchesterbaby.baby.io.*;
+import com.manchesterbaby.baby.utils.*;
+import com.manchesterbaby.baby.utils.RecentFilesManager.*;
 
-import javax.swing.JOptionPane;
-
-import java.awt.Color;
-import java.awt.Desktop;
-import javax.swing.ImageIcon;
 
 /**
  * Creates the File menu.
@@ -55,12 +39,14 @@ public class FileMenu {
      * @return the File menu
      */
     public static JMenu createFileMenu(Store store, String currentDir, JFrame frame, CrtPanelController crtPanelController) {
+        
+        _crtPanelController = crtPanelController;
+
         // Create the File menu
         JMenu fileMenu = new JMenu("File");
 
         // Create menu items
         JMenuItem loadSnapshotAssembly = new JMenuItem("Load snapshot/assembly");
-        JMenuItem loadURL = new JMenuItem("Load URL");
 
         // if on cheerpj add special menu item to ask javascript to show an open file dialog for host machine file system
         if(CheerpJUtils.onCheerpj())
@@ -71,15 +57,23 @@ public class FileMenu {
             fileMenu.add(loadLocalSnapshotAssembly);
         }
 
-        _crtPanelController = crtPanelController;
+        // Add URL loading item
+        JMenuItem loadURL = new JMenuItem("Load from URL");
+
         recentFilesMenu = new JMenu("Load Recent");
 
         updateRecentFilesMenu(store, frame, crtPanelController);
         JMenuItem saveSnapshot = new JMenuItem("Save snapshot");
         JMenuItem saveAssembly = new JMenuItem("Save assembly");
         JMenuItem saveAsURL = new JMenuItem("Save as URL");
+        JMenuItem saveAsQRcode = new JMenuItem("Save as QR code");
 
         JMenuItem close = new JMenuItem("Close");
+
+        // Load and scale the baby icon
+        ImageIcon originalIcon = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
+        Image scaled = originalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+        ImageIcon icon = new ImageIcon(scaled);
 
         // Add action listeners for each item
         loadSnapshotAssembly.addActionListener(new LoadSnapshotAssembly(store, frame, crtPanelController));
@@ -97,9 +91,9 @@ public class FileMenu {
             scrollPane.setPreferredSize(new Dimension(500, 100));
             
             // Load and scale the baby icon
-            ImageIcon originalIcon = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
-            Image scaled = originalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(scaled);
+            //ImageIcon originalIcon = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
+            //Image scaled = originalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
+            //ImageIcon icon = new ImageIcon(scaled);
             
             int result = JOptionPane.showConfirmDialog(
                 frame,
@@ -145,6 +139,8 @@ public class FileMenu {
                 }
             }
         });
+
+        // Add save menu items
         saveSnapshot.addActionListener(new SaveSnapshot(currentDir, store, frame));
         saveAssembly.addActionListener(new SaveAssembly(currentDir, store, frame));
         saveAsURL.addActionListener(e -> {
@@ -164,12 +160,7 @@ public class FileMenu {
                 "Open URL",
                 "Copy to Clipboard",
                 "Close"
-            };
-            
-            // Load and scale the baby icon
-            ImageIcon originalIcon = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
-            Image scaled = originalIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(scaled);
+            }; 
             
             int choice = JOptionPane.showOptionDialog(
                 frame,
@@ -200,13 +191,50 @@ public class FileMenu {
             }
         });
 
+        saveAsQRcode.addActionListener(e -> {
+            String url = "https://manchesterbaby.com?s=" + store.saveToURLparam();
+
+            try {
+                // Configure QR code parameters using fully qualified names
+                Map<com.google.zxing.EncodeHintType, Object> hints = new HashMap<>();
+                hints.put(com.google.zxing.EncodeHintType.ERROR_CORRECTION, com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.L);
+                hints.put(com.google.zxing.EncodeHintType.MARGIN, 2);
+                
+                // Create QR code
+                com.google.zxing.qrcode.QRCodeWriter qrCodeWriter = new com.google.zxing.qrcode.QRCodeWriter();
+                BufferedImage qrImage = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+                    qrCodeWriter.encode(url, com.google.zxing.BarcodeFormat.QR_CODE, 300, 300, hints)
+                );
+                
+                // Create a label to display the QR code
+                JLabel qrLabel = new JLabel(new ImageIcon(qrImage));
+                qrLabel.setPreferredSize(new Dimension(300, 300));
+                
+                // Show QR code in a dialog
+                JOptionPane.showMessageDialog(
+                    frame,
+                    qrLabel,
+                    "QR Code for Manchester Baby URL",
+                    JOptionPane.PLAIN_MESSAGE,
+                    icon
+                );
+            } catch (com.google.zxing.WriterException ex) {
+                JOptionPane.showMessageDialog(
+                    frame,
+                    "Failed to generate QR code: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
         close.addActionListener(e -> System.exit(0));
 
         // Set mnemonics (keyboard shortcuts)
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             // MacOS specific mnemonics
             loadSnapshotAssembly.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.META_DOWN_MASK)); // Cmd + L
-            loadURL.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.META_DOWN_MASK)); // Cmd + U
+            saveAsURL.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.META_DOWN_MASK)); // Cmd + U
             saveSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.META_DOWN_MASK)); // Cmd + S
             saveAssembly.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK)); // Cmd + A
             close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.META_DOWN_MASK)); // Cmd + W
@@ -214,7 +242,7 @@ public class FileMenu {
             // Windows/Linux specific mnemonics
             fileMenu.setMnemonic(KeyEvent.VK_F); // Alt + F
             loadSnapshotAssembly.setMnemonic(KeyEvent.VK_L); // Alt + L
-            loadURL.setMnemonic(KeyEvent.VK_U); // Alt + U
+            saveAsURL.setMnemonic(KeyEvent.VK_U); // Alt + U
             saveSnapshot.setMnemonic(KeyEvent.VK_S); // Alt + S
             saveAssembly.setMnemonic(KeyEvent.VK_A); // Alt + A
             close.setMnemonic(KeyEvent.VK_C); // Alt + C
@@ -228,6 +256,7 @@ public class FileMenu {
         fileMenu.add(saveSnapshot);
         fileMenu.add(saveAssembly);
         fileMenu.add(saveAsURL);
+        fileMenu.add(saveAsQRcode);
         
         fileMenu.addSeparator();
 
@@ -275,29 +304,14 @@ public class FileMenu {
                             case "snapshot:URL":
                                 store.loadLocalSnapshot(path);
                                 break;
-                            default:
-                                throw new IllegalStateException("Unknown load method: " + entry.getLoadMethod());
                         }
                         crtPanelController.redrawCrtPanel();
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(frame,
-                                "Error loading file: " + ex.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Error loading file " +  ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 });
-                menuItem.setToolTipText(location.getPath());
                 recentFilesMenu.add(menuItem);
             }
         }
-
-        // Add separator and Clear List option
-        recentFilesMenu.addSeparator();
-        JMenuItem clearList = new JMenuItem("Clear List");
-        clearList.addActionListener(e -> {
-            store.getRecentFilesManager().clearRecentFiles();
-            updateRecentFilesMenu(store, frame, crtPanelController);
-        });
-        recentFilesMenu.add(clearList);
     }
 }

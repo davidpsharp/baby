@@ -1067,8 +1067,8 @@ public class Store
 		
 		// can't resize ByteBuffer so create a new byte array of correct size
 		byte[] byteArray = new byte[bytesWritten];
-		buffer.rewind();
-		buffer.get(byteArray);
+		buffer.position(0); // Use position(0) instead of rewind() in Java 8
+		buffer.get(byteArray, 0, bytesWritten);
 
 		// Convert to base64url
 		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(byteArray);
@@ -1129,6 +1129,7 @@ public class Store
 		// Create a ByteBuffer to hold all the integers (4 bytes each)
 		// add 1*4 so can store Accumulator registers so programs can be copied mid-execution
 		// then add 1 byte at the end for the CI register that can only be 5 bits.
+
 		ByteBuffer buffer = ByteBuffer.allocate(((line.length+1) * 4)+1);
 		
 		// Write all integers to the buffer
