@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.nayuki.qrcodegen.QrCode;
 
 import com.manchesterbaby.baby.controller.CrtPanelController;
 import com.manchesterbaby.baby.core.Store;
 import com.manchesterbaby.baby.io.*;
 import com.manchesterbaby.baby.utils.*;
 import com.manchesterbaby.baby.utils.RecentFilesManager.*;
-
 
 /**
  * Creates the File menu.
@@ -195,20 +195,34 @@ public class FileMenu {
             String url = "https://manchesterbaby.com?s=" + store.saveToURLparam();
 
             try {
-                // Configure QR code parameters using fully qualified names
-                Map<com.google.zxing.EncodeHintType, Object> hints = new HashMap<>();
-                hints.put(com.google.zxing.EncodeHintType.ERROR_CORRECTION, com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.L);
-                hints.put(com.google.zxing.EncodeHintType.MARGIN, 2);
+                // Generate QR code with error correction level M (15%)
+                QrCode qr = QrCode.encodeText(url, QrCode.Ecc.MEDIUM);
                 
-                // Create QR code
-                com.google.zxing.qrcode.QRCodeWriter qrCodeWriter = new com.google.zxing.qrcode.QRCodeWriter();
-                BufferedImage qrImage = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
-                    qrCodeWriter.encode(url, com.google.zxing.BarcodeFormat.QR_CODE, 300, 300, hints)
+                // Convert QR code to image
+                int scale = 6; // Scale factor to make QR code larger
+                BufferedImage qrImage = new BufferedImage(
+                    qr.size * scale, qr.size * scale, 
+                    BufferedImage.TYPE_INT_RGB
                 );
+                
+                // Draw QR code pixels
+                Graphics2D g = qrImage.createGraphics();
+                g.setColor(Color.WHITE);
+                g.fillRect(0, 0, qrImage.getWidth(), qrImage.getHeight());
+                g.setColor(Color.BLACK);
+                
+                for (int y = 0; y < qr.size; y++) {
+                    for (int x = 0; x < qr.size; x++) {
+                        if (qr.getModule(x, y)) {
+                            g.fillRect(x * scale, y * scale, scale, scale);
+                        }
+                    }
+                }
+                g.dispose();
                 
                 // Create a label to display the QR code
                 JLabel qrLabel = new JLabel(new ImageIcon(qrImage));
-                qrLabel.setPreferredSize(new Dimension(300, 300));
+                qrLabel.setPreferredSize(new Dimension(qrImage.getWidth(), qrImage.getHeight()));
                 
                 // Show QR code in a dialog
                 JOptionPane.showMessageDialog(
@@ -218,7 +232,7 @@ public class FileMenu {
                     JOptionPane.PLAIN_MESSAGE,
                     icon
                 );
-            } catch (com.google.zxing.WriterException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(
                     frame,
                     "Failed to generate QR code: " + ex.getMessage(),

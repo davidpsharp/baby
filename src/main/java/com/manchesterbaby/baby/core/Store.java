@@ -405,7 +405,7 @@ public class Store
 			System.err.println("Not a valid URI, trying as direct file path: " + ex.toString());
 			return new FileInputStream(fileName);
 		}
-	}
+}
 
 
 
@@ -1067,8 +1067,8 @@ public class Store
 		
 		// can't resize ByteBuffer so create a new byte array of correct size
 		byte[] byteArray = new byte[bytesWritten];
-		buffer.position(0); // Use position(0) instead of rewind() in Java 8
-		buffer.get(byteArray, 0, bytesWritten);
+		buffer.rewind();
+		buffer.get(byteArray);
 
 		// Convert to base64url
 		return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(byteArray);

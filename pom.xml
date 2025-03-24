@@ -442,15 +442,11 @@
             <version>5.11.4</version>
             <scope>test</scope>
         </dependency>
+        <!-- QR Code Generation -->
         <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>3.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>3.5.3</version>
+            <groupId>io.nayuki</groupId>
+            <artifactId>qrcodegen</artifactId>
+            <version>1.8.0</version>
         </dependency>
     </dependencies>
 
