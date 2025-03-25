@@ -1067,7 +1067,7 @@ public class Store
 		
 		// can't resize ByteBuffer so create a new byte array of correct size
 		byte[] byteArray = new byte[bytesWritten];
-		buffer.rewind();
+		((ByteBuffer)buffer).rewind(); // occasionally seeing NoSuchMethodError in dev on later than Java 8 JDKs so explicitly cast to for the right class support in Java 8
 		buffer.get(byteArray);
 
 		// Convert to base64url
