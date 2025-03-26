@@ -71,6 +71,7 @@ public class CrtPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
+                int button = e.getButton();
 
                 // Check if within horizontal bounds of the drawn line
                 // Lines start at DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING
@@ -81,15 +82,31 @@ public class CrtPanel extends JPanel {
                 
                 // Reverse calculate line number from y coordinate
                 int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
+                int bitNumber = (x - DEFAULT_RASTER_OFFSET_X - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
                 
                 // Only show dialog if click is within valid line range
                 if (lineNumber >= 0 && lineNumber < 32 && withinHorizontalBounds) {
-                    // TODO: consider setting switches to make this line the action line
-                    // maybe this should be a double click action and only when machine not running?
+                    
                     //                    JOptionPane.showMessageDialog(CrtPanel.this,
-                    //                        "Line number: " + lineNumber + '\n',
+                    //                        "Line: " + lineNumber + ", bit:" + bitNumber + " (button:" + button + ")",
                     //                        "Line Information",
                     //                        JOptionPane.INFORMATION_MESSAGE);
+                    
+                    if(currentDisplay == DisplayType.STORE)
+                    {
+                        if(button == 1)
+                        {
+                            // left click
+                            store.setBit(lineNumber, bitNumber);
+                        }
+                        else
+                        {
+                            // middle or right click
+                            store.clearBit(lineNumber, bitNumber);           
+                        }
+                        render();
+                        efficientRepaint();
+                    }
                 }
             }
         });

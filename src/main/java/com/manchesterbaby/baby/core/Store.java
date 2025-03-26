@@ -112,7 +112,7 @@ public class Store
 		line[lineNumber] = value;
 		isLineAltered[lineNumber] = true;
 	}
-		
+	
 	public int getLine(int lineNumber)
 	{
 		return line[lineNumber];
@@ -122,6 +122,18 @@ public class Store
 	public int getBit(int lineNumber, int bitNumber)
 	{
 		return ((line[lineNumber] >> bitNumber) & 1);
+	}
+
+	public void setBit(int lineNumber, int bitNumber)
+	{
+		line[lineNumber] |= (1 << bitNumber);
+		isLineAltered[lineNumber] = true;
+	}
+
+	public void clearBit(int lineNumber, int bitNumber)
+	{
+		line[lineNumber] &= ~(1 << bitNumber);
+		isLineAltered[lineNumber] = true;
 	}
 		
 	// initialise store
