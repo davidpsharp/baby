@@ -52,6 +52,8 @@ public class CrtPanel extends JPanel {
     private final Store store;
     private final Control control;
 
+    private final boolean CLICK_ON_CRT_TO_MODIFY = false;
+
     /**
      * Creates a new instance of CrtPanel.
      *
@@ -69,44 +71,48 @@ public class CrtPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                int button = e.getButton();
 
-                // Check if within horizontal bounds of the drawn line
-                // Lines start at DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING
-                // and extend for 32 bits * DEFAULT_BIT_LENGTH
-                boolean withinHorizontalBounds = 
-                    x >= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING) && 
-                    x <= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING + (32 * DEFAULT_BIT_LENGTH));
-                
-                // Reverse calculate line number from y coordinate
-                int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
-                int bitNumber = (x - DEFAULT_RASTER_OFFSET_X - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
-                
-                // Only show dialog if click is within valid line range
-                if (lineNumber >= 0 && lineNumber < 32 && withinHorizontalBounds) {
+                if (CLICK_ON_CRT_TO_MODIFY)
+                {
+                    int x = e.getX();
+                    int y = e.getY();
+                    int button = e.getButton();
+
+                    // Check if within horizontal bounds of the drawn line
+                    // Lines start at DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING
+                    // and extend for 32 bits * DEFAULT_BIT_LENGTH
+                    boolean withinHorizontalBounds = 
+                        x >= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING) && 
+                        x <= (DEFAULT_RASTER_OFFSET_X + DEFAULT_SPACING + (32 * DEFAULT_BIT_LENGTH));
                     
-                    //                    JOptionPane.showMessageDialog(CrtPanel.this,
-                    //                        "Line: " + lineNumber + ", bit:" + bitNumber + " (button:" + button + ")",
-                    //                        "Line Information",
-                    //                        JOptionPane.INFORMATION_MESSAGE);
+                    // Reverse calculate line number from y coordinate
+                    int lineNumber = (y - DEFAULT_RASTER_OFFSET_Y - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
+                    int bitNumber = (x - DEFAULT_RASTER_OFFSET_X - DEFAULT_SPACING) / DEFAULT_BIT_LENGTH;
                     
-                    if(currentDisplay == DisplayType.STORE)
-                    {
-                        if(button == 1)
+                    // Only show dialog if click is within valid line range
+                    if (lineNumber >= 0 && lineNumber < 32 && withinHorizontalBounds) {
+                        
+                        //                    JOptionPane.showMessageDialog(CrtPanel.this,
+                        //                        "Line: " + lineNumber + ", bit:" + bitNumber + " (button:" + button + ")",
+                        //                        "Line Information",
+                        //                        JOptionPane.INFORMATION_MESSAGE);
+
+                        if(currentDisplay == DisplayType.STORE)
                         {
-                            // left click
-                            store.setBit(lineNumber, bitNumber);
+                            if(button == 1)
+                            {
+                                // left click
+                                store.setBit(lineNumber, bitNumber);
+                            }
+                            else
+                            {
+                                // middle or right click
+                                store.clearBit(lineNumber, bitNumber);           
+                            }
+                            render();
+                            efficientRepaint();
                         }
-                        else
-                        {
-                            // middle or right click
-                            store.clearBit(lineNumber, bitNumber);           
-                        }
-                        render();
-                        efficientRepaint();
-                    }
+                    }   
                 }
             }
         });
