@@ -115,8 +115,7 @@
         <profile>
             <id>windows-dist</id>
             <properties>
-                <jre.version>8u392</jre.version>
-                <jre.build>b08</jre.build>
+                <jre.version>11.0.22+7</jre.version>
             </properties>
             <build>
                 <plugins>
@@ -135,7 +134,7 @@
                                 <configuration>
                                     <target>
                                         <mkdir dir="${project.build.directory}/jre-download"/>
-                                        <get src="https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u392-b08/OpenJDK8U-jre_x64_windows_hotspot_8u392b08.zip"
+                                        <get src="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.22%2B7/OpenJDK11U-jre_x64_windows_hotspot_11.0.22_7.zip"
                                              dest="${project.build.directory}/jre-download/jre.zip"
                                              skipexisting="true"/>
                                         <unzip src="${project.build.directory}/jre-download/jre.zip"
@@ -174,7 +173,7 @@
                                         <path>jre</path>
                                         <requiresJdk>false</requiresJdk>
                                         <requires64Bit>true</requires64Bit>
-                                        <minVersion>1.8.0</minVersion>
+                                        <minVersion>11</minVersion>
                                         <initialHeapSize>128</initialHeapSize>
                                         <maxHeapSize>512</maxHeapSize>
                                         <opts>
@@ -292,7 +291,7 @@
                                 <configuration>
                                     <target>
                                         <mkdir dir="${project.build.directory}/jre-download"/>
-                                        <get src="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.10%2B7/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.10_7.tar.gz"
+                                        <get src="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.22%2B7/OpenJDK11U-jre_aarch64_mac_hotspot_11.0.22_7.tar.gz"
                                              dest="${project.build.directory}/jre-download/jre.tar.gz"
                                              verbose="true"/>
                                         <untar src="${project.build.directory}/jre-download/jre.tar.gz"
