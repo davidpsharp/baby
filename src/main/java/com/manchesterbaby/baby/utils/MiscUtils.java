@@ -75,6 +75,18 @@ public class MiscUtils {
         }
     }
 
+    // returns true if java 9 or later (which support scaleUI param)
+    public static boolean jreCanScaleUI() {
+        try {
+            // use reflection to call a java 9 and later method
+            Object version = Runtime.class.getMethod("version").invoke(null);
+            return true;
+        } catch (Exception e) {
+            // Fallback to System property (Java 8 and below)
+            return false;
+        }
+    }
+
     /**
      * Gets the name and vendor of the Java Runtime Environment.
      * For example: "Eclipse Temurin" or "Oracle OpenJDK"
@@ -159,8 +171,7 @@ public class MiscUtils {
                 }
             } catch (Exception e) {
                 // Fallback to os.version and os.arch if commands fail
-                System.err.println("Error getting OS info: " + e.getMessage());
-            }
+                System.err.println("Error getting OS info: " + e.getMessage());            }
             return String.format("macOS %s (%s)", osVersion, osArch);
         } else if (osName.startsWith("Windows")) {
             String displayVersion = getWindowsDisplayVersion();

@@ -17,6 +17,7 @@ import com.manchesterbaby.baby.ui.display.DisplayDebugPanel;
 import com.manchesterbaby.baby.ui.display.DisplayDisassemblerWindow;
 import com.manchesterbaby.baby.utils.AppSettings;
 import com.manchesterbaby.baby.utils.CheerpJUtils;
+import com.manchesterbaby.baby.utils.MiscUtils;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -112,8 +113,8 @@ public class ViewMenu {
 
         viewDebugPanel.setSelected(AppSettings.getInstance().isShowDebugPanel());
 
-        // Add zoom submenu if desktop app
-        if(!CheerpJUtils.onCheerpj()) {
+        // Add zoom submenu if not running in browser and not macOS
+        if(!CheerpJUtils.onCheerpj() && !System.getProperty("os.name").startsWith("Mac")) {
         
             JMenu zoomMenu = new JMenu("Zoom on next start");
             String[] zoomLevels;
@@ -133,31 +134,45 @@ public class ViewMenu {
                 zoomItem.setSelected(level.equals(currentZoom));
                 zoomItem.addActionListener(e -> {
                     AppSettings.getInstance().setUiScaleSetting(level);
-                    int choice = JOptionPane.showConfirmDialog(
-                        _parentFrame,
-                        "Zoom will take effect when the simulator is next started. Restart it now?",
-                        "Restart Required",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                    );
-                    
-                    if (choice == JOptionPane.YES_OPTION) {
-                        // Get the current jar path
-                        String jarPath = System.getProperty("java.class.path");
-                        // Start a new instance
-                        try {
-                            ProcessBuilder pb = new ProcessBuilder("java", "-jar", jarPath);
-                            pb.start();
-                            // Exit the current instance
-                            System.exit(0);
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(
-                                _parentFrame,
-                                "Failed to restart simulator: " + ex.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE
-                            );
+
+                    if(MiscUtils.jreCanScaleUI())
+                    {
+                        int choice = JOptionPane.showConfirmDialog(
+                            _parentFrame,
+                            "Zoom will take effect when the simulator is next started. Restart it now?",
+                            "Restart Required",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                        );
+                        
+                        if (choice == JOptionPane.YES_OPTION) {
+                            // Get the current jar path
+                            String jarPath = System.getProperty("java.class.path");
+                            // Start a new instance
+                            try {
+                                ProcessBuilder pb = new ProcessBuilder("java", "-jar", jarPath);
+                                pb.start();
+                                // Exit the current instance
+                                System.exit(0);
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(
+                                    _parentFrame,
+                                    "Failed to restart simulator: " + ex.getMessage(),
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                                );
+                            }
                         }
+                    }
+                    else
+                    {
+                        // show message that zooming is not supported on this JRE so user knows to upgrade
+                        JOptionPane.showMessageDialog(
+                            _parentFrame,
+                            "Zooming is only supported on Java Runtime v9 or later. Please upgrade your Java Runtime.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 });
                 zoomGroup.add(zoomItem);
