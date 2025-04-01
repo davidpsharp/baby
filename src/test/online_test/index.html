@@ -249,12 +249,25 @@ Visit the&nbsp;<a href='https://www.scienceandindustrymuseum.org.uk/whats-on/mee
     
     // Wait for the script to load before initializing CheerpJ
     (async function () {
+        // Check if browser supports clipboard-read permission
+        // otherwise cheerpJ fails horribly on Safari and on Firefox with error:
+        // Uncaught (in promise) TypeError: 'clipboard-read' (value of 'name' member of PermissionDescriptor) is not a valid value for enumeration PermissionName.
+        let clipboardMode = 'system';
+        try {
+            // Try to query clipboard-read permission to check if it's supported
+            await navigator.permissions.query({ name: 'clipboard-read' });
+            clipboardMode = 'permission';
+        } catch (e) {
+            console.log('Clipboard-read permission not supported, using system clipboard mode');
+        }
+        console.log('Using clipboard mode:', clipboardMode);
+
         await cheerpjInit({
             licenseKey:"v1-78XJpCYyasiWIQVMqUfwXea3tVk=",
-            clipboardMode: "system",
+            clipboardMode: clipboardMode,
             natives: {
                 Java_com_manchesterbaby_baby_utils_CheerpJUtils_getFileForSimulator,
-                Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication,
+                Java_com_manchesterbaby_baby_utils_CheerpJUtils_nativeSetApplication,           
                 Java_com_manchesterbaby_baby_utils_CheerpJUtils_getURLparam
             }
         });
