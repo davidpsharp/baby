@@ -1,6 +1,8 @@
 package com.manchesterbaby.baby.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -54,6 +56,152 @@ public class MiscUtils {
             System.err.println("Error opening download URL: " + ex.getMessage());
         }
     }
-        
 
+    /**
+     * Gets the version of the currently running Java Runtime Environment.
+     * This will return the full version string from Runtime.version() for Java 9+,
+     * or System.getProperty("java.version") for Java 8 and below.
+     * 
+     * @return The version string of the current JRE
+     */
+    public static String getJREversion() {
+        // First try Runtime.version() (Java 9+)
+        try {
+            Object version = Runtime.class.getMethod("version").invoke(null);
+            return version.toString();
+        } catch (Exception e) {
+            // Fallback to System property (Java 8 and below)
+            return System.getProperty("java.version");
+        }
+    }
+
+    /**
+     * Gets the name and vendor of the Java Runtime Environment.
+     * For example: "Eclipse Temurin" or "Oracle OpenJDK"
+     * 
+     * @return A string describing the JRE implementation
+     */
+    public static String getJREname() {
+        String vendor = System.getProperty("java.vendor");
+        String vmName = System.getProperty("java.vm.name");
+        
+        // Check for common JRE implementations
+        if (vmName.contains("OpenJ9")) {
+            return "Eclipse OpenJ9";
+        } else if (vendor.contains("Adoptium") || vendor.contains("Eclipse")) {
+            return "Eclipse Temurin";
+        } else if (vendor.contains("Oracle")) {
+            if (vmName.contains("OpenJDK")) {
+                return "Oracle OpenJDK";
+            } else {
+                return "Oracle JDK";
+            }
+        } else if (vendor.contains("Amazon")) {
+            return "Amazon Corretto";
+        } else if (vendor.contains("Azul")) {
+            return "Azul Zulu";
+        } else if (vendor.contains("Microsoft")) {
+            return "Microsoft Build of OpenJDK";
+        } else if (vendor.contains("Red Hat")) {
+            return "Red Hat OpenJDK";
+        } else if (vendor.contains("SAP")) {
+            return "SAP SapMachine";
+        } else if (vendor.contains("BellSoft")) {
+            return "BellSoft Liberica";
+        } else if (vendor.contains("CheerpJ")) {
+            return "CheerpJ WebVM";
+        }
+        
+        // If we can't identify a specific distribution, return vendor and VM name
+        return vendor + " " + vmName;
+    }
+
+    /**
+     * Gets a string describing the operating system name and version.
+     * For example: "macOS 14.3.1" or "Windows 11 (10.0)"
+     * 
+     * @return A string containing the OS name and version
+     */
+    public static String getOSversion() {
+        String osName = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
+        String osArch = System.getProperty("os.arch");
+        
+        // Format the version string based on OS
+        if (osName.startsWith("Mac")) {
+            // Use sw_vers command to get accurate macOS version
+            try {
+                // Get macOS version
+                Process p = Runtime.getRuntime().exec("sw_vers -productVersion");
+                BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(p.getInputStream())
+                );
+                String macVersion = reader.readLine();
+                if (macVersion != null && !macVersion.isEmpty()) {
+                    osVersion = macVersion;
+                }
+                
+                // Get actual hardware architecture using sysctl
+                p = Runtime.getRuntime().exec(new String[] { "sysctl", "-n", "machdep.cpu.brand_string" });
+                reader = new BufferedReader(
+                    new InputStreamReader(p.getInputStream())
+                );
+                String cpuInfo = reader.readLine();
+                
+                if (cpuInfo != null) {
+                    if (cpuInfo.contains("Apple M")) {
+                        osArch = "aarch64";
+                    } else if (cpuInfo.contains("Intel")) {
+                        osArch = "x86_64";
+                    }
+                    // Add CPU model to architecture string
+                    osArch += " (" + cpuInfo.trim() + ")";
+                }
+            } catch (Exception e) {
+                // Fallback to os.version and os.arch if commands fail
+                System.err.println("Error getting OS info: " + e.getMessage());
+            }
+            return String.format("macOS %s (%s)", osVersion, osArch);
+        } else if (osName.startsWith("Windows")) {
+            String displayVersion = getWindowsDisplayVersion();
+            if (displayVersion != null) {
+                return String.format("Windows %s (%s, %s)", displayVersion, osVersion, osArch);
+            } else {
+                return String.format("Windows %s (%s)", osVersion, osArch);
+            }
+        } else {
+            // Linux or other OS
+            return String.format("%s %s (%s)", osName, osVersion, osArch);
+        }
+    }
+
+    /**
+     * Gets the Windows display version (e.g. "11" or "10") by reading the registry.
+     * Returns null if unable to determine or not on Windows.
+     */
+    private static String getWindowsDisplayVersion() {
+        try {
+            Process p = Runtime.getRuntime().exec(new String[] {
+                "cmd", "/c",
+                "reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\" /v DisplayVersion"
+            });
+            
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(p.getInputStream())
+            );
+            
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("DisplayVersion")) {
+                    String[] parts = line.trim().split("\\s+");
+                    if (parts.length >= 3) {
+                        return parts[parts.length - 1];
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Silently fail and return null
+        }
+        return null;
+    }
 }
