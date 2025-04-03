@@ -1,6 +1,7 @@
 package com.manchesterbaby.baby.utils;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -214,5 +215,59 @@ public class MiscUtils {
             // Silently fail and return null
         }
         return null;
+    }
+
+    /**
+     * Gets the Java version that this program was compiled for by checking
+     * the class file version of MiscUtils.class.
+     * 
+     * @return A string describing the target Java version (e.g. "Java 8" or "Java 11")
+     */
+    public static String getJavaBuildVersion() {
+        try {
+            // Use reflection to get the class file version
+            java.io.DataInputStream in = new java.io.DataInputStream(
+                MiscUtils.class.getResourceAsStream("/" + 
+                MiscUtils.class.getName().replace('.', '/') + ".class"));
+            
+            if (in != null) {
+                // Skip the magic number
+                in.readInt();
+                // Read the minor and major version
+                int minor = in.readUnsignedShort();
+                int major = in.readUnsignedShort();
+                in.close();
+                
+                // Map class file version to Java version
+                // Reference: https://en.wikipedia.org/wiki/Java_class_file#General_layout
+                switch (major) {
+                    case 45: return "Java 1.1";
+                    case 46: return "Java 1.2";
+                    case 47: return "Java 1.3";
+                    case 48: return "Java 1.4";
+                    case 49: return "Java 5";
+                    case 50: return "Java 6";
+                    case 51: return "Java 7";
+                    case 52: return "Java 8";
+                    case 53: return "Java 9";
+                    case 54: return "Java 10";
+                    case 55: return "Java 11";
+                    case 56: return "Java 12";
+                    case 57: return "Java 13";
+                    case 58: return "Java 14";
+                    case 59: return "Java 15";
+                    case 60: return "Java 16";
+                    case 61: return "Java 17";
+                    case 62: return "Java 18";
+                    case 63: return "Java 19";
+                    case 64: return "Java 20";
+                    case 65: return "Java 21";
+                    default: return "Unknown Java version (class version " + major + "." + minor + ")";
+                }
+            }
+        } catch (Exception e) {
+            return "Unable to determine Java build version";
+        }
+        return "Unable to determine Java build version";
     }
 }

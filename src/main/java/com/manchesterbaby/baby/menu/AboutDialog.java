@@ -37,7 +37,8 @@ public class AboutDialog extends JFrame {
             "Thanks to <a href='https://adoptium.net/'>Adoptium</a> for the Termurin JRE",
             "",
             "Running on " + MiscUtils.getJREname() + " " + MiscUtils.getJREversion(),
-            "System: " + MiscUtils.getOSversion()
+            "System: " + MiscUtils.getOSversion(),
+            "Compiled for: " + MiscUtils.getJavaBuildVersion()
     );
     private static final ImageIcon ICON = new ImageIcon(AboutDialog.class.getResource("/icons/baby.png"));
 

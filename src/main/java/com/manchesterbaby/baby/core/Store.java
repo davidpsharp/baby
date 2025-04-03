@@ -489,6 +489,10 @@ public class Store
 			} catch(IOException e) {
 				System.err.println("Error loading assembly file: " + e.getMessage());
 			}
+
+			// make sure the line switches are all set down otherwise program unlikely to run
+			crtControlPanelController.setAllLineSwitchesDown();
+			
 			notifyFileLoaded();
 		}
     }
