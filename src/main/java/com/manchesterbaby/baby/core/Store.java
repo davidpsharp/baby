@@ -991,6 +991,8 @@ public class Store
 	{
 		this.fromCompressedBase64url(program);
 
+		crtControlPanelController.setAllLineSwitchesDown();
+
 		notifyFileLoaded();
 	}
 
@@ -1001,18 +1003,19 @@ public class Store
 
 	/**
 	 * Encodes the store's line array into a compressed thenbase64url encoded string
-	 * start with a bit map with 1 bit for each line to denote whether for that line to store
-	 * only bits 0-4 and 13-15 (a v common pattern which avoids lots of zeroes and only takes 8 bits rather than 32 -  sadly 2 base64
-	 * characters unless can do a bitstream rather than a bytestream) OR whether all 32 bits should be represented 
-	 * for that line. Should reduce number of bits needed by 75% for probably 60% of program lines for many progs. If true would reduce from 1088 (inc CI & ACC)->631 bits.
-	 * actually may be able to just use byte buffer as will always write just 8 bits, or 32 bits and let base64 encoding do the rest.
+	 * Format:
+	 * Start with 32 bits for a bit map with 1 bit for each line to denote whether that line is compressed.
+	 * If it is compressed only bits 0-4 and 13-15 are stored (a v common pattern which avoids lots of zeroes and only takes 8 bits rather than 32)
+	 * If it is not compressed then all 32 bits are represented, this happens when at least 1 other bit outside 0-4 and 13-15 is set.
+	 * This should reduce number of bits needed by 75% for probably 60% of program lines; if true would reduce from 1088 (inc CI & ACC) -> 631 bits.
 	 * @return A base64url compressed encoded string representing the store's contents
 	 */
 	public String toCompressedBase64url() {
-		// Create a ByteBuffer to hold all the store line integers (4 bytes each)
-		// add 1*4 so can store Accumulator registers so programs can be copied mid-execution
-		// add 1*4 so can store bitmap to represent line compression map across the store
-		// add 1 byte at the end for the CI register that can only be 5 bits.
+		// Create a ByteBuffer to hold all the data to serialize to base64
+		// add 4 bytes at start for bitmap to represent line compression map across the store
+		// add 1 or 4 bytes per store line as required (1 if compressed, 4 if not)
+		// add 1 or 4 bytes for the Accumulator so programs can be copied mid-execution
+		// add 1 byte at the end for the CI register that can only be 5 bits - use some of those spare bits for extra info like whether accumulator is compressed
 
 		ByteBuffer buffer = ByteBuffer.allocate(((line.length+1+1) * 4)+1);
 
