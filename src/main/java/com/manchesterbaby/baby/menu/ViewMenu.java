@@ -23,6 +23,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.lang.ProcessHandle;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class ViewMenu {
 
@@ -146,11 +150,38 @@ public class ViewMenu {
                         );
                         
                         if (choice == JOptionPane.YES_OPTION) {
-                            // Get the current jar path
-                            String jarPath = System.getProperty("java.class.path");
-                            // Start a new instance
                             try {
-                                ProcessBuilder pb = new ProcessBuilder("java", "-jar", jarPath);
+                                // Get the exact Java executable that launched us
+                                String javaPath = ProcessHandle.current().info().command().orElse(null);
+                                if (javaPath == null) {
+                                    // Fallback to java.home if we can't get the current executable
+                                    String javaHome = System.getProperty("java.home");
+                                    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                                        javaPath = javaHome + File.separator + "bin" + File.separator + "java.exe";
+                                    } else {
+                                        javaPath = javaHome + File.separator + "bin" + File.separator + "java";
+                                    }
+                                }
+                                
+                                // Get our JAR's location
+                                String jarPath;
+                                URL location = Baby.class.getProtectionDomain().getCodeSource().getLocation();
+                                try {
+                                    jarPath = new File(location.toURI()).getAbsolutePath();
+                                } catch (URISyntaxException e1) {
+                                    // Fallback to raw path if URI conversion fails
+                                    jarPath = location.getPath();
+                                }
+
+                                // Show confirmation dialog
+                                //  JOptionPane.showMessageDialog(
+                                //      _parentFrame,
+                                //      "Restarting simulator..." + javaPath + " : " + jarPath,
+                                //      "Restarting",
+                                //      JOptionPane.INFORMATION_MESSAGE
+                                //  );
+                                
+                                ProcessBuilder pb = new ProcessBuilder(javaPath, "-jar", jarPath);
                                 pb.start();
                                 // Exit the current instance
                                 System.exit(0);
