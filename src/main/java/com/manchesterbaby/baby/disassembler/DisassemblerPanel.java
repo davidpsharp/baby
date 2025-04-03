@@ -139,7 +139,7 @@ public class DisassemblerPanel extends JPanel implements StopFlagListener, FileL
             {
                 tokenCounter++;
                 // disable interactive loading as doesn't make sense here as pauses GUI for ages and isn't in a separate thread so locks up the UI
-                store.assembleModernToStore(tokenizer.nextToken(), tokenCounter, false);
+                store.assembleModernToStore(tokenizer.nextToken(), tokenCounter, true);
             }
         }
         catch(Exception ex)

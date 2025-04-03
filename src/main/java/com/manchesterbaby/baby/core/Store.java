@@ -451,7 +451,7 @@ public class Store
 				try {
 					Thread.currentThread().setName("Interactive Loading");
 					if(fileType.equals("assembly"))
-						processModernAssembly(fileName, loadMethod, AppSettings.getInstance().isInteractiveLoading());
+						processModernAssembly(fileName, loadMethod);
 					else if(fileType.equals("snapshot"))
 						processSnapshot(fileName, loadMethod);
 					else
@@ -467,16 +467,13 @@ public class Store
 				// revert to auto mode ready to run
 				crtControlPanelController.setManAuto(true);
 
-				// if interactive loading was turned off while the thread was running then need to...
-				if(!AppSettings.getInstance().isInteractiveLoading())
-				{
-					// make sure the line switches are all set down otherwise program unlikely to run, will have been
-					// left in some hodgepodge state part way through interactive loading
-					crtControlPanelController.setAllLineSwitchesDown();
+				// in case interactive loading left switches in odd state if program didn't use the last row, or interactive loading was disabled part way through...
+				// make sure the line switches are all set down otherwise program unlikely to run
+				crtControlPanelController.setAllLineSwitchesDown();
 
-					// and redraw the CRT panel as the panel will need redrawing
-					crtControlPanelController.redrawCrtPanel();
-				}
+				// and redraw the CRT panel as the panel will need redrawing
+				crtControlPanelController.redrawCrtPanel();
+				
 				notifyFileLoaded();
 			}).start();
 		}
@@ -484,7 +481,7 @@ public class Store
 		{
 			try {
 				if(fileType.equals("assembly"))
-					processModernAssembly(fileName, loadMethod, AppSettings.getInstance().isInteractiveLoading());
+					processModernAssembly(fileName, loadMethod);
 				else if(fileType.equals("snapshot"))
 					processSnapshot(fileName, loadMethod);
 				else
@@ -496,7 +493,7 @@ public class Store
 		}
     }
 
-    private void processModernAssembly(String fileName, String loadMethod, boolean loadInteractively) throws IOException {
+    private void processModernAssembly(String fileName, String loadMethod) throws IOException {
         int numberOfLines = -1;
         BufferedReader in;
 
@@ -557,14 +554,14 @@ public class Store
             // read line from file, trailing spaces removed
             String fileLine = (in.readLine()).trim();
             
-            assembleModernToStore(fileLine, lineCounter, loadInteractively);
+            assembleModernToStore(fileLine, lineCounter, false);
 		}
     }
 	
 	// actually assemble an individual line of text
-	// loadInteractively is passed in rather than taken from global setting as may not always want to load interactively when assembling to the store
-	// e.g. when doing 'save to store' from the disassembler, even when generally we want to load new programs interactively.
-	public void assembleModernToStore(String fileLine, int lineCounter, boolean loadInteractively) throws IOException
+	// disableInteractiveLoading is passed in as don't always want to load interactively when assembling to the store
+	// e.g. when doing 'save to store' from the disassembler.
+	public void assembleModernToStore(String fileLine, int lineCounter, boolean disableInteractiveLoading) throws IOException
 	{
 		int lineNumber = 0;
 			
@@ -707,8 +704,9 @@ public class Store
 				}
 				
 				
-
-				if(loadInteractively)
+				// need to keep checking the setting every loop in case user gets bored and disables interactive loading part way
+				// through so that can jump to finish loading quickly
+				if(AppSettings.getInstance().isInteractiveLoading() && !disableInteractiveLoading)
 					crtControlPanelController.setLine(lineNumber, lineData);
 				else
 					setLine(lineNumber, lineData);
