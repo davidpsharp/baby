@@ -451,7 +451,7 @@ public class Store
 				try {
 					Thread.currentThread().setName("Interactive Loading");
 					if(fileType.equals("assembly"))
-						processModernAssembly(fileName, loadMethod);
+						processModernAssembly(fileName, loadMethod, AppSettings.getInstance().isInteractiveLoading());
 					else if(fileType.equals("snapshot"))
 						processSnapshot(fileName, loadMethod);
 					else
@@ -484,7 +484,7 @@ public class Store
 		{
 			try {
 				if(fileType.equals("assembly"))
-					processModernAssembly(fileName, loadMethod);
+					processModernAssembly(fileName, loadMethod, AppSettings.getInstance().isInteractiveLoading());
 				else if(fileType.equals("snapshot"))
 					processSnapshot(fileName, loadMethod);
 				else
@@ -496,7 +496,7 @@ public class Store
 		}
     }
 
-    private void processModernAssembly(String fileName, String loadMethod) throws IOException {
+    private void processModernAssembly(String fileName, String loadMethod, boolean loadInteractively) throws IOException {
         int numberOfLines = -1;
         BufferedReader in;
 
@@ -557,12 +557,14 @@ public class Store
             // read line from file, trailing spaces removed
             String fileLine = (in.readLine()).trim();
             
-            assembleModernToStore(fileLine, lineCounter);
+            assembleModernToStore(fileLine, lineCounter, loadInteractively);
 		}
     }
 	
 	// actually assemble an individual line of text
-	public void assembleModernToStore(String fileLine, int lineCounter) throws IOException
+	// loadInteractively is passed in rather than taken from global setting as may not always want to load interactively when assembling to the store
+	// e.g. when doing 'save to store' from the disassembler, even when generally we want to load new programs interactively.
+	public void assembleModernToStore(String fileLine, int lineCounter, boolean loadInteractively) throws IOException
 	{
 		int lineNumber = 0;
 			
@@ -706,7 +708,7 @@ public class Store
 				
 				
 
-				if(AppSettings.getInstance().isInteractiveLoading())
+				if(loadInteractively)
 					crtControlPanelController.setLine(lineNumber, lineData);
 				else
 					setLine(lineNumber, lineData);
