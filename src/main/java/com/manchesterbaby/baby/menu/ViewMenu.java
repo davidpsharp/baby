@@ -24,9 +24,10 @@ import javax.swing.JPanel;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.lang.ProcessHandle;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Optional;
 
 public class ViewMenu {
 
@@ -151,10 +152,28 @@ public class ViewMenu {
                         
                         if (choice == JOptionPane.YES_OPTION) {
                             try {
-                                // Get the exact Java executable that launched us
-                                String javaPath = ProcessHandle.current().info().command().orElse(null);
+                                // Try to get the exact Java executable using reflection for Java 9+
+                                // typically this is because running on JRE11 under laucnh4j .exe in Windows
+                                // equivalent to - String javaPath = ProcessHandle.current().info().command().orElse(null);
+                                String javaPath = null;
+                                try {
+                                    Class<?> processHandleClass = Class.forName("java.lang.ProcessHandle");
+                                    Object currentProcess = processHandleClass.getMethod("current").invoke(null);
+                                    Object processInfo = processHandleClass.getMethod("info").invoke(currentProcess);
+                                    Method commandMethod = processInfo.getClass().getMethod("command");
+                                    Object command = commandMethod.invoke(processInfo);
+                                    if (command instanceof Optional) {
+                                        Optional<?> optionalCommand = (Optional<?>) command;
+                                        if (optionalCommand.isPresent()) {
+                                            javaPath = (String) optionalCommand.get();
+                                        }
+                                    }
+                                } catch (Exception e1) {
+                                    // Reflection failed or ProcessHandle not available (Java 8), fall back to java.home
+                                }
+
+                                // Fallback to java.home if reflection approach failed
                                 if (javaPath == null) {
-                                    // Fallback to java.home if we can't get the current executable
                                     String javaHome = System.getProperty("java.home");
                                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                                         javaPath = javaHome + File.separator + "bin" + File.separator + "java.exe";
@@ -173,31 +192,20 @@ public class ViewMenu {
                                     jarPath = location.getPath();
                                 }
 
-                                // Show confirmation dialog
-                                //  JOptionPane.showMessageDialog(
-                                //      _parentFrame,
-                                //      "Restarting simulator..." + javaPath + " : " + jarPath,
-                                //      "Restarting",
-                                //      JOptionPane.INFORMATION_MESSAGE
-                                //  );
-                                
                                 ProcessBuilder pb = new ProcessBuilder(javaPath, "-jar", jarPath);
                                 pb.start();
-                                // Exit the current instance
                                 System.exit(0);
                             } catch (Exception ex) {
                                 JOptionPane.showMessageDialog(
                                     _parentFrame,
-                                    "Failed to restart simulator: " + ex.getMessage(),
+                                    "Error restarting simulator: " + ex.getMessage(),
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE
                                 );
                             }
                         }
-                    }
-                    else
-                    {
-                        // show message that zooming is not supported on this JRE so user knows to upgrade
+                    } else {
+                        // Show message that zooming is not supported on this JRE
                         JOptionPane.showMessageDialog(
                             _parentFrame,
                             "Zooming is only supported on Java Runtime v9 or later. Please upgrade your Java Runtime.",
@@ -212,8 +220,6 @@ public class ViewMenu {
             viewMenu.addSeparator();
             viewMenu.add(zoomMenu);
         }
-
-        
 
         return viewMenu;
     }

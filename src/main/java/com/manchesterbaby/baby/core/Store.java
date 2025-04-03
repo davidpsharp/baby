@@ -989,17 +989,9 @@ public class Store
 	 */
 	public void loadFromURLparam(String program)
 	{
-		
-		// TODO: add support for a run-lengh compressed encoding
-		// start with a bit map with 1 bit for each line to denote whether for that line to store
-		// only bits 0-4 and 13-15 (a v common pattern which avoids lots of zeroes and only takes 8 bits rather than 32 -  sadly 2 base64
-		// characters unless can do a bitstream rather than a bytestream) OR whether all 32 bits should be represented 
-		// for that line. Should reduce number of bits needed by 75% for probably 60% of program lines for many progs. If true would reduce from 1088 (inc CI & ACC)->631 bits.
-		// actually may be able to just use byte buffer as will always write just 8 bits, or 32 bits and let base64 encoding do the rest.
-
-		// assume base64url encoding for now
 		this.fromCompressedBase64url(program);
 
+		notifyFileLoaded();
 	}
 
 	public String saveToURLparam()
@@ -1009,6 +1001,11 @@ public class Store
 
 	/**
 	 * Encodes the store's line array into a compressed thenbase64url encoded string
+	 * start with a bit map with 1 bit for each line to denote whether for that line to store
+	 * only bits 0-4 and 13-15 (a v common pattern which avoids lots of zeroes and only takes 8 bits rather than 32 -  sadly 2 base64
+	 * characters unless can do a bitstream rather than a bytestream) OR whether all 32 bits should be represented 
+	 * for that line. Should reduce number of bits needed by 75% for probably 60% of program lines for many progs. If true would reduce from 1088 (inc CI & ACC)->631 bits.
+	 * actually may be able to just use byte buffer as will always write just 8 bits, or 32 bits and let base64 encoding do the rest.
 	 * @return A base64url compressed encoded string representing the store's contents
 	 */
 	public String toCompressedBase64url() {
@@ -1113,10 +1110,10 @@ public class Store
 				
 				// Extract bits 0-4 and 13-15 from compressed format
 				int value = (compressedValue & 0x1F) | ((compressedValue & 0xE0) << 8);
-				line[lineCount] = value;
+				setLine(lineCount, value);
 			} else {
 				// This line is stored as full 32 bits
-				line[lineCount] = buffer.getInt();
+				setLine(lineCount, buffer.getInt());
 			}
 		}
 		

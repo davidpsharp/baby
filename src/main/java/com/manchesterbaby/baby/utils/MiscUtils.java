@@ -250,6 +250,7 @@ public class MiscUtils {
                 // Read the minor and major version
                 int minor = in.readUnsignedShort();
                 int major = in.readUnsignedShort();
+                in.readUnsignedShort();
                 in.close();
                 
                 // Map class file version to Java version
@@ -276,11 +277,11 @@ public class MiscUtils {
                     case 63: return "Java 19";
                     case 64: return "Java 20";
                     case 65: return "Java 21";
-                    default: return "Unknown Java version (class version " + major + "." + minor + ")";
+                    default: return "Unknown Java version (class version " + major + ")";
                 }
             }
         } catch (Exception e) {
-            return "Unable to determine Java build version";
+            // Fall through
         }
         return "Unable to determine Java build version";
     }
