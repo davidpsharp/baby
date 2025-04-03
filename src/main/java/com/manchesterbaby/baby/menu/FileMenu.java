@@ -159,6 +159,7 @@ public class FileMenu {
             Object[] options = {
                 "Open URL",
                 "Copy to Clipboard",
+                "Show QR Code",
                 "Close"
             }; 
             
@@ -170,7 +171,7 @@ public class FileMenu {
                 JOptionPane.INFORMATION_MESSAGE,
                 icon,
                 options,
-                options[2] // Default to Close button
+                options[3] // Default to Close button
             );
             
             if (choice == 0) { // Open URL
@@ -188,6 +189,8 @@ public class FileMenu {
                 Toolkit.getDefaultToolkit()
                     .getSystemClipboard()
                     .setContents(new StringSelection(url), null);
+            } else if (choice == 2) { // Show QR Code
+                saveAsQRcode.doClick();
             }
         });
 
