@@ -12,11 +12,19 @@ You can also download the [latest release](https://github.com/davidpsharp/baby/r
 
 If you are on another platform such as Linux, you can download the Java .jar file which requires an existing Java Runtime to be installed, version 8 or later.
 
-Or you can build the simulator yourself from source code...
+Or you can [build the simulator](#table-of-contents-for-building-the-simulator) yourself from source code.
+
+## More information ##
+
+- [Quick Start Guide](docs/quick-start-guide.md)
+- [Historical Accuracy of the Simulator](docs/historical-accuracy.md)
+- [Introduction to Programming the Baby](docs/intro-to-programming-the-baby.md)
 
 ![Photo of this simulator running next to the replica machine at the Science and Industry Museum, Manchester, England](https://davidsharp.com/baby/makerfaire.jpg)
 
-## Table of Contents
+## Table of Contents for Building the Simulator
+
+
 
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
