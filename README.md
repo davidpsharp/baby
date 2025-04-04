@@ -32,7 +32,7 @@ To build and run the Manchester Baby Simulator, you will need the following:
 
 - [Open Java Development Kit (JDK) 17](https://openjdk.org/projects/jdk/17/) or higher
 - [Apache Maven](https://maven.apache.org/download.cgi)
-- [Caddy](https://caddyserver.com/download) (for serving CheerpJ files)
+- [Caddy](https://caddyserver.com/download) (for testing browser version by serving CheerpJ)
 
 On macOS, you can install these dependencies using [Homebrew](https://brew.sh/):
 
@@ -133,9 +133,9 @@ To run the browser version (which uses the CheerpJ JRE), execute the provided sh
 ./src/test/online_test/online_test.sh
 ```
 
-Cheerpj requires an HTTP server, it will not work without one. This script launches a local
-Caddy server to serve the files for Cheerpj and automatically
-opens your default web browser with some HTML/Javascript which downloads the Cheerpj
+CheerpJ requires an HTTP server, it will not work without one. This script launches a local
+Caddy server to serve the files for CheerpJ and automatically
+opens your default web browser with some HTML/Javascript which downloads the CheerpJ
 runtime and starts the simulator.
 
 If you're on Windows and don't have Caddy, you can create a basic HTTP server for the simulator
