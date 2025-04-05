@@ -66,22 +66,9 @@ public class Baby extends JFrame {
                 Image icon = new ImageIcon(getClass().getResource("/icons/baby.png")).getImage();
                 setIconImage(icon);
                 
-                // For macOS dock icon
-                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                    // macOS-specific dock icon setting (requires Java 9 or later)
-                    // Recall cheerpj is Java 8 only so can't compile this code and still target JRE 8.
-                    // The line I want to have is...
-                    //      java.awt.Taskbar.getTaskbar().setIconImage(icon);
-                    // so I do equivalent code in reflection so can still compile for Java 8.
-                    // If compiled/running on later version of JRE will set taskbar icon, and if running on Java 8
-                    // then the exception will get trapped when reflection fails and the show goes on...
-                    Class taskbarCls = Class.forName("java.awt.Taskbar");
-                    java.lang.reflect.Method getTaskbarMethod = taskbarCls.getMethod("getTaskbar");
-                    Object taskbarObj = getTaskbarMethod.invoke(null);
-
-                    java.lang.reflect.Method setIconImageMethod=taskbarCls.getMethod("setIconImage", Image.class);
-                    setIconImageMethod.invoke(taskbarObj, icon);
-                }
+                // Set macOS dock icon
+                Java9Plus.setDockIcon(icon);
+                
             } catch (Exception e) {
                 // Could not load application icon, only works on JRE 9 and later.
             }

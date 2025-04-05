@@ -17,6 +17,7 @@ import com.manchesterbaby.baby.ui.display.DisplayDebugPanel;
 import com.manchesterbaby.baby.ui.display.DisplayDisassemblerWindow;
 import com.manchesterbaby.baby.utils.AppSettings;
 import com.manchesterbaby.baby.utils.CheerpJUtils;
+import com.manchesterbaby.baby.utils.Java9Plus;
 import com.manchesterbaby.baby.utils.MiscUtils;
 
 import javax.swing.JFrame;
@@ -152,27 +153,10 @@ public class ViewMenu {
                         
                         if (choice == JOptionPane.YES_OPTION) {
                             try {
-                                // Try to get the exact Java executable using reflection for Java 9+
-                                // typically this is because running on JRE11 under laucnh4j .exe in Windows
-                                // equivalent to - String javaPath = ProcessHandle.current().info().command().orElse(null);
-                                String javaPath = null;
-                                try {
-                                    Class<?> processHandleClass = Class.forName("java.lang.ProcessHandle");
-                                    Object currentProcess = processHandleClass.getMethod("current").invoke(null);
-                                    Object processInfo = processHandleClass.getMethod("info").invoke(currentProcess);
-                                    Method commandMethod = processInfo.getClass().getMethod("command");
-                                    Object command = commandMethod.invoke(processInfo);
-                                    if (command instanceof Optional) {
-                                        Optional<?> optionalCommand = (Optional<?>) command;
-                                        if (optionalCommand.isPresent()) {
-                                            javaPath = (String) optionalCommand.get();
-                                        }
-                                    }
-                                } catch (Exception e1) {
-                                    // Reflection failed or ProcessHandle not available (Java 8), fall back to java.home
-                                }
+                                // Try to get the exact Java executable path
+                                String javaPath = Java9Plus.getJavaRuntimePath();
 
-                                // Fallback to java.home if reflection approach failed
+                                // Fallback to java.home if on java 8 
                                 if (javaPath == null) {
                                     String javaHome = System.getProperty("java.home");
                                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
