@@ -1,6 +1,8 @@
 # Manchester Baby Simulator
 
-The Manchester Baby Simulator is a Java-based simulator that emulates the Manchester Baby computer; the world’s first stored-program computer. This project offers an interactive way to explore one of computing history’s most significant machines. The simulator is used by volunteers at the Science and Industry Museum in Manchester, England to train and help debug the working replica of the Baby!
+The Manchester Baby Simulator is a Java-based simulator that emulates the Manchester Baby computer; the world’s first stored-program computer from 1948.
+
+The simulator is used by volunteers at the Science and Industry Museum in Manchester, England to help demonstrate and debug the working [replica](https://www.scienceandindustrymuseum.org.uk/whats-on/meet-baby) of the Baby!
 
 For more details, background information, and user documentation, please explore the [docs](docs/) folder.
 
